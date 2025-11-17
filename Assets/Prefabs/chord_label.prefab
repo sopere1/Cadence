@@ -1,0 +1,128 @@
+- !<ObjectPrefab/53072afc-ea44-4b6e-8fa9-07c48f284bd1>
+  PackagePath: ""
+  objects:
+    - !<own> 36e21e35-0849-40e7-8a14-03a00f15a5b5
+  LazyLoading: false
+  RetainAssets: true
+- !<LookAtComponent/1e90e140-31ba-42d9-b13b-ba5f5063fd8d>
+  PrefabRemaps:
+    []
+  Name: Look At
+  Enabled: true
+  LookAtMode: LookAtPoint
+  AimVectors: ZAimYUp
+  WorldUpVector: SceneY
+  Target: !<reference> 00000000-0000-0065-0000-000000000064
+  OffsetRotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+- !<Text3D/30415982-0ec4-4e86-b930-b9cb69a9611f>
+  PrefabRemaps:
+    []
+  Name: Text3D
+  Enabled: true
+  RenderOrder: 0
+  StretchMode: Stretch
+  VerticalAlignment: Center
+  HorizontalAlignment: Center
+  MeshShadowMode: None
+  ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
+  ShadowDensity: 1.000000
+  Materials:
+    - !<reference> 4140d5d4-5a0f-47e7-b9d9-71371308b0b9
+  Text: Hello
+  Editable: false
+  ShowEditingPreview: true
+  TouchHandler: !<reference> 00000000-0000-0000-0000-000000000000
+  SizeToFit: false
+  FontSize: 48
+  ExtrusionDepth: 0.060000
+  ExtrudeDirection: Both
+  Font: !<reference> 00000000-0000-0000-0000-000000000000
+  LayoutRect:
+    left: -7.500000
+    bottom: -2.250000
+    right: 7.500000
+    top: 2.250000
+  OverflowVertical: Overflow
+  OverflowHorizontal: Overflow
+  AdvancedLayout: !<TextAdvancedLayout>
+    ExtentsTarget: !<reference> 00000000-0000-0000-0000-000000000000
+    LetterSpacing: 0.000000
+    LineSpacing: 1.000000
+    CapitalizationOverride: None
+  EnableBatching: false
+- !<SceneObject/36e21e35-0849-40e7-8a14-03a00f15a5b5>
+  PrefabRemaps:
+    - 1e90e140-31ba-42d9-b13b-ba5f5063fd8d: 1e90e140-31ba-42d9-4ec4-45a0af9c0272
+    - 30415982-0ec4-4e86-b930-b9cb69a9611f: 30415982-0ec4-4e86-46cf-463496569ee0
+    - 36e21e35-0849-40e7-8a14-03a00f15a5b5: 36e21e35-0849-40e7-75eb-fc5ff0ea5a4a
+    - 5b82920c-6445-4527-9cfc-23684c6ecf32: 5b82920c-6445-4527-6303-dc97b39130cd
+    - 70c5c66f-c58d-485a-8d26-15d15e3e844f: 70c5c66f-c58d-485a-72d9-ea2ea1c17bb0
+  Name: chord_label
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 20.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    []
+  Components:
+    - !<own> 30415982-0ec4-4e86-b930-b9cb69a9611f
+    - !<own> 1e90e140-31ba-42d9-b13b-ba5f5063fd8d
+    - !<own> 5b82920c-6445-4527-9cfc-23684c6ecf32
+    - !<own> 70c5c66f-c58d-485a-8d26-15d15e3e844f
+- !<ScriptComponent/5b82920c-6445-4527-9cfc-23684c6ecf32>
+  PrefabRemaps:
+    []
+  Name: Interactable
+  Enabled: true
+  ScriptAsset: !<reference> 652e631a-22d0-4941-9f74-2943df59f34c
+  ScriptInputsDefault:
+    targetingMode: true
+    enableInstantDrag: true
+    isScrollable: true
+    allowMultipleInteractors: true
+    enablePokeDirectionality: true
+    acceptableXDirections: true
+    acceptableYDirections: true
+    acceptableZDirections: true
+    useFilteredPinch: true
+    isSynced: true
+    acceptableSyncInteractionTypes: true
+  ScriptTypesDefault:
+    {}
+  ScriptInputs:
+    "":
+      targetingMode: !<float> 3.000000
+      enableInstantDrag: false
+      isScrollable: false
+      allowMultipleInteractors: true
+      enablePokeDirectionality: false
+      acceptableXDirections: !<float> 0.000000
+      acceptableYDirections: !<float> 0.000000
+      acceptableZDirections: !<float> 1.000000
+      useFilteredPinch: false
+      isSynced: false
+      acceptableSyncInteractionTypes: !<float> 7.000000
+  ScriptTypes:
+    "":
+      {}
+- !<ColliderComponent/70c5c66f-c58d-485a-8d26-15d15e3e844f>
+  PrefabRemaps:
+    []
+  Name: Physics Collider
+  Enabled: true
+  Shape: !<Sphere>
+    FitVisual: true
+    Radius: 6.000000
+  Matter: !<reference> 00000000-0000-0000-0000-000000000000
+  Filter: !<reference> 00000000-0000-0000-0000-000000000000
+  OverlapFilter: !<reference> 00000000-0000-0000-0000-000000000000
+  WorldSettings: !<reference> 00000000-0000-0000-0000-000000000000
+  EnableSmoothing: false
+  PositionTension: 30.000000
+  RotationTension: 30.000000
+  ForceCompound: false
+  Intangible: false
+  ShowCollider: false

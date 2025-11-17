@@ -1,0 +1,37 @@
+- !<NativePackageDescriptor/f66fa951-1946-462c-aa14-ab5c4405bc81>
+  PackagePath: ""
+  StudioVersion:
+    major: 5
+    minor: 15
+    patch: 1
+    build: 25102815
+    type: Unset
+    buildFlavor: ""
+    timestamp: 0
+    commit: ""
+  Description: "Provides an example of leveraging LLM AI within a Lens. It uses the ChatGPTHelper Custom Component, which leverages the ChatGPT Remote API."
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  VersionMajor: 1
+  VersionMinor: 0
+  VersionPatch: 0
+  UpdateCheckpoint: 76
+  ExportUid: 44a9e24e-da4a-4502-baaf-c6a8d66063bd
+  ComponentUid: bbe45b6f-f9b7-4ea3-b1e6-4153fb31ad80
+  PackagePolicy: ShouldBeUnpacked
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  Instantiable: !<reference> 00000000-0000-0000-0000-000000000000
+  AssetLibraryDependencyStructure: !<AssetLibraryDependencyStructure>
+    Name: ""
+    AssetId: ""
+    Hash: ""
+    Version:
+      major: 0
+      minor: 0
+      patch: 0
+      build: 0

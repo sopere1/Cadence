@@ -1,0 +1,71 @@
+- !<ObjectPrefab/0e223d76-0c1f-4f1a-953b-23aa3692809a>
+  PackagePath: ""
+  objects:
+    - !<own> ef52bbe6-9a09-4824-8198-ebad1d90b1cc
+  LazyLoading: false
+  RetainAssets: true
+- !<SceneObject/54145588-5c74-4985-82cc-e812e4ac29ab>
+  PrefabRemaps:
+    []
+  Name: "ChatGPT Demo [DELETE_ME]"
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    []
+  Components:
+    - !<own> 9ea45803-4e8b-44fb-88c7-54264ac465c4
+- !<ScriptComponent/9ea45803-4e8b-44fb-88c7-54264ac465c4>
+  PrefabRemaps:
+    []
+  Name: ChatGPT Demo
+  Enabled: true
+  ScriptAsset: !<reference> 80b2db8e-5837-4fed-9192-aaa801fa0929
+  ScriptInputsDefault:
+    question: true
+  ScriptTypesDefault:
+    {}
+  ScriptInputs:
+    "":
+      question: "What are some ideas for Lenses?"
+  ScriptTypes:
+    "":
+      {}
+- !<ScriptComponent/a729ebc2-8f97-452c-bc5b-0c5a1fedd8cd>
+  PrefabRemaps:
+    []
+  Name: ChatGPT Helper
+  Enabled: true
+  ScriptAsset: !<reference> d7341e55-f15b-4fe6-af2d-43782465f122
+  ScriptInputsDefault:
+    remote: true
+  ScriptTypesDefault:
+    {}
+  ScriptInputs:
+    "":
+      remote: !<reference.RemoteServiceModule> 554de7b1-d89d-48f8-99c7-89b500692da2
+  ScriptTypes:
+    "":
+      {}
+- !<SceneObject/ef52bbe6-9a09-4824-8198-ebad1d90b1cc>
+  PrefabRemaps:
+    - 54145588-5c74-4985-82cc-e812e4ac29ab: 54145588-5c74-4985-7d33-17ed1b53d654
+    - 9ea45803-4e8b-44fb-88c7-54264ac465c4: 9ea45803-4e8b-44fb-7738-abd9b53b9a3b
+    - a729ebc2-8f97-452c-bc5b-0c5a1fedd8cd: a729ebc2-8f97-452c-43a4-f3a5e0122732
+    - ef52bbe6-9a09-4824-8198-ebad1d90b1cc: ef52bbe6-9a09-4824-7e67-1452e26f4e33
+  Name: ChatGPT Helper__PLACE_IN_SCENE
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    - !<own> 54145588-5c74-4985-82cc-e812e4ac29ab
+  Components:
+    - !<own> a729ebc2-8f97-452c-bc5b-0c5a1fedd8cd

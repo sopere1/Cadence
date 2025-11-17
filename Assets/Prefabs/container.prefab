@@ -1,0 +1,38 @@
+- !<ObjectPrefab/ab58e8ed-a27e-4b08-8f6d-a0d8b0deb584>
+  PackagePath: ""
+  objects:
+    - !<own> 7d15c7a8-2d51-4881-8c18-4a38f20b90dd
+  LazyLoading: false
+  RetainAssets: true
+- !<SceneObject/7d15c7a8-2d51-4881-8c18-4a38f20b90dd>
+  PrefabRemaps:
+    - 7d15c7a8-2d51-4881-8c18-4a38f20b90dd: 7d15c7a8-2d51-4881-73e7-b5c70df46f22
+    - f10bedbc-71de-4365-9d35-aacb131a0887: f10bedbc-71de-4365-62ca-5534ece5f778
+  Name: container
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    []
+  Components:
+    - !<own> f10bedbc-71de-4365-9d35-aacb131a0887
+- !<ScriptComponent/f10bedbc-71de-4365-9d35-aacb131a0887>
+  PrefabRemaps:
+    []
+  Name: toggleMode
+  Enabled: true
+  ScriptAsset: !<reference> 1fca9b47-adee-4de8-9151-5be69f911d84
+  ScriptInputsDefault:
+    {}
+  ScriptTypesDefault:
+    {}
+  ScriptInputs:
+    "":
+      highlightMaterial: !<reference.Material> 1f6acc79-0db1-4a69-9b6e-d45073e707ad
+  ScriptTypes:
+    "":
+      {}

@@ -1,0 +1,44 @@
+- !<AssetImportMetadata/ecf994a3-dd2d-483d-ac5d-439bc763b324>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> 9ff284bb-9de1-4f52-a508-6a5b2fdac9da
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> 9ff284bb-9de1-4f52-a508-6a5b2fdac9da
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> af627147-6f33-4d8c-9fdb-3749830c98c9
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/af627147-6f33-4d8c-9fdb-3749830c98c9>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: 9c604149-fc76-48e3-85e9-28a5aa6f43b0
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    authorizationHeader: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - authorizationHeader: ""
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - // @input string authorizationHeader

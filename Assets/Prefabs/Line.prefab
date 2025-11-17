@@ -1,0 +1,100 @@
+- !<ObjectPrefab/c5d55847-1be9-4cdd-8644-ee91f16b35d5>
+  PackagePath: ""
+  objects:
+    - !<own> 2bbab51c-c3d0-40af-915a-19eb5c6905c6
+  LazyLoading: false
+  RetainAssets: true
+- !<SceneObject/2bbab51c-c3d0-40af-915a-19eb5c6905c6>
+  PrefabRemaps:
+    - 2bbab51c-c3d0-40af-915a-19eb5c6905c6: 2bbab51c-c3d0-40af-6ea5-e614a396fa39
+    - 7d5ff758-1db0-4f2d-a48d-213ff7a3a3c3: 7d5ff758-1db0-4f2d-5b72-dec0085c5c3c
+    - 8758d75e-2c70-4916-a9d0-ac5a118f860f: 8758d75e-2c70-4916-562f-53a5ee7079f0
+    - c0916db8-f7ac-46e6-a4e0-fc97772db0cc: c0916db8-f7ac-46e6-5b1f-036888d24f33
+  Name: Plane
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.040000, y: 0.002000, z: 1.000000}
+    Rotation: {x: 90.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 100.000000, y: 100.000000, z: 100.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    []
+  Components:
+    - !<own> 8758d75e-2c70-4916-a9d0-ac5a118f860f
+    - !<own> 7d5ff758-1db0-4f2d-a48d-213ff7a3a3c3
+    - !<own> c0916db8-f7ac-46e6-a4e0-fc97772db0cc
+- !<ColliderComponent/7d5ff758-1db0-4f2d-a48d-213ff7a3a3c3>
+  PrefabRemaps:
+    []
+  Name: Physics Collider
+  Enabled: true
+  Shape: !<Sphere>
+    FitVisual: true
+    Radius: 6.000000
+  Matter: !<reference> 00000000-0000-0000-0000-000000000000
+  Filter: !<reference> 00000000-0000-0000-0000-000000000000
+  OverlapFilter: !<reference> 00000000-0000-0000-0000-000000000000
+  WorldSettings: !<reference> 00000000-0000-0000-0000-000000000000
+  EnableSmoothing: false
+  PositionTension: 30.000000
+  RotationTension: 30.000000
+  ForceCompound: false
+  Intangible: false
+  ShowCollider: false
+- !<RenderMeshVisual/8758d75e-2c70-4916-a9d0-ac5a118f860f>
+  PrefabRemaps:
+    []
+  Name: Render Mesh Visual
+  Enabled: true
+  RenderOrder: 0
+  StretchMode: Stretch
+  VerticalAlignment: Center
+  HorizontalAlignment: Center
+  MeshShadowMode: None
+  ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
+  ShadowDensity: 1.000000
+  Materials:
+    - !<reference> c2838785-ec55-409b-bf86-2d5ffaaa7f16
+  Mesh: !<reference> b3985efc-f846-4be7-ac22-481cd95f42b7
+  Skin: !<reference> 00000000-0000-0000-0000-000000000000
+  BlendShapesEnabled: true
+  BlendNormals: false
+  BlendShapes:
+    {}
+- !<ScriptComponent/c0916db8-f7ac-46e6-a4e0-fc97772db0cc>
+  PrefabRemaps:
+    []
+  Name: Interactable
+  Enabled: true
+  ScriptAsset: !<reference> 652e631a-22d0-4941-9f74-2943df59f34c
+  ScriptInputsDefault:
+    targetingMode: true
+    enableInstantDrag: true
+    isScrollable: true
+    allowMultipleInteractors: true
+    enablePokeDirectionality: true
+    acceptableXDirections: true
+    acceptableYDirections: true
+    acceptableZDirections: true
+    useFilteredPinch: true
+    isSynced: true
+    acceptableSyncInteractionTypes: true
+  ScriptTypesDefault:
+    {}
+  ScriptInputs:
+    "":
+      targetingMode: !<float> 3.000000
+      enableInstantDrag: false
+      isScrollable: false
+      allowMultipleInteractors: true
+      enablePokeDirectionality: false
+      acceptableXDirections: !<float> 0.000000
+      acceptableYDirections: !<float> 0.000000
+      acceptableZDirections: !<float> 1.000000
+      useFilteredPinch: false
+      isSynced: false
+      acceptableSyncInteractionTypes: !<float> 7.000000
+  ScriptTypes:
+    "":
+      {}

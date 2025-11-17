@@ -1,0 +1,100 @@
+- !<ObjectPrefab/e8d380ed-9d34-45cd-a133-dccefc8dbabc>
+  PackagePath: ""
+  objects:
+    - !<own> 79591fa7-14fa-4e07-8c9e-0490dcb110c4
+  LazyLoading: false
+  RetainAssets: true
+- !<ColliderComponent/69853ced-3679-457a-9e7b-eec71251ad71>
+  PrefabRemaps:
+    []
+  Name: Physics Collider
+  Enabled: true
+  Shape: !<Sphere>
+    FitVisual: true
+    Radius: 6.000000
+  Matter: !<reference> 00000000-0000-0000-0000-000000000000
+  Filter: !<reference> 00000000-0000-0000-0000-000000000000
+  OverlapFilter: !<reference> 00000000-0000-0000-0000-000000000000
+  WorldSettings: !<reference> 00000000-0000-0000-0000-000000000000
+  EnableSmoothing: false
+  PositionTension: 30.000000
+  RotationTension: 30.000000
+  ForceCompound: false
+  Intangible: false
+  ShowCollider: false
+- !<ScriptComponent/6f959b8f-eda8-4b5e-9dfa-d49ff916ef78>
+  PrefabRemaps:
+    []
+  Name: Interactable
+  Enabled: true
+  ScriptAsset: !<reference> 652e631a-22d0-4941-9f74-2943df59f34c
+  ScriptInputsDefault:
+    targetingMode: true
+    enableInstantDrag: true
+    isScrollable: true
+    allowMultipleInteractors: true
+    enablePokeDirectionality: true
+    acceptableXDirections: true
+    acceptableYDirections: true
+    acceptableZDirections: true
+    useFilteredPinch: true
+    isSynced: true
+    acceptableSyncInteractionTypes: true
+  ScriptTypesDefault:
+    {}
+  ScriptInputs:
+    "":
+      targetingMode: !<float> 3.000000
+      enableInstantDrag: false
+      isScrollable: false
+      allowMultipleInteractors: true
+      enablePokeDirectionality: false
+      acceptableXDirections: !<float> 0.000000
+      acceptableYDirections: !<float> 0.000000
+      acceptableZDirections: !<float> 1.000000
+      useFilteredPinch: false
+      isSynced: false
+      acceptableSyncInteractionTypes: !<float> 7.000000
+  ScriptTypes:
+    "":
+      {}
+- !<SceneObject/79591fa7-14fa-4e07-8c9e-0490dcb110c4>
+  PrefabRemaps:
+    - 69853ced-3679-457a-9e7b-eec71251ad71: 69853ced-3679-457a-6184-1138edae528e
+    - 6f959b8f-eda8-4b5e-9dfa-d49ff916ef78: 6f959b8f-eda8-4b5e-6205-2b6006e91087
+    - 79591fa7-14fa-4e07-8c9e-0490dcb110c4: 79591fa7-14fa-4e07-7361-fb6f234eef3b
+    - fe6c3a22-1454-4818-a93d-2539d594af04: fe6c3a22-1454-4818-56c2-dac62a6b50fb
+  Name: Bridge_3
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 10.000000, y: 10.000000, z: 10.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    []
+  Components:
+    - !<own> fe6c3a22-1454-4818-a93d-2539d594af04
+    - !<own> 6f959b8f-eda8-4b5e-9dfa-d49ff916ef78
+    - !<own> 69853ced-3679-457a-9e7b-eec71251ad71
+- !<RenderMeshVisual/fe6c3a22-1454-4818-a93d-2539d594af04>
+  PrefabRemaps:
+    []
+  Name: geometry_0
+  Enabled: true
+  RenderOrder: 0
+  StretchMode: Stretch
+  VerticalAlignment: Center
+  HorizontalAlignment: Center
+  MeshShadowMode: None
+  ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
+  ShadowDensity: 1.000000
+  Materials:
+    - !<reference> 5c197ea5-ae48-498a-bcaa-3f77fbd35e85
+  Mesh: !<reference> 3e387955-0c71-4fbc-bbcf-558efbf3fdd7
+  Skin: !<reference> 00000000-0000-0000-0000-000000000000
+  BlendShapesEnabled: true
+  BlendNormals: false
+  BlendShapes:
+    {}
