@@ -50,7 +50,6 @@ CollapsedEntities:
       - Prefabs/bridge_cylinder_open.glb
       - Prefabs/chord_label.prefab
       - Prefabs/container.prefab
-      - Remote Service Module.remoteServiceModule
       - Spawners
       - Spawners/spawnChord.js
       - Spawners/spawnLabels.js
@@ -464,10 +463,11 @@ CollapsedEntities:
       - SpectaclesInteractionKit.lspkg/VersionNumber.ts
       - SpectaclesInteractionKit.lspkg/package.native
       - SpectaclesInteractionKit.lspkg/tsconfig.json
-      - Utils/customGPTClient.js
+      - Utils
+      - Utils/customGPT.ts
       - Utils/gptExplain.js
       - Utils/requestGPT.js
       - Utils/setColliders.ts
-      - Utils/testAzureGPT.js
+      - Utils/testCustom.ts
       - Utils/waitForGPT.js
   options: 4
