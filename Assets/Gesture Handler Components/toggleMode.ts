@@ -2,7 +2,7 @@ import { Interactable } from '../SpectaclesInteractionKit.lspkg/Components/Inter
 import { InteractorEvent } from '../SpectaclesInteractionKit.lspkg/Core/Interactor/InteractorEvent';
 import { InteractorInputType } from '../SpectaclesInteractionKit.lspkg/Core/Interactor/Interactor';
 import { SIK } from '../SpectaclesInteractionKit.lspkg/SIK';
-import {handleRightLabelPinch } from './rightLabelPinch'
+import { handleRightLabelPinch } from './rightLabelPinch'
 import { setCollidersEnabled, ensureInteractableAndCollider } from '../Utils/setColliders';
 const { chordNotes } = require('../Constants/chordMap.js');
 const spawnChord = require('../Spawners/spawnChord');
@@ -19,6 +19,8 @@ export class toggleMode extends BaseScriptComponent {
     private prevSelected: SceneObject | null = null;
     private activeLabel: SceneObject | null = null;
     private lastChordName: string = 'Cmaj';
+    private nextSlotIndex: number = 0;
+    private slotChords: SceneObject[] = [];
 
     private lastToggleTime = 0;
     private readonly toggleCooldown = 0.3;
@@ -29,20 +31,17 @@ export class toggleMode extends BaseScriptComponent {
         this.setupHandModeToggle();
     }
 
-    private calcColliderSize(text3D: any){
+    // Helper to ensure a chord label is interactive
+    private ensureLabelInteractive(label: any){
+        const text3D = label.getComponent("Component.Text3D") as any;
+        if (!text3D || !text3D.getBoundingBox) return;
+        
+        // calculate the collider size
         const bb = text3D.getBoundingBox();
         const w = Math.max(0.01, bb.right - bb.left);
         const h = Math.max(0.01, bb.top - bb.bottom);
         const d = 0.02;
-        return new vec3(w, h, d);
-    }
-
-    private ensureLabelInteractive(label: any){
-        const text3D = label.getComponent("Component.Text3D") as any;
-        if (!text3D || !text3D.getBoundingBox) {
-            return;
-        }
-        const size = this.calcColliderSize(text3D)
+        const size = new vec3(w, h, d);
         ensureInteractableAndCollider(label, size);
     }
 
@@ -50,17 +49,27 @@ export class toggleMode extends BaseScriptComponent {
     private setupLabelInteractions() {
         for (let i = 0; i < this.labels.length; i++) {
             const label = this.labels[i];
-            this.ensureLabelInteractive(label)
-
+            this.ensureLabelInteractive(label);
+            
             const interactable = label.getComponent(Interactable.getTypeName() as any) as any;
             const audioComponent = label.getComponent('Component.AudioComponent');
-
+            
             const handler = (event: InteractorEvent) => {
                 const inputType = (event.interactor as any)?.inputType;
+
                 if (inputType === InteractorInputType.LeftHand) {
                     this.handleLeftHandLabelPinch(label);
                 } else if (inputType === InteractorInputType.RightHand) {
-                    handleRightLabelPinch(label, audioComponent, this.lastChordName);
+                    handleRightLabelPinch(
+                        label, 
+                        audioComponent, 
+                        this.lastChordName,
+                        (labelObj: SceneObject) => {
+                            this.destroyActiveLabel();
+                            this.activeLabel = labelObj;
+                        },
+                        this
+                    );
                 }
             };
             (interactable.onInteractorTriggerStart as any).add(handler as any);
@@ -70,11 +79,7 @@ export class toggleMode extends BaseScriptComponent {
     // Left-hand pinch: hide ring, show staff, place a chord
     private handleLeftHandLabelPinch(label: SceneObject) {
         const chordName = (label as any).chord as string;
-
-        // Compute slots and wrap index by slot count
-        const slots: vec3[] = ((this.staffContainer as any).slotPositions || []) as vec3[];
-        const totalSlots = slots.length > 0 ? slots.length : 2;
-        const currentSlot = ((global as any).nextSlotIndex ?? 0) % totalSlots;
+        const slotObjects = (this.staffContainer as any).slotObjects as SceneObject[];
 
         // Switch to staff mode
         this.ringContainer.enabled = false;
@@ -86,26 +91,25 @@ export class toggleMode extends BaseScriptComponent {
         this.destroyActiveLabel();
         this.highlightSelectedLabel(label);
 
-        // Spawn chord notes on the staff
-        const notes: string[] | undefined = (chordNotes as any)[chordName];
-        const slotPos = slots[currentSlot];
-        const notePre = (global as any).notePre as any;
-        const textPre = (global as any).chordTextPre as any;
+        const notes: string[] = (chordNotes as any)[chordName];   
+        // Get slot position from slot object's transform
+        const slotObj = slotObjects[this.nextSlotIndex];
+        const slotPos = slotObj.getTransform().getLocalPosition();
 
         // Track and clear existing chord in this slot
-        (global as any).slotChords = (global as any).slotChords || {};
-        const existingChord = (global as any).slotChords[currentSlot] as SceneObject | undefined;
+        const existingChord = this.slotChords[this.nextSlotIndex] as SceneObject;
         if (existingChord) {
             existingChord.destroy();
         }
 
-        if (notes && slotPos && notePre && textPre) {
-            const chordObj = spawnChord(this.staffContainer, notePre, textPre, notes, chordName, slotPos);
-            (global as any).slotChords[currentSlot] = chordObj;
-        }
+        // Spawn the chord on the staff
+        const chordObj = spawnChord(this.staffContainer, (global as any).notePre, (global as any).TEXTPREFAB, notes, chordName, slotPos);
+        this.slotChords[this.nextSlotIndex] = chordObj;
+        // Store chord name for later retrieval
+        (chordObj as any).chordName = chordName;
 
         // Advance slot index and remember last chord
-        (global as any).nextSlotIndex = (currentSlot + 1) % totalSlots;
+        this.nextSlotIndex = (this.nextSlotIndex + 1) % slotObjects.length;
         this.lastChordName = chordName;
     }
 
@@ -130,7 +134,7 @@ export class toggleMode extends BaseScriptComponent {
             (text3D as any).originalMaterial = text3D.mainMaterial;
         }
 
-        const highlightMat = this.highlightMaterial || (global as any).highlightMaterial || null;
+        const highlightMat = this.highlightMaterial;
         text3D.mainMaterial = highlightMat;
 
         this.prevSelected = label;

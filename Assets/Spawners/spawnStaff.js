@@ -1,6 +1,5 @@
 function createSlots(root, numSlots){
     const slotSpacing = global.BARLENGTH * 0.25;
-    root.slotObjects = [];
 
     for (let i = 0; i < numSlots; i++) {
         const sign = i % 2 === 0 ? -1 : 1;
@@ -39,7 +38,9 @@ function spawn(staffPre, linePre, fwdDist, verDist, numSlots) {
     }
 
     // create slot objects
+    staffRoot.slotObjects = [];
     createSlots(staffRoot, numSlots)
+
     staffRoot.enabled = false;
     return staffRoot;
 }

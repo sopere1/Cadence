@@ -41,4 +41,5 @@ export function ensureInteractableAndCollider(obj: SceneObject, colliderSize: ve
     shape.size = colliderSize;
     collider.shape = shape;
     collider.enabled = true;
+    collider.debugDrawEnabled = true
 }

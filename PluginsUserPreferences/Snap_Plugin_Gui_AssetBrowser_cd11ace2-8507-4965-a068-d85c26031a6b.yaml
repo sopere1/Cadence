@@ -1,7 +1,7 @@
 CollapsedEntities:
   type: stringset
   value:
-    size: 609
+    size: 607
     values:
       - ""
       - Camera
@@ -137,7 +137,6 @@ CollapsedEntities:
       - Constants/chordMap.js
       - Constants/labelConfig.js
       - Constants/prompts.js
-      - Control Components
       - Control Components/main.js
       - Gesture Handler Components/rightLabelPinch.ts
       - Gesture Handler Components/toggleMode.ts
@@ -192,7 +191,6 @@ CollapsedEntities:
       - Prefabs/bridge_cylinder_open.glb
       - Prefabs/chord_label.prefab
       - Prefabs/container.prefab
-      - Spawners
       - Spawners/spawnChord.js
       - Spawners/spawnLabels.js
       - Spawners/spawnStaff.js
