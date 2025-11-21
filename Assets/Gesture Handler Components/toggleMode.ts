@@ -2,10 +2,10 @@ import { Interactable } from '../SpectaclesInteractionKit.lspkg/Components/Inter
 import { InteractorEvent } from '../SpectaclesInteractionKit.lspkg/Core/Interactor/InteractorEvent';
 import { InteractorInputType } from '../SpectaclesInteractionKit.lspkg/Core/Interactor/Interactor';
 import { SIK } from '../SpectaclesInteractionKit.lspkg/SIK';
+import {handleRightLabelPinch } from './rightLabelPinch'
 import { setCollidersEnabled, ensureInteractableAndCollider } from '../Utils/setColliders';
 const { chordNotes } = require('../Constants/chordMap.js');
 const spawnChord = require('../Spawners/spawnChord');
-const explainChordTransition = require('../Utils/gptExplain.js');
 
 @component
 export class toggleMode extends BaseScriptComponent {
@@ -43,7 +43,7 @@ export class toggleMode extends BaseScriptComponent {
                 if (inputType === InteractorInputType.LeftHand) {
                     this.handleLeftHandLabelPinch(label);
                 } else if (inputType === InteractorInputType.RightHand) {
-                    this.handleRightHandLabelPinch(label, audioComponent);
+                    handleRightLabelPinch(label, audioComponent, this.lastChordName);
                 }
             };
             (interactable.onInteractorTriggerStart as any).add(handler as any);
@@ -117,40 +117,6 @@ export class toggleMode extends BaseScriptComponent {
         text3D.mainMaterial = highlightMat;
 
         this.prevSelected = label;
-    }
-
-    // Right-hand pinch: play audio and show GPT explanation
-    private handleRightHandLabelPinch(label: SceneObject, audioComponent: any) {
-        const chordName = (label as any).chord as string;
-        audioComponent.play(1);
-
-        explainChordTransition(this.lastChordName, chordName, (response: string | null) => {
-            this.destroyActiveLabel();
-            this.spawnGPTLabel(label, response);
-        });
-    }
-
-    private spawnGPTLabel(label: SceneObject, response: string) {
-        const evt = this.createEvent('DelayedCallbackEvent');
-        evt.bind(() => {
-            const prefab = (global as any).TEXTPREFAB as any;
-            const labelObj = prefab ? prefab.instantiate(label) : global.scene.createSceneObject('GPT_Label');
-            if (!prefab) {
-                labelObj.setParent(label);
-            }
-
-            const text3D = labelObj.getComponent('Component.Text3D') as any;
-            if (text3D) {
-                text3D.text = response;
-                text3D.size = 400;
-            }
-            this.activeLabel = labelObj;
-
-            const t = labelObj.getTransform();
-            t.setLocalPosition(new vec3(0, 0.65, 0));
-            t.setLocalScale(new vec3(0.01, 0.01, 0.01));
-        });
-        evt.reset(0);
     }
 
     // Left-hand pinch down anywhere: toggle from staff back to ring mode

@@ -1,6 +1,6 @@
 // This script calls GPT with a simple prompt and prints the result
-
 import { requestGPTCompletion } from './customGPT';
+const {template} = require('../Constants/prompts.js');
 
 @component
 export class TestCustom extends BaseScriptComponent {
@@ -16,20 +16,26 @@ export class TestCustom extends BaseScriptComponent {
     }
 
     private runTest() {
-        print("[TestCustom] Starting test...");
+        const prompt = template(
+            "C major",
+            "Cmaj, Dmin, Emin, Fmaj, Gmaj, Amin, Bdim"
+        );
 
-        // Create the payload with our test prompt
+        // Create the payload using the imported prompt
         var payload = {
             messages: [
                 {
                     role: "user",
-                    content: "return the text hello and nothing else"
+                    content: prompt
                 }
             ],
             temperature: 0,
-            max_tokens: 50
+            max_tokens: 2000
         };
 
+        print("[TestCustom] Calling requestGPTCompletion...");
+
+        // Call the imported function - function signature is: (authorizationHeader, payload, onSuccess, onError)
         requestGPTCompletion(
             this.apiKey,
             payload,

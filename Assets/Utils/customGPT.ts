@@ -11,7 +11,7 @@ interface AzureOpenAIResponse {
 const BASE_URL = "https://cadence-instance.openai.azure.com";
 const ENDPOINT = "/openai/deployments/gpt-4.1-mini/chat/completions?api-version=2024-02-15-preview";
 
-// Requests Azure GPT resource with parameters in payload
+// Calls Azure ChatGPT resource with parameters in payload
 export function requestGPTCompletion(
     authorizationHeader: string,
     payload: any,
@@ -37,7 +37,6 @@ export function requestGPTCompletion(
         .then((response) => response.json())
         .then((data) => {
             var openAIResponse = data as AzureOpenAIResponse;
-
             if (openAIResponse.choices && openAIResponse.choices.length > 0) {
                 if (onSuccess) {
                     onSuccess(data);

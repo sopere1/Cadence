@@ -1,8 +1,9 @@
 CollapsedEntities:
   type: stringset
   value:
-    size: 467
+    size: 609
     values:
+      - ""
       - Camera
       - ChatGPT
       - ChatGPT/ChatGPT Helper__PLACE_IN_SCENE.prefab
@@ -11,19 +12,160 @@ CollapsedEntities:
       - ChatGPT/Scripts/ChatGPT Helper.lsc
       - ChatGPT/package.native
       - Chord Audio Files
+      - "Chord Audio Files/A#7.wav"
+      - "Chord Audio Files/A#add9.wav"
+      - "Chord Audio Files/A#aug.wav"
+      - "Chord Audio Files/A#dim.wav"
+      - "Chord Audio Files/A#maj.wav"
+      - "Chord Audio Files/A#maj7.wav"
+      - "Chord Audio Files/A#min.wav"
+      - "Chord Audio Files/A#min7.wav"
+      - "Chord Audio Files/A#sus2.wav"
+      - "Chord Audio Files/A#sus4.wav"
       - Chord Audio Files/A7.wav
+      - Chord Audio Files/Aadd9.wav
+      - Chord Audio Files/Aaug.wav
+      - Chord Audio Files/Adim.wav
+      - Chord Audio Files/Amaj.wav
+      - Chord Audio Files/Amaj7.wav
+      - Chord Audio Files/Amin.wav
+      - Chord Audio Files/Amin7.wav
+      - Chord Audio Files/Asus2.wav
+      - Chord Audio Files/Asus4.wav
+      - Chord Audio Files/B7.wav
+      - Chord Audio Files/Badd9.wav
+      - Chord Audio Files/Baug.wav
       - Chord Audio Files/Bdim.wav
+      - Chord Audio Files/Bmaj.wav
+      - Chord Audio Files/Bmaj7.wav
+      - Chord Audio Files/Bmin.wav
+      - Chord Audio Files/Bmin7.wav
+      - Chord Audio Files/Bsus2.wav
+      - Chord Audio Files/Bsus4.wav
+      - "Chord Audio Files/C#7.wav"
+      - "Chord Audio Files/C#add9.wav"
+      - "Chord Audio Files/C#aug.wav"
+      - "Chord Audio Files/C#dim.wav"
+      - "Chord Audio Files/C#maj.wav"
+      - "Chord Audio Files/C#maj7.wav"
+      - "Chord Audio Files/C#min.wav"
+      - "Chord Audio Files/C#min7.wav"
+      - "Chord Audio Files/C#sus2.wav"
+      - "Chord Audio Files/C#sus4.wav"
+      - Chord Audio Files/C7.wav
+      - Chord Audio Files/Cadd9.wav
+      - Chord Audio Files/Caug.wav
+      - Chord Audio Files/Cdim.wav
       - Chord Audio Files/Cmaj.wav
+      - Chord Audio Files/Cmaj7.wav
+      - Chord Audio Files/Cmin.wav
+      - Chord Audio Files/Cmin7.wav
+      - Chord Audio Files/Csus2.wav
+      - Chord Audio Files/Csus4.wav
+      - "Chord Audio Files/D#7.wav"
+      - "Chord Audio Files/D#add9.wav"
+      - "Chord Audio Files/D#aug.wav"
+      - "Chord Audio Files/D#dim.wav"
+      - "Chord Audio Files/D#maj.wav"
+      - "Chord Audio Files/D#maj7.wav"
+      - "Chord Audio Files/D#min.wav"
+      - "Chord Audio Files/D#min7.wav"
+      - "Chord Audio Files/D#sus2.wav"
+      - "Chord Audio Files/D#sus4.wav"
+      - Chord Audio Files/D7.wav
+      - Chord Audio Files/Dadd9.wav
+      - Chord Audio Files/Daug.wav
+      - Chord Audio Files/Ddim.wav
+      - Chord Audio Files/Dmaj.wav
+      - Chord Audio Files/Dmaj7.wav
+      - Chord Audio Files/Dmin.wav
+      - Chord Audio Files/Dmin7.wav
+      - Chord Audio Files/Dsus2.wav
+      - Chord Audio Files/Dsus4.wav
       - Chord Audio Files/E7.wav
+      - Chord Audio Files/Eadd9.wav
+      - Chord Audio Files/Eaug.wav
+      - Chord Audio Files/Edim.wav
+      - Chord Audio Files/Emaj.wav
+      - Chord Audio Files/Emaj7.wav
+      - Chord Audio Files/Emin.wav
+      - Chord Audio Files/Emin7.wav
+      - Chord Audio Files/Esus2.wav
+      - Chord Audio Files/Esus4.wav
+      - "Chord Audio Files/F#7.wav"
+      - "Chord Audio Files/F#add9.wav"
+      - "Chord Audio Files/F#aug.wav"
+      - "Chord Audio Files/F#dim.wav"
+      - "Chord Audio Files/F#maj.wav"
+      - "Chord Audio Files/F#maj7.wav"
+      - "Chord Audio Files/F#min.wav"
+      - "Chord Audio Files/F#min7.wav"
+      - "Chord Audio Files/F#sus2.wav"
+      - "Chord Audio Files/F#sus4.wav"
+      - Chord Audio Files/F7.wav
+      - Chord Audio Files/Fadd9.wav
+      - Chord Audio Files/Faug.wav
+      - Chord Audio Files/Fdim.wav
+      - Chord Audio Files/Fmaj.wav
+      - Chord Audio Files/Fmaj7.wav
+      - Chord Audio Files/Fmin.wav
+      - Chord Audio Files/Fmin7.wav
+      - Chord Audio Files/Fsus2.wav
+      - Chord Audio Files/Fsus4.wav
+      - "Chord Audio Files/G#7.wav"
+      - "Chord Audio Files/G#add9.wav"
+      - "Chord Audio Files/G#aug.wav"
+      - "Chord Audio Files/G#dim.wav"
+      - "Chord Audio Files/G#maj.wav"
+      - "Chord Audio Files/G#maj7.wav"
+      - "Chord Audio Files/G#min.wav"
+      - "Chord Audio Files/G#min7.wav"
+      - "Chord Audio Files/G#sus2.wav"
+      - "Chord Audio Files/G#sus4.wav"
       - Chord Audio Files/G7.wav
+      - Chord Audio Files/Gadd9.wav
+      - Chord Audio Files/Gaug.wav
+      - Chord Audio Files/Gdim.wav
+      - Chord Audio Files/Gmaj.wav
+      - Chord Audio Files/Gmaj7.wav
+      - Chord Audio Files/Gmin.wav
+      - Chord Audio Files/Gmin7.wav
+      - Chord Audio Files/Gsus2.wav
+      - Chord Audio Files/Gsus4.wav
       - Constants
       - Constants/chordIndex.js
       - Constants/chordMap.js
       - Constants/labelConfig.js
+      - Constants/prompts.js
       - Control Components
       - Control Components/main.js
-      - Gesture Handler Components
+      - Gesture Handler Components/rightLabelPinch.ts
       - Gesture Handler Components/toggleMode.ts
+      - LSTween.lspkg
+      - LSTween.lspkg/Examples
+      - LSTween.lspkg/Examples/Assets
+      - LSTween.lspkg/Examples/Assets/Box.mesh
+      - LSTween.lspkg/Examples/Assets/Simple Diffuse.mat
+      - LSTween.lspkg/Examples/Assets/Simple Diffuse.ss_graph
+      - LSTween.lspkg/Examples/Assets/Sphere.mesh
+      - LSTween.lspkg/Examples/Example__ADD_TO_SCENE.prefab
+      - LSTween.lspkg/Examples/Scripts
+      - LSTween.lspkg/Examples/Scripts/Example_ChainTween.ts
+      - LSTween.lspkg/Examples/Scripts/Example_RawTween.ts
+      - LSTween.lspkg/Examples/Scripts/Example_YoyoTween.ts
+      - LSTween.lspkg/LSTween.ts
+      - LSTween.lspkg/RotationInterpolationType.ts
+      - LSTween.lspkg/TweenJS
+      - LSTween.lspkg/TweenJS/Easing.ts
+      - LSTween.lspkg/TweenJS/Group.ts
+      - LSTween.lspkg/TweenJS/Index.ts
+      - LSTween.lspkg/TweenJS/Interpolation.ts
+      - LSTween.lspkg/TweenJS/Now.ts
+      - LSTween.lspkg/TweenJS/Sequence.ts
+      - LSTween.lspkg/TweenJS/Tween.ts
+      - LSTween.lspkg/TweenJS/Version.ts
+      - LSTween.lspkg/TweenJS/mainGroup.ts
+      - LSTween.lspkg/package.native
       - Materials
       - Materials/Bridge.mat
       - Materials/ImageMaterial.mat
