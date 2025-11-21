@@ -1,5 +1,3 @@
-// Helper functions to mitigate interactability issues when toggling
-// between modes
 import { Interactable } from '../SpectaclesInteractionKit.lspkg/Components/Interaction/Interactable/Interactable';
 
 // Set enable to enabled for all children of root
@@ -19,41 +17,28 @@ export function setCollidersEnabled(root: SceneObject, enabled: boolean): void {
     }
 }
 
-// Ensure the label has a valid interactable and collider
-export function ensureInteractableAndCollider(label: SceneObject): void {
-    let interactable = label.getComponent(Interactable.getTypeName() as any) as unknown as Interactable | null;
+// Ensure the object has a valid interactable and collider
+// colliderSize: Optional custom size. If not provided, will try to calculate from Text3D bounding box
+export function ensureInteractableAndCollider(obj: SceneObject, colliderSize: vec3): void {
+    // Setup Interactable component
+    let interactable = obj.getComponent(Interactable.getTypeName() as any) as unknown as Interactable | null;
     if (!interactable) {
-        try {
-            interactable = label.createComponent(Interactable.getTypeName() as any) as unknown as Interactable;
-        } catch (error) {
-            print(`[setColliders] Failed to add Interactable to ${label.name}: ${error}`);
-        }
+        interactable = obj.createComponent(Interactable.getTypeName() as any) as unknown as Interactable;
     }
 
-    if (interactable) {
-        interactable.targetingMode = 3; // Direct/Indirect
-        (interactable as any).useFilteredPinch = false;
-        interactable.allowMultipleInteractors = true;
-        interactable.enabled = true;
-    }
+    interactable.targetingMode = 3;
+    (interactable as any).useFilteredPinch = false;
+    interactable.allowMultipleInteractors = true;
+    interactable.enabled = true;
 
-    const text3D = label.getComponent("Component.Text3D") as any;
-    if (!text3D || !text3D.getBoundingBox) {
-        return;
-    }
-
-    const bb = text3D.getBoundingBox();
-    const w = Math.max(0.01, bb.right - bb.left);
-    const h = Math.max(0.01, bb.top - bb.bottom);
-    const d = 0.02;
-
-    let collider = label.getComponent("Component.ColliderComponent") as ColliderComponent;
+    // Setup Collider component
+    let collider = obj.getComponent("Component.ColliderComponent") as ColliderComponent;
     if (!collider) {
-        collider = label.createComponent("Component.ColliderComponent") as ColliderComponent;
+        collider = obj.createComponent("Component.ColliderComponent") as ColliderComponent;
     }
 
     const shape = Shape.createBoxShape();
-    shape.size = new vec3(w, h, d);
+    shape.size = colliderSize;
     collider.shape = shape;
     collider.enabled = true;
 }

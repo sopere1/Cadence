@@ -1,3 +1,22 @@
+function createSlots(root, numSlots){
+    const slotSpacing = global.BARLENGTH * 0.25;
+    root.slotObjects = [];
+
+    for (let i = 0; i < numSlots; i++) {
+        const sign = i % 2 === 0 ? -1 : 1;
+        const offset = new vec3(sign * slotSpacing, 0, 0);
+
+        const slotObj = global.scene.createSceneObject("Slot_" + i);
+        slotObj.setParent(root);
+        
+        const slotTransform = slotObj.getTransform();
+        slotTransform.setLocalPosition(offset);
+        
+        slotObj.slotIndex = i;
+        root.slotObjects.push(slotObj);
+    }
+}
+
 // Spawns a staff that supports one chord per slot
 function spawn(staffPre, linePre, fwdDist, verDist, numSlots) {
     var staffRoot = staffPre.instantiate(null);
@@ -19,16 +38,8 @@ function spawn(staffPre, linePre, fwdDist, verDist, numSlots) {
         lt.setLocalScale(new vec3(global.BARLENGTH, 1, 1));
     }
 
-    // define slot offsets relative to center
-    const slotSpacing = global.BARLENGTH * 0.25;
-    staffRoot.slotPositions = [];
-
-    for (let i = 0; i < numSlots; i++) {
-        const sign = i % 2 === 0 ? -1 : 1;
-        const offset = new vec3(sign * slotSpacing, 0, 0);
-        staffRoot.slotPositions.push(offset);
-    }
-
+    // create slot objects
+    createSlots(staffRoot, numSlots)
     staffRoot.enabled = false;
     return staffRoot;
 }

@@ -13,6 +13,7 @@ export class toggleMode extends BaseScriptComponent {
     highlightMaterial: Material;
 
     private ringContainer: SceneObject = (global as any).ringContainer as SceneObject;
+    private labels: SceneObject[] = this.ringContainer.children;
     private staffContainer: SceneObject = (global as any).staffContainer as SceneObject;
 
     private prevSelected: SceneObject | null = null;
@@ -28,12 +29,28 @@ export class toggleMode extends BaseScriptComponent {
         this.setupHandModeToggle();
     }
 
+    private calcColliderSize(text3D: any){
+        const bb = text3D.getBoundingBox();
+        const w = Math.max(0.01, bb.right - bb.left);
+        const h = Math.max(0.01, bb.top - bb.bottom);
+        const d = 0.02;
+        return new vec3(w, h, d);
+    }
+
+    private ensureLabelInteractive(label: any){
+        const text3D = label.getComponent("Component.Text3D") as any;
+        if (!text3D || !text3D.getBoundingBox) {
+            return;
+        }
+        const size = this.calcColliderSize(text3D)
+        ensureInteractableAndCollider(label, size);
+    }
+
     // Setup left and right-hand pinch on each label
     private setupLabelInteractions() {
-        const labels = this.ringContainer.children;
-        for (let i = 0; i < labels.length; i++) {
-            const label = labels[i];
-            ensureInteractableAndCollider(label);
+        for (let i = 0; i < this.labels.length; i++) {
+            const label = this.labels[i];
+            this.ensureLabelInteractive(label)
 
             const interactable = label.getComponent(Interactable.getTypeName() as any) as any;
             const audioComponent = label.getComponent('Component.AudioComponent');
@@ -137,14 +154,10 @@ export class toggleMode extends BaseScriptComponent {
     private toggleToRingMode() {
         this.staffContainer.enabled = false;
         setCollidersEnabled(this.staffContainer, false);
+        this.ringContainer.enabled = true;
 
-        if (this.ringContainer) {
-            this.ringContainer.enabled = true;
-
-            const labelsBack = this.ringContainer.getChildrenCount() ? this.ringContainer.children : [];
-            for (let i = 0; i < labelsBack.length; i++) {
-                ensureInteractableAndCollider(labelsBack[i]);
-            }
+        for (let i = 0; i < this.labels.length; i++) {
+            this.ensureLabelInteractive(this.labels[i])
         }
     }
 }
