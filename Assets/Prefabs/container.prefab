@@ -1,13 +1,13 @@
-- !<ObjectPrefab/ab58e8ed-a27e-4b08-8f6d-a0d8b0deb584>
+- !<ObjectPrefab/26cd6000-07de-46b3-8211-fad55411bf8d>
   PackagePath: ""
   objects:
-    - !<own> 7d15c7a8-2d51-4881-8c18-4a38f20b90dd
+    - !<own> 2cdb6c98-6890-4f87-a417-59c389fe9cf8
   LazyLoading: false
   RetainAssets: true
-- !<SceneObject/7d15c7a8-2d51-4881-8c18-4a38f20b90dd>
+- !<SceneObject/2cdb6c98-6890-4f87-a417-59c389fe9cf8>
   PrefabRemaps:
-    - 7d15c7a8-2d51-4881-8c18-4a38f20b90dd: 7d15c7a8-2d51-4881-73e7-b5c70df46f22
-    - f10bedbc-71de-4365-9d35-aacb131a0887: f10bedbc-71de-4365-62ca-5534ece5f778
+    - 2cdb6c98-6890-4f87-a417-59c389fe9cf8: 2cdb6c98-6890-4f87-5be8-a63c76016307
+    - 76f3225c-a6e8-4c58-890c-fcfeb2dc9343: 76f3225c-a6e8-4c58-76f3-03014d236cbc
   Name: container
   Enabled: true
   Layers: 1
@@ -19,8 +19,8 @@
   Children:
     []
   Components:
-    - !<own> f10bedbc-71de-4365-9d35-aacb131a0887
-- !<ScriptComponent/f10bedbc-71de-4365-9d35-aacb131a0887>
+    - !<own> 76f3225c-a6e8-4c58-890c-fcfeb2dc9343
+- !<ScriptComponent/76f3225c-a6e8-4c58-890c-fcfeb2dc9343>
   PrefabRemaps:
     []
   Name: toggleMode
@@ -33,6 +33,7 @@
   ScriptInputs:
     "":
       highlightMaterial: !<reference.Material> 1f6acc79-0db1-4a69-9b6e-d45073e707ad
+      playButtonPrefab: !<reference.ObjectPrefab> bfe14a66-65e3-4a10-9217-9dc039a931b0
   ScriptTypes:
     "":
       {}

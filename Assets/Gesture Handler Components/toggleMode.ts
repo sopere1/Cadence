@@ -2,6 +2,8 @@ import { Interactable } from '../SpectaclesInteractionKit.lspkg/Components/Inter
 import { InteractorEvent } from '../SpectaclesInteractionKit.lspkg/Core/Interactor/InteractorEvent';
 import { InteractorInputType } from '../SpectaclesInteractionKit.lspkg/Core/Interactor/Interactor';
 import { SIK } from '../SpectaclesInteractionKit.lspkg/SIK';
+import { PlayButton } from './playButton';
+import { ChordProgressionPlayer } from '../Utils/progressionPlayer';
 import { handleRightLabelPinch } from './rightLabelPinch'
 import { setCollidersEnabled, ensureInteractableAndCollider } from '../Utils/setColliders';
 const { chordNotes } = require('../Constants/chordMap.js');
@@ -11,10 +13,15 @@ const spawnChord = require('../Spawners/spawnChord');
 export class toggleMode extends BaseScriptComponent {
     @input('Asset.Material')
     highlightMaterial: Material;
+    @input('Asset.ObjectPrefab')
+    playButtonPrefab: ObjectPrefab;
 
     private ringContainer: SceneObject = (global as any).ringContainer as SceneObject;
     private labels: SceneObject[] = this.ringContainer.children;
     private staffContainer: SceneObject = (global as any).staffContainer as SceneObject;
+
+    private playButton: PlayButton | null = null;
+    private progressionPlayer: ChordProgressionPlayer | null = null;
 
     private prevSelected: SceneObject | null = null;
     private activeLabel: SceneObject | null = null;
@@ -26,9 +33,25 @@ export class toggleMode extends BaseScriptComponent {
     private readonly toggleCooldown = 0.3;
 
     onAwake() {
+        // setup chord labels and toggle handlers
         setCollidersEnabled(this.staffContainer, false);
         this.setupLabelInteractions();
         this.setupHandModeToggle();
+        
+        // initialize play button
+        this.playButton = new PlayButton(this.staffContainer, this.playButtonPrefab);
+        this.playButton.create();
+        this.playButton.setOnPlayCallback(() => {
+            this.handlePlayProgression();
+        });
+        
+        // initialize progression player
+        this.progressionPlayer = new ChordProgressionPlayer(this);
+        this.progressionPlayer.setOnCompleteCallback(() => {
+            if (this.playButton) {
+                this.playButton.stopAnimation();
+            }
+        });
     }
 
     // Helper to ensure a chord label is interactive
@@ -85,6 +108,7 @@ export class toggleMode extends BaseScriptComponent {
         this.ringContainer.enabled = false;
         this.staffContainer.enabled = true;
         setCollidersEnabled(this.staffContainer, true);
+        this.playButton.show();
 
         // Update selection visuals
         this.restorePreviousSelectionMaterial();
@@ -140,6 +164,34 @@ export class toggleMode extends BaseScriptComponent {
         this.prevSelected = label;
     }
 
+    // Handle playing the entire chord progression
+    private handlePlayProgression(): void {
+        if (this.playButton.isCurrentlyPlaying()) {
+            return;
+        }
+        // Find the label each chord to get its audio
+        const chordsToPlay: Array<{chordName: string, audioComponent: AudioComponent}> = [];
+        for (let i = 0; i < this.slotChords.length; i++) {
+            const chordObj = this.slotChords[i] as SceneObject;
+            if (!chordObj) continue;
+            
+            const chordName = (chordObj as any).chordName as string;
+            if (!chordName) continue;
+            
+            const label = this.labels.find((l: SceneObject) => (l as any).chord === chordName);
+            if (label) {
+                const audioComponent = label.getComponent('Component.AudioComponent') as AudioComponent;
+                if (audioComponent && audioComponent.audioTrack) {
+                    chordsToPlay.push({ chordName, audioComponent });
+                }
+            }
+        }
+        
+        // start animation and play progression
+        this.playButton.startAnimation(this);
+        this.progressionPlayer.playSequence(chordsToPlay, 2.0);
+    }
+
     // Left-hand pinch down anywhere: toggle from staff back to ring mode
     private setupHandModeToggle() {
         const handInput = SIK.HandInputData;
@@ -159,6 +211,7 @@ export class toggleMode extends BaseScriptComponent {
         this.staffContainer.enabled = false;
         setCollidersEnabled(this.staffContainer, false);
         this.ringContainer.enabled = true;
+        this.playButton.hide();
 
         for (let i = 0; i < this.labels.length; i++) {
             this.ensureLabelInteractive(this.labels[i])
