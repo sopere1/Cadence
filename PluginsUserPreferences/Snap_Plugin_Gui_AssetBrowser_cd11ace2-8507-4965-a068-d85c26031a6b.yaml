@@ -1,7 +1,7 @@
 CollapsedEntities:
   type: stringset
   value:
-    size: 658
+    size: 659
     values:
       - ""
       - Camera
@@ -133,7 +133,6 @@ CollapsedEntities:
       - Constants/prompts.js
       - Control Components
       - Control Components/main.js
-      - Gesture Handler Components
       - Gesture Handler Components/playButton.ts
       - Gesture Handler Components/rightLabelPinch.ts
       - Gesture Handler Components/toggleMode.ts
@@ -231,6 +230,7 @@ CollapsedEntities:
       - Prefabs/Meshes
       - Prefabs/Meshes/Cylinder.mesh
       - Prefabs/Meshes/Plane.mesh
+      - Prefabs/Meshes/Scene.scene
       - Prefabs/Meshes/Sphere.mesh
       - Prefabs/Note.prefab
       - Prefabs/PlayButton.prefab
@@ -238,6 +238,7 @@ CollapsedEntities:
       - Prefabs/Staff.prefab
       - Prefabs/bridge_cylinder_open.glb
       - Sound Manager.lsc
+      - Spawners
       - Spawners/spawnChord.js
       - Spawners/spawnLabels.js
       - Spawners/spawnStaff.js

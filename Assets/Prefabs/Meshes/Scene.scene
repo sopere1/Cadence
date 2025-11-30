@@ -844,11 +844,11 @@
       linePre: !<reference.ObjectPrefab> c5d55847-1be9-4cdd-8644-ee91f16b35d5
       notePre: !<reference.ObjectPrefab> f37986e5-374a-438b-8dae-d459d53b4913
       staffFwdDist: !<float> 500.000000
-      staffVerDist: !<float> 20.000000
-      barLength: !<float> 35.000000
+      staffVerDist: !<float> 30.000000
+      barLength: !<float> 30.000000
       barSpace: !<float> 5.000000
       staffScale: !<float> 10.000000
-      numSlots: !<float> 5.000000
+      numSlots: !<float> 2.000000
       containerPrefab: !<reference.ObjectPrefab> 1bc5ce35-b5ac-4db4-bd56-8a04177d0421
       textMat: !<reference.Material> 4140d5d4-5a0f-47e7-b9d9-71371308b0b9
   ScriptTypes:
