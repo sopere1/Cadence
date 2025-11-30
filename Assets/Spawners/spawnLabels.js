@@ -73,7 +73,7 @@ function parseGPTResponse(responseText) {
     const chords = [];
     const lines = responseText.split('\n');
     let headerFound = false;
-    
+
     for (let i = 0; i < lines.length; i++) {
         const line = lines[i].trim();
         // look for table header
@@ -94,7 +94,7 @@ function parseGPTResponse(responseText) {
                 const x = parseFloat(parts[2]);
                 const y = parseFloat(parts[3]);
                 const z = parseFloat(parts[4]);
-                
+
                 if (!isNaN(x) && !isNaN(y) && !isNaN(z) && chordName) {
                     chords.push({
                         name: chordName,
@@ -143,38 +143,36 @@ function spawn(ringPre, labelPre, occluderMat, textMaterial, chords, fwdDist, ve
             if (response && response.choices && response.choices.length > 0) {
                 const responseText = response.choices[0].message.content;
                 const chordData = parseGPTResponse(responseText);
-                
+
                 // spawn labels dynamically from GPT response
                 for (let i = 0; i < chordData.length; i++) {
                     const chord = chordData[i];
-                    print(chord)
                     const pos = chord.position;
-                    
+
                     // scale positions to fit the ring radius
                     const scaledPos = new vec3(
                         pos.x * (global.RINGRADIUS),
                         pos.z * (global.RINGRADIUS),
                         pos.y * (global.RINGRADIUS)
                     );
-                    
+
                     const label = createLabel(labelPre, container, labelMap, scaledPos, chord.name, chords, textMaterial);
                     const text3D = label.getComponent("Component.Text3D");
                     // add occluder behind text to help with depth sorting
                     addOccluder(label, text3D, 0.02, occluderMat);
                 }
-                
+
                 // store chord data for later bridge generation
                 container.chordData = chordData;
                 container.labelMap = labelMap;
-            
+
                 // Notify caller when labels have been created
                 if (typeof onReady === "function") {
-                    try { 
-                        onReady(container); 
-                        print('backback')
+                    try {
+                        onReady(container);
                     }
-                    catch (err) { 
-                        print("Error in callback: " + err); 
+                    catch (err) {
+                        print("Error in callback: " + err);
                     }
                 }
             } else {

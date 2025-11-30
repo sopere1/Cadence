@@ -1,10 +1,19 @@
 function createSlots(root, numSlots) {
-    const slotSpacing = global.BARLENGTH * 0.25;
-
+    // Add padding to keep slots away from edges
+    const edgePadding = global.BARLENGTH * 0.08;
+    const usableWidth = global.BARLENGTH - (2 * edgePadding);
+    
+    // Calculate spacing to fit all slots within usable width
+    const adjustedSlotSpacing = numSlots > 1 ? usableWidth / (numSlots - 1) : 0;
+    
+    // Calculate starting position to center slots within usable area
+    const totalWidth = (numSlots - 1) * adjustedSlotSpacing;
+    const startX = -totalWidth / 2;
+    
     for (let i = 0; i < numSlots; i++) {
-        // slots are placed symmetrically from center
-        const sign = i % 2 === 0 ? -1 : 1;
-        const offset = new vec3(sign * slotSpacing, 0, 0);
+        // Position slots in a sequence from left to right, inset from edges
+        const xPos = startX + (i * adjustedSlotSpacing);
+        const offset = new vec3(xPos, 0, 0);
 
         const slotObj = global.scene.createSceneObject("Slot_" + i);
         slotObj.setParent(root);

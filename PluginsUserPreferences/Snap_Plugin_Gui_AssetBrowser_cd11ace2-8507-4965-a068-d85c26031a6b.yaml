@@ -1,7 +1,7 @@
 CollapsedEntities:
   type: stringset
   value:
-    size: 659
+    size: 658
     values:
       - ""
       - Camera
@@ -238,7 +238,6 @@ CollapsedEntities:
       - Prefabs/Staff.prefab
       - Prefabs/bridge_cylinder_open.glb
       - Sound Manager.lsc
-      - Spawners
       - Spawners/spawnChord.js
       - Spawners/spawnLabels.js
       - Spawners/spawnStaff.js
