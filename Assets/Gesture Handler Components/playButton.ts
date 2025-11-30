@@ -28,18 +28,18 @@ export class PlayButton {
         const buttonTransform = buttonObj.getTransform();
         
         // Calculate staff dimensions
-        const staffRight = (global as any).BARLENGTH * 0.5;  // Right edge of staff
-        const staffBottom = -(global as any).BARSPACE * 2;    // Bottom line of staff (line 0 is at -2 * BARSPACE)
+        const staffRight = (global as any).BARLENGTH * 0.5;
+        const staffBottom = -(global as any).BARSPACE * 2;
         
         // Button size (scaled)
         const buttonScale = 0.4;
-        const buttonSize = 15 * buttonScale; // Assuming button is 15 units, scaled to 0.4
+        const buttonSize = 15 * buttonScale;
         
         // Position so button's bottom-right corner aligns with staff's bottom-right
         const buttonOffset = new vec3(
-            staffRight + buttonSize * 0.5,  // Right edge + half button width
-            staffBottom + buttonSize * 0.5,  // Bottom line + half button height
-            0                                 // Same plane
+            staffRight + buttonSize * 0.5,
+            staffBottom + buttonSize * 0.5,
+            0
         );
         buttonTransform.setLocalPosition(buttonOffset);
         
@@ -53,12 +53,6 @@ export class PlayButton {
         if (this.renderVisual && this.renderVisual.mainMaterial) {
             this.originalColor = new vec4(0.7, 0.7, 0.7, 1.0);
             this.renderVisual.mainMaterial.mainPass.baseColor = this.originalColor;
-        }
-        
-        // Disable LookAtComponent if it's causing fuzzy look
-        const lookAt = buttonObj.getComponent("Component.LookAtComponent");
-        if (lookAt) {
-            lookAt.enabled = false;
         }
         
         // Ensure interactivity

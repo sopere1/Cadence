@@ -1,9 +1,9 @@
-// This script calls GPT with the generateCrds prompt and prints the result
-import { requestGPTCompletion } from './customGPT';
+// This script tests Claude with the generateCrds prompt and prints the result
+import { requestGPTCompletion } from './claude';
 const { generateCrds } = require('../Constants/prompts.js');
 
 @component
-export class TestCustom extends BaseScriptComponent {
+export class TestClaude extends BaseScriptComponent {
     @input("string") apiKey: string = "";
     private internetModule: InternetModule = require("LensStudio:InternetModule");
 
@@ -16,10 +16,10 @@ export class TestCustom extends BaseScriptComponent {
     }
 
     private runTest() {
-        // Use generateCrds prompt
+        // Use generateCrds with "C major"
         const prompt = generateCrds("C major");
 
-        // Create the payload using the imported prompt
+        // Create the payload
         var payload = {
             messages: [
                 {
@@ -31,24 +31,28 @@ export class TestCustom extends BaseScriptComponent {
             max_tokens: 2000
         };
 
-        print("[TestCustom] Calling requestGPTCompletion with generateCrds prompt...");
+        print("[TestClaude] ===== Starting Claude Test =====");
+        print("[TestClaude] API Key: " + (this.apiKey ? "Provided" : "MISSING - Please set in Inspector!"));
+        print("[TestClaude] Using generateCrds prompt for C major");
+        print("[TestClaude] Prompt length: " + prompt.length + " characters");
 
-        // Call the imported function - function signature is: (authorizationHeader, payload, onSuccess, onError)
+        // Call Claude
         requestGPTCompletion(
             this.apiKey,
             payload,
             (response: any) => {
-                print("[TestCustom] ===== SUCCESS =====");
+                print("[TestClaude] ===== SUCCESS =====");
                 if (response && response.choices && response.choices.length > 0) {
                     var message = response.choices[0].message.content;
-                    print("[TestCustom] GPT Response: " + message);
+                    print("[TestClaude] Claude Response: " + message);
                 } else {
-                    print("[TestCustom] Unexpected response format: " + JSON.stringify(response));
+                    print("[TestClaude] Unexpected response format:");
+                    print("[TestClaude] " + JSON.stringify(response));
                 }
             },
             (error: any) => {
-                print("[TestCustom] ===== FAILED =====");
-                print("[TestCustom] Error: " + error);
+                print("[TestClaude] ===== FAILED =====");
+                print("[TestClaude] Error: " + error);
             }
         );
     }
