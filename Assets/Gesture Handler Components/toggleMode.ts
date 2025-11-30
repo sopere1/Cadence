@@ -49,7 +49,7 @@ export class toggleMode extends BaseScriptComponent {
         this.progressionPlayer = new ChordProgressionPlayer(this);
         this.progressionPlayer.setOnCompleteCallback(() => {
             if (this.playButton) {
-                this.playButton.stopAnimation();
+                this.playButton.stopAnimation(this);
             }
         });
     }

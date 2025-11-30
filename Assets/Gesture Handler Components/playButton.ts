@@ -10,6 +10,9 @@ export class PlayButton {
     private onPlayCallback: (() => void) | null = null;
     private staffContainer: SceneObject;
     private buttonPrefab: ObjectPrefab;
+    private renderVisual: RenderMeshVisual | null = null;
+    private originalColor: vec4 | null = null;
+    private colorAnimationEvent: SceneEvent | null = null;
 
     constructor(staffContainer: SceneObject, buttonPrefab: ObjectPrefab) {
         this.staffContainer = staffContainer;
@@ -21,7 +24,7 @@ export class PlayButton {
         const buttonObj = this.buttonPrefab.instantiate(this.staffContainer);
         buttonObj.name = "PlayButton";
         
-        // position at top right of staff
+        // Position it
         const buttonTransform = buttonObj.getTransform();
         const buttonOffset = new vec3(
             (global as any).BARLENGTH * 0.5 + 8,
@@ -30,11 +33,21 @@ export class PlayButton {
         );
         buttonTransform.setLocalPosition(buttonOffset);
         
-        // ensure interactivity
+        // Store reference to render visual for color changes
+        this.renderVisual = buttonObj.getComponent("Component.RenderMeshVisual") as RenderMeshVisual;
+        
+        // Store original color and set to gray/white
+        if (this.renderVisual && this.renderVisual.mainMaterial) {
+            // Set initial color to gray
+            this.originalColor = new vec4(0.7, 0.7, 0.7, 1.0); // Gray
+            this.renderVisual.mainMaterial.mainPass.baseColor = this.originalColor;
+        }
+        
+        // Ensure interactivity
         const colliderSize = new vec3(15, 15, 10);
         ensureInteractableAndCollider(buttonObj, colliderSize);
         
-        // set up interaction handler
+        // Set up interaction handler
         const interactable = buttonObj.getComponent(Interactable.getTypeName() as any) as any;
         const handler = (event: InteractorEvent) => {
             const inputType = (event.interactor as any)?.inputType;
@@ -64,6 +77,10 @@ export class PlayButton {
         
         this.isPlaying = true;
         
+        // Change color to yellow
+        this.changeColorToYellow(scriptComponent);
+        
+        // Start rotation animation
         const rotateEvent = scriptComponent.createEvent("UpdateEvent");
         let rotationSpeed = 180;
         let currentRotation = 0;
@@ -88,7 +105,83 @@ export class PlayButton {
         this.animationEvent = rotateEvent;
     }
 
-    stopAnimation(): void {
+    // Animate color change to yellow
+    private changeColorToYellow(scriptComponent: BaseScriptComponent): void {
+        if (!this.renderVisual || !this.renderVisual.mainMaterial) return;
+        
+        const material = this.renderVisual.mainMaterial;
+        const targetColor = new vec4(1.0, 0.84, 0.0, 1.0); // Yellow
+        const startColor = this.originalColor || new vec4(0.7, 0.7, 0.7, 1.0);
+        
+        let colorTime = 0;
+        const colorDuration = 0.3; // 0.3 seconds to transition
+        
+        this.colorAnimationEvent = scriptComponent.createEvent("UpdateEvent");
+        this.colorAnimationEvent.bind(() => {
+            if (!this.isPlaying || !this.renderVisual || !this.renderVisual.mainMaterial) {
+                if (this.colorAnimationEvent) {
+                    this.colorAnimationEvent.enabled = false;
+                }
+                return;
+            }
+            
+            colorTime += getDeltaTime();
+            const t = Math.min(1.0, colorTime / colorDuration);
+            
+            // Smooth interpolation
+            const r = startColor.x + (targetColor.x - startColor.x) * t;
+            const g = startColor.y + (targetColor.y - startColor.y) * t;
+            const b = startColor.z + (targetColor.z - startColor.z) * t;
+            
+            this.renderVisual.mainMaterial.mainPass.baseColor = new vec4(r, g, b, 1.0);
+            
+            if (t >= 1.0) {
+                if (this.colorAnimationEvent) {
+                    this.colorAnimationEvent.enabled = false;
+                }
+            }
+        });
+    }
+
+    // Animate color change back to gray/white
+    private changeColorToGray(scriptComponent: BaseScriptComponent): void {
+        if (!this.renderVisual || !this.renderVisual.mainMaterial) return;
+        
+        const material = this.renderVisual.mainMaterial;
+        const targetColor = this.originalColor || new vec4(0.7, 0.7, 0.7, 1.0); // Gray
+        const startColor = this.renderVisual.mainMaterial.mainPass.baseColor;
+        
+        let colorTime = 0;
+        const colorDuration = 0.3; // 0.3 seconds to transition
+        
+        this.colorAnimationEvent = scriptComponent.createEvent("UpdateEvent");
+        this.colorAnimationEvent.bind(() => {
+            if (this.isPlaying || !this.renderVisual || !this.renderVisual.mainMaterial) {
+                if (this.colorAnimationEvent) {
+                    this.colorAnimationEvent.enabled = false;
+                }
+                return;
+            }
+            
+            colorTime += getDeltaTime();
+            const t = Math.min(1.0, colorTime / colorDuration);
+            
+            // Smooth interpolation
+            const r = startColor.x + (targetColor.x - startColor.x) * t;
+            const g = startColor.y + (targetColor.y - startColor.y) * t;
+            const b = startColor.z + (targetColor.z - startColor.z) * t;
+            
+            this.renderVisual.mainMaterial.mainPass.baseColor = new vec4(r, g, b, 1.0);
+            
+            if (t >= 1.0) {
+                if (this.colorAnimationEvent) {
+                    this.colorAnimationEvent.enabled = false;
+                }
+            }
+        });
+    }
+
+    stopAnimation(scriptComponent: BaseScriptComponent): void {
         this.isPlaying = false;
         
         if (this.animationEvent) {
@@ -96,12 +189,20 @@ export class PlayButton {
             this.animationEvent = null;
         }
         
+        if (this.colorAnimationEvent) {
+            this.colorAnimationEvent.enabled = false;
+            this.colorAnimationEvent = null;
+        }
+        
+        // Change color back to gray
+        this.changeColorToGray(scriptComponent);
+        
+        // Reset rotation
         if (this.buttonObj) {
             this.buttonObj.getTransform().setLocalRotation(quat.angleAxis(0, vec3.forward()));
         }
     }
 
-    // Ensure button visibility/interactivity when toggling the mode
     show(): void {
         if (this.buttonObj) {
             this.buttonObj.enabled = true;
