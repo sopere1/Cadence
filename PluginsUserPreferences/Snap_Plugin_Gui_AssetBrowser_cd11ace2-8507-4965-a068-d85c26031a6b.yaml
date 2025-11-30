@@ -1,7 +1,7 @@
 CollapsedEntities:
   type: stringset
   value:
-    size: 659
+    size: 660
     values:
       - ""
       - Camera
@@ -133,6 +133,7 @@ CollapsedEntities:
       - Constants/prompts.js
       - Control Components
       - Control Components/main.js
+      - Gesture Handler Components
       - Gesture Handler Components/playButton.ts
       - Gesture Handler Components/rightLabelPinch.ts
       - Gesture Handler Components/toggleMode.ts

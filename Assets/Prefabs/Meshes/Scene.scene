@@ -705,6 +705,7 @@
   ScriptAsset: !<reference> 83b76388-2954-4fa2-b123-f3b539ba33fb
   ScriptInputsDefault:
     chordVerDist: true
+    keyGPT: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
