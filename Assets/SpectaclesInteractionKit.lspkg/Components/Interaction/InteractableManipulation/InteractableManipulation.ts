@@ -13,7 +13,9 @@ import {MobileInteractor} from "../../../Core/MobileInteractor/MobileInteractor"
 import WorldCameraFinderProvider from "../../../Providers/CameraProvider/WorldCameraFinderProvider"
 import NativeLogger from "../../../Utils/NativeLogger"
 import StateMachine from "../../../Utils/StateMachine"
+import {SyncKitBridge} from "../../../Utils/SyncKitBridge"
 import {validate} from "../../../Utils/validate"
+import {ContainerFrame} from "../../UI/ContainerFrame/ContainerFrame"
 import {Interactable} from "../Interactable/Interactable"
 
 export type TranslateEventArg = {
@@ -64,6 +66,8 @@ const STRETCH_SMOOTH_SPEED = 15
 const YAW_NEGATIVE_90 = quat.fromEulerAngles(0, -90, 0)
 const MAX_USER_ARM_EXTENSION_CM = 100
 const MIN_DRAG_DISTANCE_CM = 0.0001 // Setting this > 0 to avoid division by 0
+
+const MANIPULATION_VALUE_KEY = "ManipulationValue"
 
 const CachedTransform = {
   transform: mat4.identity(),
@@ -329,6 +333,22 @@ speed. Higher values make the filter more responsive to velocity changes."
   )
   private _rotationAxis: string = "All"
   @ui.group_end
+
+  /**
+   * Relevant only to lenses that use SpectaclesSyncKit when it has SyncInteractionManager in its prefab.
+   * If set to true, the InteractableManipulation's position will be synced whenever a new user joins the same Connected Lenses session.
+   * isSynced must also be enabled on the InteractableManipulation's Interactable.
+   */
+  @ui.separator
+  @ui.group_start("Sync Kit Support")
+  @input
+  @hint(
+    "Relevant only to lenses that use SpectaclesSyncKit when it has SyncInteractionManager in its prefab. \
+If set to true, the InteractableManipulation's position will be synced whenever a new user joins the same Connected Lenses session. \
+isSynced must also be enabled on the InteractableManipulation's Interactable."
+  )
+  public isSynced: boolean = false
+  @ui.group_end
   private defaultFilterConfig: OneEuroFilterConfig | undefined
   private camera = WorldCameraFinderProvider.getInstance()
   private interactionManager = InteractionManager.getInstance()
@@ -397,6 +417,8 @@ speed. Higher values make the filter more responsive to velocity changes."
   private currentRotationSign = 0
   private currentUp = vec3.zero()
 
+  private rayDistanceMap: Map<Interactor, number> = new Map<Interactor, number>()
+
   /**
    * - HandTracking's OneEuroFilter does not support quaternions.
    * - Quaternions need to use slerp to interpolate correctly, which
@@ -407,6 +429,13 @@ speed. Higher values make the filter more responsive to velocity changes."
   private translateFilter!: OneEuroFilterVec3
   private rotationFilter!: OneEuroFilterQuat
   private scaleFilter!: OneEuroFilterVec3
+
+  // Only defined if SyncKit is present within the lens project.
+  private syncKitBridge = SyncKitBridge.getInstance()
+  private syncEntity =
+    this.isSynced && !this.findContainerFrame(this.sceneObject.getParent())
+      ? this.syncKitBridge.createSyncEntity(this)
+      : null
 
   /**
    * Gets the transform of the root of the manipulated object(s).
@@ -621,6 +650,9 @@ speed. Higher values make the filter more responsive to velocity changes."
     )
 
     this.createEvent("OnDestroyEvent").bind(() => this.onDestroy())
+    this.createEvent("OnDisableEvent").bind(() => {
+      this.state.stateMachine.sendSignal(this.state.signals.EndManipulation)
+    })
 
     this.createEvent("OnStartEvent").bind(() => {
       this.onStart()
@@ -636,6 +668,10 @@ speed. Higher values make the filter more responsive to velocity changes."
     this.translateFilter = new OneEuroFilterVec3(this.defaultFilterConfig)
     this.rotationFilter = new OneEuroFilterQuat(this.defaultFilterConfig)
     this.scaleFilter = new OneEuroFilterVec3(this.defaultFilterConfig)
+
+    if (this.syncEntity !== null) {
+      this.syncEntity.notifyOnReady(this.setupConnectionCallbacks.bind(this))
+    }
   }
 
   onStart() {
@@ -645,6 +681,7 @@ speed. Higher values make the filter more responsive to velocity changes."
       throw new Error("InteractableManipulation requires an interactable to function.")
     }
 
+    this.interactable.keepHoverOnTrigger = true
     this.interactable.useFilteredPinch = true
     // Temporarily limit manipulatable Interactables to not be pokeable until fixing the transition from poke to pinch.
     if ((this.interactable.targetingMode & TargetingMode.Poke) !== 0) {
@@ -657,12 +694,82 @@ speed. Higher values make the filter more responsive to velocity changes."
     this.setupCallbacks()
   }
 
+  /**
+   * If the component is synced, set up additional callbacks for the synced datastore
+   * to ensure another connected user's manipulation propagates to the local scene.
+   */
+  private setupConnectionCallbacks(): void {
+    if (
+      this.syncEntity.currentStore.getAllKeys().find((key: string) => {
+        return key === MANIPULATION_VALUE_KEY
+      })
+    ) {
+      const locationTransform = this.syncEntity.currentStore.getMat4(MANIPULATION_VALUE_KEY)
+      const worldTransform = this.syncKitBridge.locationTransformToWorldTransform(locationTransform)
+
+      this.manipulateRoot!.setWorldTransform(worldTransform)
+    } else {
+      const locationTransform = this.syncKitBridge.worldTransformToLocationTransform(
+        this.manipulateRoot!.getWorldTransform()
+      )
+
+      this.syncEntity.currentStore.putMat4(MANIPULATION_VALUE_KEY, locationTransform)
+    }
+
+    this.syncEntity.storeCallbacks.onStoreUpdated.add(this.processStoreUpdate.bind(this))
+  }
+
+  private processStoreUpdate(
+    _session: MultiplayerSession,
+    store: GeneralDataStore,
+    key: string,
+    info: ConnectedLensModule.RealtimeStoreUpdateInfo
+  ) {
+    const connectionId = info.updaterInfo.connectionId
+    const updatedByLocal = connectionId === this.syncKitBridge.sessionController.getLocalConnectionId()
+
+    if (updatedByLocal) {
+      return
+    }
+
+    if (key === MANIPULATION_VALUE_KEY) {
+      const locationTransform = store.getMat4(MANIPULATION_VALUE_KEY)
+      const worldTransform = this.syncKitBridge.locationTransformToWorldTransform(locationTransform)
+
+      this.manipulateRoot!.setWorldTransform(worldTransform)
+    }
+  }
+
+  private updateSyncStore() {
+    if (this.syncEntity !== null && this.syncEntity.isSetupFinished) {
+      const locationTransform = this.syncKitBridge.worldTransformToLocationTransform(
+        this.manipulateRoot!.getWorldTransform()
+      )
+
+      this.syncEntity.currentStore.putMat4(MANIPULATION_VALUE_KEY, locationTransform)
+    }
+  }
+
+  // If the InteractableManipulation script is instantiated by ContainerFrame, allow the ContainerFrame
+  // to handle the transform syncing.
+  private findContainerFrame(ancestor: SceneObject): boolean {
+    if (ancestor === null) {
+      return false
+    } else if (ancestor.getComponent(ContainerFrame.getTypeName())) {
+      return true
+    } else {
+      return this.findContainerFrame(ancestor.getParent())
+    }
+  }
+
   private onDestroy(): void {
     // If we don't unsubscribe, component will keep working after destroy() due to event callbacks added to Interactable Events
     this.unsubscribeBag.forEach((unsubscribeCallback: unsubscribe) => {
       unsubscribeCallback()
     })
     this.unsubscribeBag = []
+    this.state.stateMachine.destroy()
+    this.interactors = []
   }
 
   private setupCallbacks(): void {
@@ -703,9 +810,58 @@ speed. Higher values make the filter more responsive to velocity changes."
         }
       })
     )
+
+    this.unsubscribeBag.push(
+      this.interactable.onTriggerEndOutside.add((event) => {
+        if (event.propagationPhase === "Target" || event.propagationPhase === "BubbleUp") {
+          event.stopPropagation()
+          this.onTriggerToggle(event)
+        }
+      })
+    )
   }
 
-  private updateStartValues(): void {
+  /**
+   * Updates the starting transform values mid-manipuation if some other script has displaced, rotated, or scaled the object
+   * during the interaction.
+   */
+  public updateStartTransform() {
+    // If called when not actively manipulating, ignore the call since all values have already been reset.
+    if (this.state.stateMachine.currentState?.name === this.state.states.Idle) {
+      return
+    }
+
+    const interactor = this.interactors[0]
+    if (this.isInteractorValid(interactor) === false) {
+      this.log.e("Interactor must not be valid for setting initial values")
+      return
+    }
+
+    validate(this.manipulateRoot)
+
+    // Reset filters
+    this.translateFilter.reset()
+    this.rotationFilter.reset()
+    this.scaleFilter.reset()
+
+    // Set the starting transform values to be used for callbacks
+    this.startTransform = {
+      transform: this.manipulateRoot.getWorldTransform(),
+      position: this.manipulateRoot.getWorldPosition(),
+      rotation: this.manipulateRoot.getWorldRotation(),
+      scale: this.manipulateRoot.getWorldScale()
+    }
+
+    // Bang operator is fine here because isInteractorValid checks for null values.
+    const startPoint = interactor.startPoint!
+
+    // Ensure that stretch value does not affect the new hitPointToTransformValue.
+    this.hitPointToTransform = this.startTransform.position.sub(
+      startPoint.add(interactor.direction!.uniformScale(this.offsetPosition.length + this.smoothedStretch))!
+    )
+  }
+
+  public updateStartValues(): void {
     validate(this.manipulateRoot)
     validate(this.interactable)
 
@@ -741,9 +897,16 @@ speed. Higher values make the filter more responsive to velocity changes."
       this.cachedTargetingMode = interactor.activeTargetingMode
 
       if (interactor.activeTargetingMode === TargetingMode.Direct) {
-        this.offsetPosition = this.startTransform.position.sub(startPoint)
+        this.offsetPosition = vec3.zero()
+        this.hitPointToTransform = this.startTransform.position.sub(startPoint)
         this.offsetRotation = orientation.invert().multiply(this.startTransform.rotation)
       } else {
+        // Bang operator is fine here because isInteractorValid checks for null values.
+        const distance = interactor.distanceToTarget!
+
+        // Cache the distance when starting manipulation to maintain the same position along the targeting ray.
+        this.rayDistanceMap.set(interactor, distance)
+
         const rayPosition = this.getRayPosition(interactor)
 
         this.offsetPosition = rayPosition.sub(startPoint)
@@ -783,8 +946,17 @@ speed. Higher values make the filter more responsive to velocity changes."
       this.offsetRotation = dualInteractorDirection.invert().multiply(this.startTransform.rotation)
 
       if (isDirect) {
-        this.offsetPosition = this.startTransform.position.sub(interactorMidPoint)
+        this.offsetPosition = vec3.zero()
+        this.hitPointToTransform = this.startTransform.position.sub(interactorMidPoint)
       } else {
+        // Bang operator is fine here because isInteractorValid checks for null values.
+        const firstDistance = this.interactors[0].distanceToTarget!
+        const secondDistance = this.interactors[1].distanceToTarget!
+
+        // Cache the distance when starting manipulation to maintain the same position along the targeting ray.
+        this.rayDistanceMap.set(this.interactors[0], firstDistance)
+        this.rayDistanceMap.set(this.interactors[1], secondDistance)
+
         const firstRayPosition = this.getRayPosition(this.interactors[0])
         const secondRayPosition = this.getRayPosition(this.interactors[1])
         const dualRayPosition = firstRayPosition.add(secondRayPosition).uniformScale(0.5)
@@ -816,7 +988,7 @@ speed. Higher values make the filter more responsive to velocity changes."
 
     const startPoint = interactor.startPoint ?? vec3.zero()
     const direction = interactor.direction ?? vec3.zero()
-    const distanceToTarget = interactor.distanceToTarget ?? 0
+    const distanceToTarget = this.rayDistanceMap.get(interactor) ?? 0
 
     return startPoint.add(direction.uniformScale(distanceToTarget))
   }
@@ -1102,6 +1274,8 @@ speed. Higher values make the filter more responsive to velocity changes."
     if (canTranslate || canRotate || canScale) {
       this.invokeManipulationUpdate()
     }
+
+    this.updateSyncStore()
   }
 
   private endManipulation(): void {
@@ -1356,8 +1530,8 @@ speed. Higher values make the filter more responsive to velocity changes."
       if (this.cachedTargetingMode === TargetingMode.Direct) {
         newPosition = startPoint.add(
           this.canRotate()
-            ? limitRotation.multiply(this.startTransform.rotation.invert()).multiplyVec3(this.offsetPosition)
-            : this.offsetPosition
+            ? limitRotation.multiply(this.startTransform.rotation.invert()).multiplyVec3(this.hitPointToTransform)
+            : this.hitPointToTransform
         )
 
         this.updatePosition(newPosition, this.useFilter)
@@ -1427,9 +1601,9 @@ speed. Higher values make the filter more responsive to velocity changes."
                 this.manipulateRoot
                   .getWorldRotation()
                   .multiply(this.startTransform.rotation.invert())
-                  .multiplyVec3(this.offsetPosition)
+                  .multiplyVec3(this.hitPointToTransform)
               )
-            : interactorMidPoint.add(this.offsetPosition)
+            : interactorMidPoint.add(this.hitPointToTransform)
         this.updatePosition(newPosition, this.useFilter)
       } else {
         // Dual Interactor Indirect
@@ -1518,7 +1692,7 @@ speed. Higher values make the filter more responsive to velocity changes."
     const maxDragDistance = Math.max(MIN_DRAG_DISTANCE_CM, interactor.maxRaycastDistance - MAX_USER_ARM_EXTENSION_CM)
 
     //scale movement based on distance from ray start to object
-    const currDistance = interactor.distanceToTarget ?? 0
+    const currDistance = this.rayDistanceMap.get(interactor) ?? 0
     const distanceFactor = (this.zStretchFactorMax / maxDragDistance) * currDistance + this.zStretchFactorMin
 
     const minStretch = -this.offsetPosition.length + 1

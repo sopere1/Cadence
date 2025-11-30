@@ -72,8 +72,12 @@ export class InteractableColorFeedback extends BaseScriptComponent {
 
   setupInteractableCallbacks(interactable: Interactable): void {
     validate(interactable)
-    interactable.onHoverEnter.add(() => {
-      this.changeColor(this.hoverColor)
+    interactable.onHoverEnter.add((event) => {
+      if (this.interactable?.keepHoverOnTrigger && event.interactor.isTriggering) {
+        return
+      }
+
+      this.changeColor(event.interactor.isTriggering ? this.pinchedColor : this.hoverColor)
     })
     interactable.onHoverExit.add(() => {
       this.changeColor(this.defaultColor)
@@ -84,9 +88,36 @@ export class InteractableColorFeedback extends BaseScriptComponent {
     interactable.onTriggerEnd.add(() => {
       this.changeColor(this.hoverColor)
     })
+    interactable.onTriggerEndOutside.add(() => {
+      this.changeColor(this.defaultColor)
+    })
     interactable.onTriggerCanceled.add(() => {
       this.changeColor(this.defaultColor)
     })
+
+    interactable.onSyncHoverEnter.add((event) => {
+      if (this.interactable?.keepHoverOnTrigger && event.interactor.isTriggering) {
+        return
+      }
+
+      this.changeColor(event.interactor.isTriggering ? this.pinchedColor : this.hoverColor)
+    })
+    interactable.onSyncHoverExit.add(() => {
+      this.changeColor(this.defaultColor)
+    })
+    interactable.onSyncTriggerStart.add(() => {
+      this.changeColor(this.pinchedColor)
+    })
+    interactable.onSyncTriggerEnd.add(() => {
+      this.changeColor(this.hoverColor)
+    })
+    interactable.onSyncTriggerEndOutside.add(() => {
+      this.changeColor(this.defaultColor)
+    })
+    interactable.onSyncTriggerCanceled.add(() => {
+      this.changeColor(this.defaultColor)
+    })
+
     interactable.createEvent("OnEnableEvent").bind(() => {
       this.changeColor(this.defaultColor)
     })

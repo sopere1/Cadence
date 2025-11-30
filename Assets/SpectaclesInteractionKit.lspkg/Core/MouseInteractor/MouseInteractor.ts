@@ -1,3 +1,4 @@
+import {Interactable} from "../../Components/Interaction/Interactable/Interactable"
 import {InteractableHitInfo} from "../../Providers/TargetProvider/TargetProvider"
 import BaseInteractor from "../Interactor/BaseInteractor"
 import {InteractorInputType, InteractorTriggerType, TargetingMode} from "../Interactor/Interactor"
@@ -153,6 +154,37 @@ tested specifically. Useful whenever your code has checks for interactor.activeT
    */
   get drawDebug(): boolean {
     return this._drawDebug
+  }
+
+  get isHoveringCurrentInteractable(): boolean | null {
+    if (!this.currentInteractable) {
+      return null
+    }
+
+    return this.mouseTargetProvider.isHoveringInteractable(this.currentInteractable)
+  }
+
+  get hoveredInteractables(): Interactable[] {
+    const hoveredInteractables = Array.from(this.mouseTargetProvider.currentInteractableSet)
+
+    return hoveredInteractables
+  }
+
+  isHoveringInteractable(interactable: Interactable): boolean {
+    return this.mouseTargetProvider!.isHoveringInteractable(interactable)
+  }
+
+  isHoveringInteractableHierarchy(interactable: Interactable): boolean {
+    if (this.mouseTargetProvider!.isHoveringInteractable(interactable)) {
+      return true
+    }
+
+    for (const interactable of this.mouseTargetProvider!.currentInteractableSet) {
+      if (interactable.isDescendantOf(interactable)) {
+        return true
+      }
+    }
+    return false
   }
 
   isActive(): boolean {

@@ -473,7 +473,14 @@ class UpdateDispatcher implements IUpdateDispatcher {
     try {
       event.invoke()
     } catch (error) {
-      log.e(`Error in event "${event.name || "unnamed"}": ${error}`)
+      let logString = `Error in event "${event.name || "unnamed"}": ${error}`
+
+      if (error instanceof Error && error.stack) {
+        const stack = SourceMaps.applyToStackTrace(error.stack)
+        logString += `${stack}`
+      }
+
+      log.e(logString)
     }
   }
 
@@ -505,7 +512,14 @@ class UpdateDispatcher implements IUpdateDispatcher {
     try {
       event.invoke()
     } catch (error) {
-      log.e(`Error in delayed event "${event.name}": ${error}`)
+      let logString = `Error in delayed event "${event.name || "unnamed"}": ${error}`
+
+      if (error instanceof Error && error.stack) {
+        const stack = SourceMaps.applyToStackTrace(error.stack)
+        logString += `${stack}`
+      }
+
+      log.e(logString)
     }
   }
 }

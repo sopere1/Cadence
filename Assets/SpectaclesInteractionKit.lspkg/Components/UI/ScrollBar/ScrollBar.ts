@@ -80,6 +80,8 @@ canvas when at the top of the content."
       throw new Error("ScrollBar requires an interactable to function.")
     }
 
+    interactable.keepHoverOnTrigger = true
+
     interactable.onDragStart((event) => {
       if (event.interactor.dragType === DragType.Touchpad) {
         this.touchpadDragUpdate(event)
@@ -306,7 +308,7 @@ canvas when at the top of the content."
     this.yOrigin = this.scrollViewSceneObject.getTransform().getLocalPosition().y
 
     const position = this.transform.getLocalPosition()
-    position.y = this.yOrigin + this.boundingHeight
+    position.y = this.yOrigin + MathUtils.lerp(this.boundingHeight, -this.boundingHeight, this.scrollPercentage)
 
     this.transform.setLocalPosition(position)
   }

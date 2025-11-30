@@ -19,7 +19,8 @@ export enum HandMeshType {
 export enum HandVisualSelection {
   Default = "Default",
   AlwaysOn = "AlwaysOn",
-  Occluder = "Occluder"
+  Occluder = "Occluder",
+  None = "None"
 }
 
 export enum HandVisualOverrideType {
@@ -120,19 +121,20 @@ export class HandVisual extends BaseScriptComponent implements HandVisuals {
   private _meshType: string = HandMeshType.IndexThumb
 
   /**
-   * Sets the hand visual style. "Default" shows glowing fingertips during interactions, while "Occluder" simply
-   * blocks content behind the hand.
+   * Sets the hand visual style. "Default" shows glowing fingertips during interactions. "AlwaysOn" always shows
+   * glowing fingertips. "Occluder" blocks content behind the hand. "None" disables all hand visuals.
    */
   @input
   @hint(
-    'Sets the hand visual style. "Default" shows glowing fingertips during interactions, while "Occluder" simply \
-blocks content behind the hand. "AlwaysOn" always shows glowing fingertips.'
+    'Sets the hand visual style. "Default" shows glowing fingertips during interactions. "AlwaysOn" always shows \
+glowing fingertips. "Occluder" blocks content behind the hand. "None" disables all hand visuals.'
   )
   @widget(
     new ComboBoxWidget([
       new ComboBoxItem("Default", "Default"),
       new ComboBoxItem("AlwaysOn", "AlwaysOn"),
-      new ComboBoxItem("Occluder", "Occluder")
+      new ComboBoxItem("Occluder", "Occluder"),
+      new ComboBoxItem("None", "None")
     ])
   )
   private selectVisual: string = "Default"
@@ -877,7 +879,8 @@ or when interactions are out of range."
   }
 
   private updateVisualsEnabledState(): void {
-    const isGloballyVisible = this._isVisible && this.isHandVisibleByStatus
+    const isNoneSelection = this.visualSelection === HandVisualSelection.None
+    const isGloballyVisible = this._isVisible && this.isHandVisibleByStatus && !isNoneSelection
 
     if (this.wrist && this.wrist.enabled !== isGloballyVisible) {
       this.wrist.enabled = isGloballyVisible

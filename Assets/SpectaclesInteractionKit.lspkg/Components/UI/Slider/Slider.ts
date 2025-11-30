@@ -5,10 +5,13 @@ import {DragInteractorEvent} from "../../../Core/Interactor/InteractorEvent"
 import animate from "../../../Utils/animate"
 import {createCallback} from "../../../Utils/InspectorCallbacks"
 import NativeLogger from "../../../Utils/NativeLogger"
+import {SyncKitBridge} from "../../../Utils/SyncKitBridge"
 import {validate} from "../../../Utils/validate"
 import {Interactable} from "../../Interaction/Interactable/Interactable"
 
 const TAG = "Slider"
+
+const SLIDER_VALUE_KEY = "SliderValue"
 
 /**
  * Describes the current state of the slider.
@@ -249,6 +252,21 @@ component attached."
   @allowUndefined
   private onMaxValueReachedFunctionNames: string[] = []
   @ui.group_end
+  /**
+   * Relevant only to lenses that use SpectaclesSyncKit when it has SyncInteractionManager in its prefab.
+   * If set to true, the Slider's value will be synced whenever a new user joins the same Connected Lenses session.
+   * You must also enabled isSynced on the Slider's Interactable.
+   */
+  @ui.separator
+  @ui.group_start("Sync Kit Support")
+  @input
+  @hint(
+    "Relevant only to lenses that use SpectaclesSyncKit when it has SyncInteractionManager in its prefab. \
+If set to true, the Slider's value will be synced whenever a new user joins the same Connected Lenses session. \
+You must also enabled isSynced on the Slider's Interactable."
+  )
+  public isSynced: boolean = false
+  @ui.group_end
   private log = new NativeLogger(TAG)
 
   private _startPosition!: vec3
@@ -288,6 +306,10 @@ component attached."
 
   transform!: Transform
 
+  // Only defined if SyncKit is present within the lens project.
+  private syncKitBridge = SyncKitBridge.getInstance()
+  private readonly syncEntity = this.isSynced ? this.syncKitBridge.createSyncEntity(this) : null
+
   onAwake(): void {
     validate(this.sliderKnob)
 
@@ -326,6 +348,10 @@ component attached."
     this.onValueUpdate = this.onValueUpdateEvent.publicApi()
     this.onMinValueReached = this.onMinValueReachedEvent.publicApi()
     this.onMaxValueReached = this.onMaxValueReachedEvent.publicApi()
+
+    if (this.syncEntity !== null) {
+      this.syncEntity.notifyOnReady(this.setupConnectionCallbacks.bind(this))
+    }
 
     if (this._minValue > this._maxValue || this._maxValue < this._minValue) {
       throw new Error("Error: SliderComponent's maxValue must be less than its minValue.")
@@ -537,6 +563,7 @@ component attached."
     }
 
     this.interactable.useFilteredPinch = true
+    this.interactable.keepHoverOnTrigger = true
 
     // If this is not a slider with step size, enable instant dragging for more responsive behavior.
     if (this.stepSize === 0) {
@@ -596,6 +623,56 @@ component attached."
         this.toggleSliderState()
       })
     )
+
+    this.unsubscribeBag.push(
+      this.interactable.onTriggerEndOutside.add(() => {
+        this.toggleSliderState()
+      })
+    )
+
+    this.unsubscribeBag.push(
+      this.interactable.onTriggerCanceled.add(() => {
+        this.toggleSliderState()
+      })
+    )
+  }
+
+  private setupConnectionCallbacks(): void {
+    if (
+      this.syncEntity.currentStore.getAllKeys().find((key: string) => {
+        return key === SLIDER_VALUE_KEY
+      })
+    ) {
+      this.currentValue = this.syncEntity.currentStore.getFloat(SLIDER_VALUE_KEY)
+    } else {
+      this.syncEntity.currentStore.putFloat(SLIDER_VALUE_KEY, this.currentValue)
+    }
+
+    this.syncEntity.storeCallbacks.onStoreUpdated.add(this.processStoreUpdate.bind(this))
+  }
+
+  private processStoreUpdate(
+    _session: MultiplayerSession,
+    store: GeneralDataStore,
+    key: string,
+    info: ConnectedLensModule.RealtimeStoreUpdateInfo
+  ) {
+    const connectionId = info.updaterInfo.connectionId
+    const updatedByLocal = connectionId === this.syncKitBridge.sessionController.getLocalConnectionId()
+
+    if (updatedByLocal) {
+      return
+    }
+
+    if (key === SLIDER_VALUE_KEY) {
+      this.updateSliderStateFromDisplayValue(store.getFloat(key), false)
+    }
+  }
+
+  private updateSyncStore() {
+    if (this.syncEntity !== null && this.syncEntity.isSetupFinished) {
+      this.syncEntity.currentStore.putFloat(SLIDER_VALUE_KEY, this.currentValue)
+    }
   }
 
   private calculateRawValueFromDragVector(dragVector: vec3 | null) {
@@ -685,6 +762,8 @@ component attached."
       displayValue: displayValue
     }
     this.updateUI()
+
+    this.updateSyncStore()
   }
 
   // Check if a local point is to the left of the start point (-1) or the right of the end point (1).
@@ -745,7 +824,7 @@ component attached."
    * Updates SliderState representing the most updated version of the slider, using a provided display value.
    * @param displayValue - the desired display value.
    */
-  private updateSliderStateFromDisplayValue(displayValue: number) {
+  private updateSliderStateFromDisplayValue(displayValue: number, shouldSync: boolean = true) {
     validate(this.sliderState)
     const snappedValue = this.calculateRawValueFromDisplayValue(displayValue)
 
@@ -760,6 +839,10 @@ component attached."
       displayValue: displayValue
     }
     this.updateUI()
+
+    if (shouldSync) {
+      this.updateSyncStore()
+    }
   }
 
   /**

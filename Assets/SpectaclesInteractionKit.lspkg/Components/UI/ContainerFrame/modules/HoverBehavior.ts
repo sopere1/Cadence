@@ -68,6 +68,16 @@ export class HoverBehavior {
     this.unsubscribeList.push(this.interactable.onHoverEnter(this.onHoverEnter))
     this.unsubscribeList.push(this.interactable.onHoverExit(this.onHoverExit))
     this.unsubscribeList.push(this.interactable.onHoverUpdate(this.onHoverUpdated))
+
+    // Need to add a trigger event bc we can officially finish a 'hover' (in the context of this class) without a hover exit.
+    this.unsubscribeList.push(this.interactable.onTriggerEndOutside(this.onTriggerEndOutside))
+
+    this.unsubscribeList.push(this.interactable.onSyncHoverEnter(this.onHoverEnter))
+    this.unsubscribeList.push(this.interactable.onSyncHoverExit(this.onHoverExit))
+    this.unsubscribeList.push(this.interactable.onSyncHoverUpdate(this.onHoverUpdated))
+
+    // Need to add a trigger event bc we can officially finish a 'hover' (in the context of this class) without a hover exit.
+    this.unsubscribeList.push(this.interactable.onSyncTriggerEndOutside(this.onTriggerEndOutside))
   }
 
   private unBindHoverEvents(): void {
@@ -83,12 +93,22 @@ export class HoverBehavior {
   }
 
   private onHoverExit = (eventData: InteractorEvent): void => {
+    if (eventData.interactor.isHoveringInteractableHierarchy(this.interactable)) {
+      return
+    }
     this.requestActive = false
     this.eventData = eventData
   }
 
   private onHoverUpdated = (eventData: InteractorEvent): void => {
     this.eventData = eventData
+  }
+
+  private onTriggerEndOutside = (eventData: InteractorEvent): void => {
+    if (!eventData.interactor.isHoveringInteractableHierarchy(this.interactable)) {
+      this.requestActive = false
+      this.eventData = eventData
+    }
   }
 
   lateUpdate = (): void => {

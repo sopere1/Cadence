@@ -1,3 +1,4 @@
+import {Interactable} from "../../Components/Interaction/Interactable/Interactable"
 import {InteractableManipulation} from "../../Components/Interaction/InteractableManipulation/InteractableManipulation"
 import {MobileInputData} from "../../Providers/MobileInputData/MobileInputData"
 import {InteractableHitInfo} from "../../Providers/TargetProvider/TargetProvider"
@@ -158,6 +159,37 @@ sensitive to small movements."
    */
   get drawDebug(): boolean {
     return this._drawDebug
+  }
+
+  get isHoveringCurrentInteractable(): boolean | null {
+    if (!this.currentInteractable) {
+      return null
+    }
+
+    return this.indirectTargetProvider!.isHoveringInteractable(this.currentInteractable)
+  }
+
+  get hoveredInteractables(): Interactable[] {
+    const hoveredInteractables = Array.from(this.indirectTargetProvider!.currentInteractableSet)
+
+    return hoveredInteractables
+  }
+
+  isHoveringInteractable(interactable: Interactable): boolean {
+    return this.indirectTargetProvider!.isHoveringInteractable(interactable)
+  }
+
+  isHoveringInteractableHierarchy(interactable: Interactable): boolean {
+    if (this.indirectTargetProvider!.isHoveringInteractable(interactable)) {
+      return true
+    }
+
+    for (const interactable of this.indirectTargetProvider!.currentInteractableSet) {
+      if (interactable.isDescendantOf(interactable)) {
+        return true
+      }
+    }
+    return false
   }
 
   /**

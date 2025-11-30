@@ -136,11 +136,19 @@ export class InteractableOutlineFeedback extends BaseScriptComponent {
   setupInteractableCallbacks(): void {
     validate(this.interactable)
 
-    this.interactable.onHoverEnter.add(() => {
+    this.interactable.onHoverEnter.add((event) => {
       this.addMaterialToRenderMeshArray()
+
+      if (event.interactor.isTriggering) {
+        this.setHighlightColor(this.activatingColor)
+      }
     })
 
-    this.interactable.onHoverExit.add(() => {
+    this.interactable.onHoverExit.add((event) => {
+      if (this.interactable?.keepHoverOnTrigger && event.interactor.isTriggering) {
+        return
+      }
+
       this.removeMaterialFromRenderMeshArray()
     })
 
@@ -152,7 +160,46 @@ export class InteractableOutlineFeedback extends BaseScriptComponent {
       this.setHighlightColor(this.hoveringColor)
     })
 
+    this.interactable.onTriggerEndOutside.add(() => {
+      this.setHighlightColor(this.hoveringColor)
+      this.removeMaterialFromRenderMeshArray()
+    })
+
     this.interactable.onTriggerCanceled.add(() => {
+      this.setHighlightColor(this.hoveringColor)
+      this.removeMaterialFromRenderMeshArray()
+    })
+
+    this.interactable.onSyncHoverEnter.add((event) => {
+      this.addMaterialToRenderMeshArray()
+
+      if (event.interactor.isTriggering) {
+        this.setHighlightColor(this.activatingColor)
+      }
+    })
+
+    this.interactable.onSyncHoverExit.add((event) => {
+      if (this.interactable?.keepHoverOnTrigger && event.interactor.isTriggering) {
+        return
+      }
+
+      this.removeMaterialFromRenderMeshArray()
+    })
+
+    this.interactable.onSyncTriggerStart.add(() => {
+      this.setHighlightColor(this.activatingColor)
+    })
+
+    this.interactable.onSyncTriggerEnd.add(() => {
+      this.setHighlightColor(this.hoveringColor)
+    })
+
+    this.interactable.onSyncTriggerEndOutside.add(() => {
+      this.setHighlightColor(this.hoveringColor)
+      this.removeMaterialFromRenderMeshArray()
+    })
+
+    this.interactable.onSyncTriggerCanceled.add(() => {
       this.setHighlightColor(this.hoveringColor)
       this.removeMaterialFromRenderMeshArray()
     })

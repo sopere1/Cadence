@@ -1,3 +1,4 @@
+import {InteractorEvent} from "../../Core/Interactor/InteractorEvent"
 import {SIK} from "../../SIK"
 import {validate} from "../../Utils/validate"
 import {Interactable} from "../Interaction/Interactable/Interactable"
@@ -383,6 +384,7 @@ activated."
   private setupInteractableCallbacks = (): void => {
     validate(this.interactable)
     this.interactable.onHoverUpdate.add(this.updateHoverState)
+    this.interactable.onSyncHoverUpdate.add(this.updateHoverState)
 
     switch (this.buttonType) {
       case PINCH_BUTTON:
@@ -392,14 +394,31 @@ activated."
         this.interactable.onTriggerCanceled.add(this.resetHoverState_PinchButton)
         this.interactable.onTriggerStart.add(this.initializeTriggeredState_PinchButton)
         this.interactable.onTriggerEnd.add(this.resetTriggeredState_PinchButton)
+        this.interactable.onTriggerEndOutside.add(this.resetHoverState_PinchButton)
+
+        this.interactable.onSyncHoverEnter.add(this.initializeHoverState_PinchButton)
+        this.interactable.onSyncHoverExit.add(this.resetHoverState_PinchButton)
+        this.interactable.onSyncTriggerCanceled.add(this.resetHoverState_PinchButton)
+        this.interactable.onSyncTriggerStart.add(this.initializeTriggeredState_PinchButton)
+        this.interactable.onSyncTriggerEnd.add(this.resetTriggeredState_PinchButton)
+        this.interactable.onSyncTriggerEndOutside.add(this.resetHoverState_PinchButton)
         break
       case TOGGLE_BUTTON:
         validate(this.interactable)
+        validate(this.toggleButton)
         this.interactable.onHoverEnter.add(this.initializeHoverState_ToggleButton)
         this.interactable.onHoverExit.add(this.resetHoverState_ToggleButton)
         this.interactable.onTriggerCanceled.add(this.resetHoverState_ToggleButton)
         this.interactable.onTriggerStart.add(this.initializeTriggeredState_ToggleButton)
         this.interactable.onTriggerEnd.add(this.resetTriggeredState_ToggleButton)
+        this.interactable.onTriggerEndOutside.add(this.resetHoverState_ToggleButton)
+
+        this.interactable.onSyncHoverEnter.add(this.initializeHoverState_ToggleButton)
+        this.interactable.onSyncHoverExit.add(this.resetHoverState_ToggleButton)
+        this.interactable.onSyncTriggerCanceled.add(this.resetHoverState_ToggleButton)
+        this.interactable.onSyncTriggerStart.add(this.initializeTriggeredState_ToggleButton)
+        this.interactable.onSyncTriggerEnd.add(this.resetTriggeredState_ToggleButton)
+        this.interactable.onSyncTriggerEndOutside.add(this.resetHoverState_ToggleButton)
 
         validate(this.toggleButton)
         this.toggleButton.createEvent("OnEnableEvent").bind(this.onToggleButtonEnabled)
@@ -411,19 +430,38 @@ activated."
         this.interactable.onTriggerCanceled.add(this.resetHoverState_StateButton)
         this.interactable.onTriggerStart.add(this.initializeTriggeredState_StateButton)
         this.interactable.onTriggerEnd.add(this.resetTriggeredState_StateButton)
+        this.interactable.onTriggerEndOutside.add(this.resetHoverState_StateButton)
+
+        this.interactable.onSyncHoverEnter.add(this.initializeHoverState_StateButton)
+        this.interactable.onSyncHoverExit.add(this.resetHoverState_StateButton)
+        this.interactable.onSyncTriggerCanceled.add(this.resetHoverState_StateButton)
+        this.interactable.onSyncTriggerStart.add(this.initializeTriggeredState_StateButton)
+        this.interactable.onSyncTriggerEnd.add(this.resetTriggeredState_StateButton)
+        this.interactable.onSyncTriggerEndOutside.add(this.resetHoverState_StateButton)
+
         validate(this.toggleButton)
         this.toggleButton.createEvent("OnEnableEvent").bind(this.onToggleButtonEnabled)
         break
     }
   }
 
-  private initializeHoverState_PinchButton = (): void => {
+  private initializeHoverState_PinchButton = (event: InteractorEvent): void => {
     this.initialMaxInteractionStrength = this.getMaxInteractionStrength()
-    this.changeButtonState(this.meshHoverMaterial)
-    this.changeGlowState(this.glowHoverMaterial)
+
+    if (event.interactor.isTriggering) {
+      this.changeButtonState(this.meshPinchedMaterial)
+      this.changeGlowState(this.glowPinchedMaterial)
+    } else {
+      this.changeButtonState(this.meshHoverMaterial)
+      this.changeGlowState(this.glowHoverMaterial)
+    }
   }
 
-  private resetHoverState_PinchButton = (): void => {
+  private resetHoverState_PinchButton = (event: InteractorEvent): void => {
+    if (this.interactable?.keepHoverOnTrigger && event.interactor.isTriggering) {
+      return
+    }
+
     this.initialMaxInteractionStrength = 0.0
     this.renderMeshVisual.setBlendShapeWeight(this.meshBlendShapeName, 0.0)
     if (this.useGlowMesh) {
@@ -479,14 +517,23 @@ activated."
     this.changeButtonState(material)
   }
 
-  private initializeHoverState_ToggleButton = (): void => {
+  private initializeHoverState_ToggleButton = (event: InteractorEvent): void => {
     this.initialMaxInteractionStrength = this.getMaxInteractionStrength()
     validate(this.toggleButton)
     validate(this.meshToggledHoverMaterial)
-    this.changeButtonState(this.toggleButton.isToggledOn ? this.meshToggledHoverMaterial : this.meshHoverMaterial)
+
+    if (event.interactor.isTriggering) {
+      this.changeButtonState(this.toggleButton.isToggledOn ? this.meshToggledPinchedMaterial : this.meshPinchedMaterial)
+    } else {
+      this.changeButtonState(this.toggleButton.isToggledOn ? this.meshToggledHoverMaterial : this.meshHoverMaterial)
+    }
   }
 
-  private resetHoverState_ToggleButton = (): void => {
+  private resetHoverState_ToggleButton = (event: InteractorEvent): void => {
+    if (this.interactable?.keepHoverOnTrigger && event.interactor.isTriggering) {
+      return
+    }
+
     this.initialMaxInteractionStrength = 0.0
     this.renderMeshVisual.setBlendShapeWeight(this.meshBlendShapeName, 0.0)
     validate(this.toggleButton)
@@ -506,14 +553,25 @@ activated."
     this.changeButtonState(this.toggleButton.isToggledOn ? this.meshToggledHoverMaterial : this.meshHoverMaterial)
   }
 
-  private initializeHoverState_StateButton = (): void => {
+  private initializeHoverState_StateButton = (event: InteractorEvent): void => {
     this.initialMaxInteractionStrength = this.getMaxInteractionStrength()
     validate(this.toggleButton)
     validate(this.meshStateHoverMaterial)
-    this.changeButtonState(this.toggleButton.isToggledOn ? this.meshStateHoverMaterial : this.meshHoverMaterial)
+
+    if (event.interactor.isTriggering) {
+      this.changeButtonState(
+        this.toggleButton.isToggledOn ? this.meshStatePinchedMaterial : this.meshStatePinchedMaterial
+      )
+    } else {
+      this.changeButtonState(this.toggleButton.isToggledOn ? this.meshStateHoverMaterial : this.meshHoverMaterial)
+    }
   }
 
-  private resetHoverState_StateButton = (): void => {
+  private resetHoverState_StateButton = (event: InteractorEvent): void => {
+    if (this.interactable?.keepHoverOnTrigger && event.interactor.isTriggering) {
+      return
+    }
+
     this.initialMaxInteractionStrength = 0.0
     this.renderMeshVisual.setBlendShapeWeight(this.meshBlendShapeName, 0.0)
     validate(this.toggleButton)

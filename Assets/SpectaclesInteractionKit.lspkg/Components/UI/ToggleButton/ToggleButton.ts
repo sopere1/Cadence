@@ -1,6 +1,9 @@
 import {createCallback} from "../../../Utils/InspectorCallbacks"
 import ReplayEvent from "../../../Utils/ReplayEvent"
+import {SyncKitBridge} from "../../../Utils/SyncKitBridge"
 import {Interactable} from "../../Interaction/Interactable/Interactable"
+
+const TOGGLE_BUTTON_VALUE_KEY = "ToggleButtonValue"
 
 /**
  * This class provides basic toggle functionality for a prefab toggle button. It manages the toggle state and provides methods to handle toggle events and update the button's visual state.
@@ -50,7 +53,26 @@ export class ToggleButton extends BaseScriptComponent {
   @allowUndefined
   private onStateChangedFunctionNames: string[] = []
   @ui.group_end
+  /**
+   * Relevant only to lenses that use SpectaclesSyncKit when it has SyncInteractionManager in its prefab.
+   * If set to true, the ToggleButton's value will be synced whenever a new user joins the same Connected Lenses session.
+   * You must also enabled isSynced on the ToggleButton's Interactable.
+   */
+  @ui.separator
+  @ui.group_start("Sync Kit Support")
+  @input
+  @hint(
+    "Relevant only to lenses that use SpectaclesSyncKit when it has SyncInteractionManager in its prefab. \
+If set to true, the ToggleButton's value will be synced whenever a new user joins the same Connected Lenses session. \
+You must also enabled isSynced on the ToggleButton's Interactable."
+  )
+  public isSynced: boolean = false
+  @ui.group_end
   private interactable: Interactable | null = null
+
+  // Only defined if SyncKit is present within the lens project.
+  private syncKitBridge = SyncKitBridge.getInstance()
+  private readonly syncEntity = this.isSynced ? this.syncKitBridge.createSyncEntity(this) : null
 
   private onStateChangedEvent = new ReplayEvent<boolean>()
   public readonly onStateChanged = this.onStateChangedEvent.publicApi()
@@ -77,6 +99,10 @@ export class ToggleButton extends BaseScriptComponent {
       this.onStateChanged.add(
         createCallback<boolean>(this.customFunctionForOnStateChanged, this.onStateChangedFunctionNames)
       )
+    }
+
+    if (this.syncEntity !== null) {
+      this.syncEntity.notifyOnReady(this.setupConnectionCallbacks.bind(this))
     }
 
     this.refreshVisual()
@@ -147,9 +173,58 @@ export class ToggleButton extends BaseScriptComponent {
     }
   }
 
-  private toggleState() {
+  private toggleState(shouldSync: boolean = true) {
     this._isToggledOn = !this._isToggledOn
+
+    if (shouldSync) {
+      this.updateSyncStore()
+    }
+
     this.refreshVisual()
     this.onStateChangedEvent.invoke(this._isToggledOn)
+  }
+
+  private setupConnectionCallbacks(): void {
+    if (
+      this.syncEntity.currentStore.getAllKeys().find((key: string) => {
+        return key === TOGGLE_BUTTON_VALUE_KEY
+      })
+    ) {
+      if (this.syncEntity.currentStore.getBool(TOGGLE_BUTTON_VALUE_KEY) !== this._isToggledOn) {
+        this.toggleState(false)
+      }
+    } else {
+      this.syncEntity.currentStore.putBool(TOGGLE_BUTTON_VALUE_KEY, this.isToggledOn)
+    }
+
+    this.syncEntity.storeCallbacks.onStoreUpdated.add(this.processStoreUpdate.bind(this))
+  }
+
+  private processStoreUpdate(
+    _session: MultiplayerSession,
+    store: GeneralDataStore,
+    key: string,
+    info: ConnectedLensModule.RealtimeStoreUpdateInfo
+  ) {
+    const connectionId = info.updaterInfo.connectionId
+    const updatedByLocal = connectionId === this.syncKitBridge.sessionController.getLocalConnectionId()
+
+    if (updatedByLocal) {
+      return
+    }
+
+    if (key === TOGGLE_BUTTON_VALUE_KEY) {
+      if (store.getBool(key) === this._isToggledOn) {
+        return
+      }
+
+      this.toggleState(false)
+    }
+  }
+
+  private updateSyncStore() {
+    if (this.syncEntity !== null && this.syncEntity.isSetupFinished) {
+      this.syncEntity.currentStore.putBool(TOGGLE_BUTTON_VALUE_KEY, this.isToggledOn)
+    }
   }
 }

@@ -1941,6 +1941,7 @@
     - 21834342-0775-4f92-8189-91c12bbd2264: 815b6ca2-77e6-4e1c-7002-5c6207b7cfbd
     - 22fe6d62-df7d-4a2d-909e-60914ade7964: 254b9e85-b5d1-400f-737b-7c22ad06aeff
     - 284d1bf4-3d3d-476f-ad27-1bdcae951599: 0b47d35b-d9ff-43aa-73e7-94efb366ba58
+    - 28b9fae0-1ac9-4bf9-a998-f04b29c16a8e: 360ccda0-8a8e-4d47-4b6f-89d32e9a3390
     - 2e5f41c8-864c-483c-961f-9df1343d74d3: 20700869-1aef-485f-5ff2-9b6bc13d5693
     - 3946c7ec-d914-4156-a3af-459c578c2417: 43d0e3f6-94eb-4ee1-5b4c-ed33cd3c6b79
     - 3b7d8410-db56-452c-bdf6-1954143016a6: 88104fa0-ad2d-43a1-7d8e-7fe774a6b4ee
@@ -2030,6 +2031,7 @@
     - c9b492d0-5b27-4fbf-a37e-e48a601f0e7f: a0a63f72-25a0-4d69-6be8-a99d1674fe1c
     - ca0c7c62-d6d5-4da6-8521-0a143e4e5642: b7be8856-93cb-4049-76c3-e4a435b4d049
     - caa10653-730a-4bf1-a395-2c695dd9c585: dc97552e-2a04-4019-7686-b7d06e5a7db0
+    - caec4f1d-b926-4f80-8125-778e60ea2e64: cae2d8c6-0879-4b17-53a5-209c43754d6d
     - cb0ab356-5777-4983-b1ed-def8899a4f40: 146c3d55-6548-4c7f-5b5b-dd0bfda8a0b0
     - cbcb36c1-1723-4291-9a9d-0f7d9f3d56e4: 8e3b2e69-294f-497e-5d01-cfbce448916f
     - cf1e098f-e255-4a37-94a9-ee5ea1860791: 82686826-4088-45dd-570f-fc97c8693187
@@ -2056,6 +2058,7 @@
     - f881caec-ea18-4429-bd2a-70d251ff4b5e: 4e42b98e-ee9f-4953-4caa-57d303fdb9c5
     - faf6dd56-40e5-431e-bc45-722b95dc879e: bc7ca399-42d5-43ce-74b9-91ce49d72508
     - fbcfdc14-4d6e-4dec-90a4-df3a45e526ae: f24eade7-4784-4f7b-7076-ef3281b8ed81
+    - fbe91ced-e158-48d0-b8b4-5f235f474b9f: b8018fa2-37b3-496d-4d03-42eecbd9c50a
     - fd39a52b-6994-4c4d-8361-c9449c61a875: b92e7c34-d016-4929-6b50-64cda20106b3
     - fdbfbc7c-82a6-4f8d-8752-42c3a0551891: 743452d1-5aaa-477e-5882-ef4ae715424d
   Name: SpectaclesInteractionKit
@@ -2430,12 +2433,14 @@
   Enabled: true
   ScriptAsset: !<reference> 33b8ff0f-4908-4414-8821-6b37f1775435
   ScriptInputsDefault:
-    {}
+    useV2: true
+    drawDebug: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
     "":
-      {}
+      useV2: false
+      drawDebug: false
   ScriptTypes:
     "":
       {}

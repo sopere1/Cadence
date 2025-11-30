@@ -67,7 +67,17 @@ for interaction events to provide visual feedback on the scrollbar indicator."
     this.interactable.onHoverExit.add(this.resetHoverState)
     this.interactable.onTriggerStart.add(this.initializeTriggerState)
     this.interactable.onTriggerEnd.add(this.resetTriggerState)
+    this.interactable.onTriggerEndOutside.add(this.resetHoverState)
+    this.interactable.onTriggerCanceled.add(this.resetHoverState)
     this.interactable.onTriggerUpdate.add(this.onTriggerUpdate)
+
+    this.interactable.onSyncHoverEnter.add(this.initializeHoverState)
+    this.interactable.onSyncHoverExit.add(this.resetHoverState)
+    this.interactable.onSyncTriggerStart.add(this.initializeTriggerState)
+    this.interactable.onSyncTriggerEnd.add(this.resetTriggerState)
+    this.interactable.onSyncTriggerEndOutside.add(this.resetHoverState)
+    this.interactable.onSyncTriggerCanceled.add(this.resetHoverState)
+    this.interactable.onSyncTriggerUpdate.add(this.onTriggerUpdate)
   }
 
   private initializeHoverState = (): void => {

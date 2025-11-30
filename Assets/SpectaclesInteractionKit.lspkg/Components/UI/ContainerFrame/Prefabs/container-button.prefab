@@ -53,6 +53,9 @@
   ScriptAsset: !<reference> 652e631a-22d0-4941-9f74-2943df59f34c
   ScriptInputsDefault:
     targetingMode: true
+    targetingVisual: true
+    ignoreInteractionPlane: true
+    keepHoverOnTrigger: true
     enableInstantDrag: true
     isScrollable: true
     allowMultipleInteractors: true
@@ -61,13 +64,14 @@
     acceptableYDirections: true
     acceptableZDirections: true
     useFilteredPinch: true
-    isSynced: true
-    acceptableSyncInteractionTypes: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
     "":
       targetingMode: !<float> 3.000000
+      targetingVisual: !<float> 1.000000
+      ignoreInteractionPlane: false
+      keepHoverOnTrigger: false
       enableInstantDrag: false
       isScrollable: false
       allowMultipleInteractors: true
@@ -76,8 +80,6 @@
       acceptableYDirections: !<float> 0.000000
       acceptableZDirections: !<float> 1.000000
       useFilteredPinch: false
-      isSynced: false
-      acceptableSyncInteractionTypes: !<float> 7.000000
   ScriptTypes:
     "":
       {}

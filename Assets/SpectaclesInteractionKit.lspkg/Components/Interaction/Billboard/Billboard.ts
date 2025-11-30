@@ -1,3 +1,4 @@
+import {Interactor} from "../../../Core/Interactor/Interactor"
 import BillboardController, {BillboardConfig, RotationAxis} from "./BillboardController"
 
 /**
@@ -95,6 +96,10 @@ where higher values (1.0) create instant following, while lower values (0.1) cre
     this.controller.resetRotation()
   }
 
+  get targetTransform(): Transform {
+    return this.controller.targetTransform
+  }
+
   /**
    * @returns if the SceneObject billboards about the x-axis.
    */
@@ -184,5 +189,23 @@ where higher values (1.0) create instant following, while lower values (0.1) cre
    */
   get axisBufferDegrees(): vec3 {
     return this._axisBufferDegrees
+  }
+
+  /**
+   * Set the pivot point and pivoting Interactor to control the Billboard's pivot axis.
+   * To turn off pivoting about a point, reset the pivot point to vec3.zero()
+   * @param pivotPoint - the pivot point to billboard the target about in local space.
+   * @param interactor - the pivoting Interactor.
+   */
+  public setPivot(pivotPoint: vec3, interactor: Interactor) {
+    this.controller.setPivot(pivotPoint, interactor)
+  }
+
+  /**
+   * Resets the pivot point to billboard the target about its own origin. Recommended to use after finishing
+   * some spatial interaction that sets the pivotPoint of this component manually.
+   */
+  public resetPivotPoint() {
+    this.controller.resetPivotPoint()
   }
 }

@@ -157,7 +157,23 @@ current state."
       this.changeToggleOnMesh(this.toggledOnSelectMaterial, this.toggledOffSelectMaterial)
     })
 
+    interactable.onTriggerEndOutside.add(() => {
+      this.changeToggleOnMesh(this.toggledOnMaterial, this.toggledOffMaterial)
+    })
+
     interactable.onTriggerCanceled.add(() => {
+      this.changeToggleOnMesh(this.toggledOnMaterial, this.toggledOffMaterial)
+    })
+
+    interactable.onSyncTriggerStart.add(() => {
+      this.changeToggleOnMesh(this.toggledOnSelectMaterial, this.toggledOffSelectMaterial)
+    })
+
+    interactable.onSyncTriggerEndOutside.add(() => {
+      this.changeToggleOnMesh(this.toggledOnMaterial, this.toggledOffMaterial)
+    })
+
+    interactable.onSyncTriggerCanceled.add(() => {
       this.changeToggleOnMesh(this.toggledOnMaterial, this.toggledOffMaterial)
     })
 

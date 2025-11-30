@@ -133,6 +133,7 @@ export class SnappableBehavior {
 
     this.unSubscribeList.push(this.interactable.onTriggerStart.add(this.onTriggerStart))
     this.unSubscribeList.push(this.interactable.onTriggerEnd.add(this.onTriggerRelease))
+    this.unSubscribeList.push(this.interactable.onTriggerEndOutside.add(this.onTriggerRelease))
     this.unSubscribeList.push(this.interactable.onTriggerCanceled.add(this.onTriggerRelease))
 
     const contentLocalScale = new vec3(

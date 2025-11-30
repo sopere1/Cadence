@@ -5,6 +5,7 @@ import {InteractorEvent} from "../../../Core/Interactor/InteractorEvent"
 import Event from "../../../Utils/Event"
 import {averageVec2, smoothDamp, smoothSlide} from "../../../Utils/mathUtils"
 import {MovingAverageFilter} from "../../../Utils/MovingAverageFilter"
+import {SyncKitBridge} from "../../../Utils/SyncKitBridge"
 import {BufferedBoundariesProvider} from "./boundariesProvider/BufferedBoundariesProvider"
 import {SceneObjectBoundariesProvider} from "./boundariesProvider/SceneObjectBoundariesProvider"
 
@@ -29,6 +30,10 @@ const DECELERATE_MIN_SPEED = 1
 const ELASTIC_TIME = 0.4
 // The minimum distance from content edge to keep moving the content during update frames.
 const ELASTIC_MIN_DISTANCE = 0.05
+
+const SCROLL_VIEW_VALUE_KEY = "ScrollViewValue"
+const SCROLL_VIEW_INERTIA_KEY = "ScrollViewInertia"
+const SCROLL_VIEW_CONNECTION_KEY = "ScrollViewConnection"
 
 /**
  * Describes the scrolling logic between the content and the container
@@ -74,6 +79,12 @@ export class ScrollProvider {
   private isGrabbed: boolean = false
   private _isManual: boolean = false
 
+  // Only defined if SyncKit is present within the lens project.
+  private syncKitBridge = SyncKitBridge.getInstance()
+  private readonly syncEntity = this.config.scrollView ? this.syncKitBridge.createSyncEntity(this.scrollView) : null
+
+  private connectionId: string | null = null
+
   constructor(private config: ScrollProviderConfig) {
     this._enableScrollInertia = config.enableScrollInertia
 
@@ -85,6 +96,10 @@ export class ScrollProvider {
       this.config.updateEvent.bind((_event) => {
         this.update()
       })
+
+      if (this.syncEntity !== null) {
+        this.syncEntity.notifyOnReady(this.setupConnectionCallbacks.bind(this))
+      }
     })
   }
 
@@ -154,6 +169,12 @@ export class ScrollProvider {
    */
   set contentPosition(position: vec3) {
     this.content.position = position
+
+    this.updateSyncStore()
+
+    this.onScrollUpdateEvent.invoke({
+      contentPosition: new vec2(this.content.position.x, this.content.position.y)
+    })
   }
 
   /**
@@ -204,6 +225,8 @@ export class ScrollProvider {
     this.dragVelocityFilter.clear()
     this.isGrabbed = true
     this.dragVelocity = vec2.zero()
+
+    this.updateSyncStore()
   }
 
   onGrabEnd(_event: InteractorEvent) {
@@ -287,6 +310,8 @@ export class ScrollProvider {
       }
     }
 
+    this.updateSyncStore()
+
     this.onScrollUpdateEvent.invoke({
       contentPosition: new vec2(this.content.position.x, this.content.position.y)
     })
@@ -347,6 +372,15 @@ export class ScrollProvider {
       return
     }
 
+    if (this.syncEntity !== null) {
+      const isRecentConnection = this.connectionId === this.syncKitBridge.sessionController.getLocalConnectionId()
+
+      // If the local user is not the last user to interact with the ScrollView, do not simulate physics.
+      if (!isRecentConnection) {
+        return
+      }
+    }
+
     const initialEdgeSelector = this.selectEdgesInsideScrollArea("Content")
     if (this.inertiaVelocity.equal(vec2.zero()) && initialEdgeSelector.x === 0 && initialEdgeSelector.y === 0) {
       return
@@ -390,6 +424,8 @@ export class ScrollProvider {
     }
 
     this.inertiaVelocity = currentVelocity
+
+    this.updateSyncStore()
 
     this.onScrollUpdateEvent.invoke({
       contentPosition: new vec2(this.content.position.x, this.content.position.y)
@@ -498,6 +534,8 @@ export class ScrollProvider {
     }
 
     this.inertiaVelocity = newInertiaVelocity
+
+    this.updateSyncStore()
   }
 
   private applyFriction(position: vec3, velocity: vec2, decelerateTime: number, deltaTime: number): [vec3, vec2] {
@@ -593,5 +631,75 @@ export class ScrollProvider {
     const worldScale = this.config.screenTransform.getTransform().getWorldScale()
 
     return new vec2(worldUnits.x / worldScale.x, worldUnits.y / worldScale.y)
+  }
+
+  /**
+   * Resync the ScrollView to the state contained in the datastore.
+   */
+  public resyncToStore(): void {
+    if (this.syncEntity !== null && this.syncEntity.isSetupFinished) {
+      this.content.position = this.syncEntity.currentStore.getVec3(SCROLL_VIEW_VALUE_KEY)
+      this.onScrollUpdateEvent.invoke({
+        contentPosition: new vec2(this.content.position.x, this.content.position.y)
+      })
+      this.inertiaVelocity = this.syncEntity.currentStore.getVec2(SCROLL_VIEW_INERTIA_KEY)
+      this.connectionId = this.syncEntity.currentStore.getString(SCROLL_VIEW_CONNECTION_KEY)
+    }
+  }
+
+  private setupConnectionCallbacks(): void {
+    if (
+      this.syncEntity.currentStore.getAllKeys().find((key: string) => {
+        return key === SCROLL_VIEW_VALUE_KEY
+      })
+    ) {
+      // Wait until the onStart event to position the content according to the stored position.
+      this.config.scrollView.createEvent("OnStartEvent").bind(() => {
+        this.content.position = this.syncEntity.currentStore.getVec3(SCROLL_VIEW_VALUE_KEY)
+      })
+
+      this.onScrollUpdateEvent.invoke({
+        contentPosition: new vec2(this.content.position.x, this.content.position.y)
+      })
+    } else {
+      this.syncEntity.currentStore.putVec3(SCROLL_VIEW_VALUE_KEY, this.contentPosition)
+    }
+
+    this.syncEntity.storeCallbacks.onStoreUpdated.add(this.processStoreUpdate.bind(this))
+  }
+
+  private processStoreUpdate(
+    _session: MultiplayerSession,
+    store: GeneralDataStore,
+    key: string,
+    info: ConnectedLensModule.RealtimeStoreUpdateInfo
+  ) {
+    const connectionId = info.updaterInfo.connectionId
+    const updatedByLocal = connectionId === this.syncKitBridge.sessionController.getLocalConnectionId()
+
+    if (updatedByLocal) {
+      return
+    }
+
+    if (key === SCROLL_VIEW_VALUE_KEY) {
+      this.content.position = store.getVec3(SCROLL_VIEW_VALUE_KEY)
+      this.onScrollUpdateEvent.invoke({
+        contentPosition: new vec2(this.content.position.x, this.content.position.y)
+      })
+    } else if (key === SCROLL_VIEW_INERTIA_KEY) {
+      this.inertiaVelocity = store.getVec2(SCROLL_VIEW_INERTIA_KEY)
+    } else if (key === SCROLL_VIEW_CONNECTION_KEY) {
+      this.connectionId = store.getString(SCROLL_VIEW_CONNECTION_KEY)
+    }
+  }
+
+  private updateSyncStore() {
+    if (this.syncEntity !== null && this.syncEntity.isSetupFinished) {
+      this.syncEntity.currentStore.putVec3(SCROLL_VIEW_VALUE_KEY, this.contentPosition)
+      this.syncEntity.currentStore.putVec2(SCROLL_VIEW_INERTIA_KEY, this.inertiaVelocity)
+
+      this.connectionId = this.syncKitBridge.sessionController.getLocalConnectionId()
+      this.syncEntity.currentStore.putString(SCROLL_VIEW_CONNECTION_KEY, this.connectionId)
+    }
   }
 }

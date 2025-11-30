@@ -194,6 +194,9 @@ export class GlowEffectViewModel {
       case HandVisualSelection.Occluder:
         stateName = "Occluder"
         break
+      case HandVisualSelection.None:
+        stateName = "None"
+        break
       default:
         stateName = "Interactive"
         break
@@ -253,6 +256,15 @@ export class GlowEffectViewModel {
       name: "Occluder",
       onEnter: () => {
         this.isMeshVisibilityDesired = true
+        this.isIndexGlowVisible = false
+        this.isThumbGlowVisible = false
+      }
+    })
+
+    this.stateMachine.addState({
+      name: "None",
+      onEnter: () => {
+        this.isMeshVisibilityDesired = false
         this.isIndexGlowVisible = false
         this.isThumbGlowVisible = false
       }
@@ -612,7 +624,7 @@ export class GlowEffectViewModel {
       const interactable = this.interactionManager.getInteractableByCollider(collider)
 
       if (interactable) {
-        const closestPoint = ColliderUtils.getClosestPointOnCollider(collider, indexTipPosition)
+        const closestPoint = ColliderUtils.getClosestPointOnColliderToPoint(collider, indexTipPosition)
         const baseDistanceSq = indexTipPosition.distanceSquared(closestPoint)
 
         // Check for poke interactions

@@ -1,6 +1,9 @@
 import {InteractionManager} from "../../../Core/InteractionManager/InteractionManager"
 import {easingFunctions} from "../../../Utils/animate"
+import {LensConfig} from "../../../Utils/LensConfig"
 import NativeLogger from "../../../Utils/NativeLogger"
+import {DispatchedUpdateEvent} from "../../../Utils/UpdateDispatcher"
+import {TargetingVisual} from "../Interactable/Interactable"
 
 /**
  * point - the projection's position on the plane in world space.
@@ -18,9 +21,9 @@ export type ZoneProjection = {
   lerpValue: number
 }
 
-const DEFAULT_LERP_OFFSET_CM = 25
+const DEFAULT_LERP_OFFSET_CM = 5
 
-const DEFAULT_INTERACTION_ZONE_DISTANCE_CM = 20
+const DEFAULT_INTERACTION_ZONE_DISTANCE_CM = 15
 
 const DEFAULT_DIRECT_ZONE_DISTANCE_CM = 7.5
 
@@ -35,6 +38,22 @@ const TAG = "InteractionPlane"
  */
 @component
 export class InteractionPlane extends BaseScriptComponent {
+  /**
+   * Sets the preferred targeting visual. (Requires the V2 Cursor to be enabled on InteractorCursors).
+   * - 0: Cursor (default)
+   * - 1: Ray
+   * - 2: None
+   */
+  @input
+  @hint(
+    "Sets the preferred targeting visual. (Requires the V2 Cursor to be enabled on InteractorCursors).\n\n\
+- 0: None\n\
+- 1: Cursor (default)\n\
+- 2: Ray"
+  )
+  @widget(new ComboBoxWidget([new ComboBoxItem("None", 0), new ComboBoxItem("Cursor", 1), new ComboBoxItem("Ray", 2)]))
+  targetingVisual: number = TargetingVisual.Cursor
+
   /**
    * The size of the interaction plane along the local X and Y axes. Defines the rectangular area of the plane where
    * hand interactions are detected. Larger values create a bigger interactive surface area.
@@ -96,33 +115,70 @@ near field mode."
   private _lerpOffset: number = DEFAULT_LERP_OFFSET_CM
 
   /**
-   * Whether the direct zone of the interaction plane is enabled.
+   * Local-space offset of the plane. Allows positioning the effective interaction plane relative to the host
+   * SceneObject.
+   */
+  @input
+  @hint(
+    "Local-space offset of the plane. Allows positioning the effective interaction plane relative to the host \
+SceneObject."
+  )
+  private _offset: vec3 = vec3.zero()
+
+  /**
+   * Whether the direct zone in front of the interaction plane is enabled.
+   * When the Interactor is within this direct zone, raycasts will be disabled.
    */
   enableDirectZone = true
 
   private _collider: ColliderComponent | null = null
 
+  private _colliderRoot: SceneObject | null = null
+  private _colliderRootTransform: Transform | null = null
+
   private log = new NativeLogger(TAG)
+  private _updateEvent: DispatchedUpdateEvent | undefined
 
   onAwake() {
     this.createEvent("OnDestroyEvent").bind(() => this.release())
     this.createEvent("OnEnableEvent").bind(() => {
       InteractionManager.getInstance().registerInteractionPlane(this)
+      if (this._updateEvent) {
+        this._updateEvent.enabled = true
+      }
     })
     this.createEvent("OnDisableEvent").bind(() => {
       InteractionManager.getInstance().deregisterInteractionPlane(this)
+      if (this._updateEvent) {
+        this._updateEvent.enabled = false
+      }
     })
 
     this.createEvent("OnStartEvent").bind(() => {
-      this._collider = this.sceneObject.createComponent("ColliderComponent")
+      const colliderRoot = global.scene.createSceneObject("InteractionPlaneColliderRoot")
+      colliderRoot.setParent(this.sceneObject)
+      this._colliderRoot = colliderRoot
+      this._colliderRootTransform = colliderRoot.getTransform()
+
+      this._collider = colliderRoot.createComponent("ColliderComponent")
       this.buildMeshShape()
       this._collider.debugDrawEnabled = this.drawDebug
 
       InteractionManager.getInstance().registerInteractionPlane(this)
     })
+
+    if (this.drawDebug) {
+      this._updateEvent = LensConfig.getInstance().updateDispatcher.createUpdateEvent("InteractionPlaneUpdate", () =>
+        this.drawDebugPlane()
+      )
+    }
   }
 
   release() {
+    if (this._updateEvent) {
+      LensConfig.getInstance().updateDispatcher.removeEvent(this._updateEvent)
+      this._updateEvent = undefined
+    }
     InteractionManager.getInstance().deregisterInteractionPlane(this)
   }
 
@@ -144,6 +200,10 @@ near field mode."
     )
 
     this.collider.shape = shape
+
+    if (this._colliderRootTransform !== null) {
+      this._colliderRootTransform.setLocalPosition(this._offset)
+    }
   }
 
   /**
@@ -151,7 +211,6 @@ near field mode."
    */
   set planeSize(size: vec2) {
     this._planeSize = size
-
     this.buildMeshShape()
   }
 
@@ -258,6 +317,21 @@ near field mode."
   }
 
   /**
+   * Sets the local-space offset of the interaction plane (affects both collider placement and projection origin).
+   */
+  set offset(offset: vec3) {
+    this._offset = offset
+    this.buildMeshShape()
+  }
+
+  /**
+   * Returns the local-space offset of the interaction plane.
+   */
+  get offset(): vec3 {
+    return this._offset
+  }
+
+  /**
    * Project a 3D point in world space onto the InteractionPlane.
    * @param point - a 3D point in world space
    * @returns - a ZoneProjection representing the point's projection onto the plane, the distance of the point from the plane (negative if behind the plane),
@@ -272,8 +346,18 @@ near field mode."
 
     // This logic uses the equation of t = ((p0-l0)·n)/(l·n) with l0 + l*t = the point of intersection.
     // l0 represents point, l represents direction, p0 represents plane origin, and n represents the plane normal.
-    const po = this.sceneObject.getTransform().getWorldPosition()
-    const n = this.sceneObject.getTransform().forward
+    const transform = this.sceneObject.getTransform()
+    const n = transform.forward
+    const r = transform.right
+    const u = transform.up
+    const s = transform.getWorldScale()
+
+    const baseOrigin = transform.getWorldPosition()
+    const worldOffset = r
+      .uniformScale(this._offset.x * s.x)
+      .add(u.uniformScale(this._offset.y * s.y))
+      .add(n.uniformScale(this._offset.z * s.z))
+    const po = baseOrigin.add(worldOffset)
 
     const v = po.sub(point)
     const l = n.uniformScale(-1)
@@ -282,9 +366,6 @@ near field mode."
 
     // Project the point onto the plane.
     const projectedPoint = point.add(l.uniformScale(t))
-
-    const r = this.sceneObject.getTransform().right
-    const u = this.sceneObject.getTransform().up
 
     // Get the local X and Y coordinates within the plane space to check if the point resides within the interaction zone.
     const d = projectedPoint.sub(po)
@@ -342,5 +423,98 @@ near field mode."
       lerpValue: lerpValue
     }
     return planeProjection
+  }
+
+  checkRayIntersection(rayStart: vec3, rayEnd: vec3): boolean {
+    const po = this.sceneObject.getTransform().getWorldPosition()
+    const n = this.sceneObject.getTransform().forward
+
+    const direction = rayEnd.sub(rayStart)
+
+    const dot = direction.dot(n)
+
+    if (Math.abs(dot) > 1e-6) {
+      const w = rayStart.sub(po)
+      const t = -n.dot(w) / dot
+
+      const intersectionPoint = rayStart.add(direction.uniformScale(t))
+
+      const r = this.sceneObject.getTransform().right
+      const u = this.sceneObject.getTransform().up
+
+      // Get the local X and Y coordinates within the plane space to check if the point resides within the interaction zone.
+      const d = intersectionPoint.sub(po)
+      const x = d.dot(r)
+      const y = d.dot(u)
+
+      const withinX = Math.abs(x) <= this.planeSize.x / 2
+      const withinY = Math.abs(y) <= this.planeSize.y / 2
+
+      return withinX && withinY
+    }
+
+    return false
+  }
+
+  /**
+   * Draws a debug visualization of the plane itself (not just the collider).
+   * Also draws a box representing the proximityDistance.
+   */
+  private drawDebugPlane() {
+    if (!this.sceneObject || !this.drawDebug) return
+
+    const transform = this.sceneObject.getTransform()
+
+    const po = transform.getWorldPosition()
+    const s = transform.getWorldScale()
+    const r = transform.right
+    const u = transform.up
+    const n = transform.forward
+
+    const halfX = (this.planeSize.x / 2) * s.x
+    const halfY = (this.planeSize.y / 2) * s.y
+
+    // Draw the plane rectangle
+    const corners = [
+      po.add(r.uniformScale(-halfX)).add(u.uniformScale(-halfY)), // Bottom Left
+      po.add(r.uniformScale(halfX)).add(u.uniformScale(-halfY)), // Bottom Right
+      po.add(r.uniformScale(halfX)).add(u.uniformScale(halfY)), // Top Right
+      po.add(r.uniformScale(-halfX)).add(u.uniformScale(halfY)) // Top Left
+    ]
+    for (let i = 0; i < 4; i++) {
+      const start = corners[i]
+      const end = corners[(i + 1) % 4]
+      global.debugRenderSystem.drawLine(start, end, new vec4(0, 1, 0, 1))
+    }
+
+    // Draw the proximityDistance box
+    const halfZ = (this.proximityDistance / 2) * s.z
+
+    const boxCorners = []
+    for (const dz of [-halfZ, halfZ]) {
+      for (const dy of [-halfY, halfY]) {
+        for (const dx of [-halfX, halfX]) {
+          boxCorners.push(po.add(r.uniformScale(dx)).add(u.uniformScale(dy)).add(n.uniformScale(dz)))
+        }
+      }
+    }
+
+    const edges = [
+      [0, 1],
+      [1, 3],
+      [3, 2],
+      [2, 0], // bottom face
+      [4, 5],
+      [5, 7],
+      [7, 6],
+      [6, 4], // top face
+      [0, 4],
+      [1, 5],
+      [2, 6],
+      [3, 7] // vertical edges
+    ]
+    for (const [i, j] of edges) {
+      global.debugRenderSystem.drawLine(boxCorners[i], boxCorners[j], new vec4(0, 0.5, 1, 1))
+    }
   }
 }

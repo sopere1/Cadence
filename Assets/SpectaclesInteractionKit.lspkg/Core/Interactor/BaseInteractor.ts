@@ -170,6 +170,20 @@ values require more deliberate movement before dragging begins."
    */
   onTriggerCanceled = this.onTriggerCanceledEvent.publicApi()
 
+  /**
+   * Returns if the Interactor is in some generic triggering state in the current frame.
+   */
+  get isTriggering(): boolean {
+    return this.currentTrigger !== InteractorTriggerType.None
+  }
+
+  /**
+   * Returns if the Interactor was in some generic triggering state in the previous frame.
+   */
+  get wasTriggering(): boolean {
+    return this.previousTrigger !== InteractorTriggerType.None
+  }
+
   protected set previousTrigger(trigger: InteractorTriggerType) {
     this._previousTrigger = trigger
   }
@@ -232,6 +246,11 @@ values require more deliberate movement before dragging begins."
     this.previousTrigger = this.currentTrigger
     this.previousDragVector = this.currentDragVector
     this._previousStartPoint = this.startPoint
+
+    // These values need to be cached to differently because the target provider's set is only updated during
+    // the lateUpdate of the frame, but updateState is called during the update of the frame.
+    this._wasHoveringCurrentInteractable = this._isHoveringCurrentInteractable
+    this._isHoveringCurrentInteractable = this.isHoveringCurrentInteractable
 
     this.currentInteractable = null
   }
@@ -325,6 +344,48 @@ values require more deliberate movement before dragging begins."
 
   private interactionStartedInteractable: Interactable | null = null
 
+  protected _wasHoveringCurrentInteractable: boolean | null = null
+  protected _isHoveringCurrentInteractable: boolean | null = null
+
+  /**
+   * Returns true if the Interactor was hovering the current Interactable in the previous frame.
+   */
+  get wasHoveringCurrentInteractable(): boolean | null {
+    return this._wasHoveringCurrentInteractable
+  }
+
+  /**
+   * Returns true if the Interactor is hovering the current Interactable in the current frame.
+   */
+  abstract get isHoveringCurrentInteractable(): boolean | null
+
+  /**
+   * Returns a list of Interactables that the Interactor is hovering (targeting ray intersects w/ Interactable's collider).
+   */
+  abstract get hoveredInteractables(): Interactable[]
+
+  /**
+   * Returns true if the Interactor is hovering over the given Interactable.
+   * An Interactor can hover over multiple overlapping Interactables at once, but only the most
+   * deeply nested Interactable will receive the official onHover events.
+   *
+   * This is useful for creating custom behaviors when receiving onHoverEnter/Exit events during trigger.
+   *
+   * @param interactable - the Interactable to check for
+   */
+  abstract isHoveringInteractable(interactable: Interactable): boolean
+
+  /**
+   * Returns true if the Interactor is hovering over the given Interactable or any of its Interactable descendants.
+   * An Interactor can hover over multiple overlapping Interactables at once, but only the most
+   * deeply nested Interactable will receive the official onHover events.
+   *
+   * This is useful for creating custom behaviors when receiving onHoverEnter/Exit events during trigger.
+   *
+   * @param interactable - the Interactable to check for
+   */
+  abstract isHoveringInteractableHierarchy(interactable: Interactable): boolean
+
   protected handleSelectionLifecycle(targetProvider: TargetProvider): void {
     // Special case for Poke, always considered inside
     if (targetProvider instanceof PokeTargetProvider) {
@@ -340,7 +401,7 @@ values require more deliberate movement before dragging begins."
     if (wasSelected && !isSelected) {
       if (this.interactionStartedInteractable !== null) {
         this._endedInsideInteractable =
-          targetProvider?.isIntersectingInteractable(this.interactionStartedInteractable) ?? false
+          targetProvider?.isHoveringInteractable(this.interactionStartedInteractable) ?? false
 
         this.interactionStartedInteractable = null
       }
@@ -478,7 +539,17 @@ values require more deliberate movement before dragging begins."
    * @returns the direct collider's position projected onto the plane
    */
   public colliderPlaneIntersection(interactable: Interactable | null): vec3 | null {
-    const origin = this.startPoint
+    return this.positionPlaneIntersection(interactable, this.endPoint)
+  }
+
+  /**
+   * Projects the given position onto the plane defined by the Interactable's forward vector / origin
+   * @param interactable - the Interactable used to define the plane of intersection
+   * @param position - the world position to project onto the plane
+   * @returns the direct collider's position projected onto the plane
+   */
+  public positionPlaneIntersection(interactable: Interactable | null, position: vec3 | null): vec3 | null {
+    const origin = position
 
     if (origin === null || interactable === null) {
       return null
@@ -502,6 +573,7 @@ values require more deliberate movement before dragging begins."
    */
   currentInteractableChanged = (): void => {
     if (this.currentInteractable !== this.previousInteractable) {
+      this._wasHoveringCurrentInteractable = false
       this.onCurrentInteractableChangedEvent.invoke(this.currentInteractable)
     }
   }

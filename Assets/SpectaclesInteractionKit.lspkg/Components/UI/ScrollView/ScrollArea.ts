@@ -2,7 +2,7 @@ import {DragInteractorEvent, InteractorEvent} from "../../../Core/Interactor/Int
 import NativeLogger from "../../../Utils/NativeLogger"
 
 import {InteractionManager} from "../../../Core/InteractionManager/InteractionManager"
-import {InteractorInputType} from "../../../Core/Interactor/Interactor"
+import {InteractorInputType, InteractorTriggerType} from "../../../Core/Interactor/Interactor"
 import {InteractionConfigurationProvider} from "../../../Providers/InteractionConfigurationProvider/InteractionConfigurationProvider"
 import Event, {PublicApi} from "../../../Utils/Event"
 import {validate} from "../../../Utils/validate"
@@ -170,6 +170,7 @@ export class ScrollArea extends View {
     validate(interactable, "Couldn't create an Interactable. Interactable typename is undefined.")
 
     interactable.useFilteredPinch = true
+    interactable.keepHoverOnTrigger = true
 
     // Hover
     interactable.onInteractorHoverEnter.add((event) => {
@@ -180,7 +181,12 @@ export class ScrollArea extends View {
       const outsideScrollCanvas =
         planeIntersection === null || !this.screenTransform.containsWorldPoint(planeIntersection)
 
-      if (outsideScrollCanvas) {
+      // If this hover enter comes from an existing interaction, we don't want to clear the Interactable.
+      const wasTriggering =
+        event.interactor.previousTrigger !== InteractorTriggerType.None &&
+        event.interactor.previousInteractable === event.target
+
+      if (outsideScrollCanvas && !wasTriggering) {
         event.stopPropagation()
         event.interactor.clearCurrentInteractable()
       }

@@ -29,8 +29,8 @@ export enum FieldTargetingMode {
 
 const HANDUI_INTERACTION_DISTANCE_THRESHOLD_CM = 15
 
-// The threshold to reject a near field interaction (the default hand ray must be within a 45 degree angle to the plane's normal).
-const NEAR_FIELD_ANGLE_THRESHOLD_RADIAN = Math.PI / 4
+// The maximum allowed angle between the hand ray and the plane's normal for a near field interaction to be valid.
+const NEAR_FIELD_ANGLE_THRESHOLD_RADIAN = Math.PI / 3
 
 // The minimum pinch strength required to trigger a pinch instead of a poke during direct targeting.
 export const MINIMUM_PINCH_STRENGTH = 0.2
@@ -245,6 +245,55 @@ more deliberate movement before dragging begins."
     return this._drawDebug
   }
 
+  get isHoveringCurrentInteractable(): boolean | null {
+    if (!this.currentInteractable) {
+      return null
+    }
+
+    // Since poke trigger only ends when the Interactable leaves the poke collider, isHoveringInteractable is not sufficient to check.
+    // Checking for poke edge case is necessary to send the correct onTriggerEnd event.
+    const pokedInteractable = this.pokeTargetProvider?.currentInteractableHitInfo?.interactable ?? null
+    const wasPoking = this.previousTrigger === InteractorTriggerType.Poke
+
+    if (wasPoking && this.previousInteractable !== null && pokedInteractable !== this.previousInteractable) {
+      return true
+    }
+
+    return this.activeTargetProvider.isHoveringInteractable(this.currentInteractable)
+  }
+
+  get hoveredInteractables(): Interactable[] {
+    const hoveredInteractables = Array.from(this.activeTargetProvider.currentInteractableSet)
+
+    // Since poke trigger only ends when the Interactable leaves the poke collider, currentInteractableSet is not sufficient to check.
+    // Checking for poke edge case is necessary to send accurate information right after a poke.
+    const pokedInteractable = this.pokeTargetProvider?.currentInteractableHitInfo?.interactable ?? null
+    const wasPoking = this.previousTrigger === InteractorTriggerType.Poke
+
+    if (wasPoking && this.previousInteractable !== null && pokedInteractable !== this.previousInteractable) {
+      hoveredInteractables.push(this.previousInteractable)
+    }
+
+    return hoveredInteractables
+  }
+
+  isHoveringInteractable(interactable: Interactable): boolean {
+    return this.activeTargetProvider.isHoveringInteractable(interactable)
+  }
+
+  isHoveringInteractableHierarchy(interactable: Interactable): boolean {
+    if (this.activeTargetProvider.isHoveringInteractable(interactable)) {
+      return true
+    }
+
+    for (const interactable of this.activeTargetProvider.currentInteractableSet) {
+      if (interactable.isDescendantOf(interactable)) {
+        return true
+      }
+    }
+    return false
+  }
+
   override updateState(): void {
     super.updateState()
     this.updateTarget()
@@ -279,9 +328,13 @@ more deliberate movement before dragging begins."
   override get planecastPoint(): vec3 | null {
     if (this.activeTargetProvider === this.indirectTargetProvider) {
       return this.raycastPlaneIntersection(this.currentInteractable)
-    } else {
+    } else if (this.activeTargetProvider === this.directTargetProvider) {
       return this.colliderPlaneIntersection(this.currentInteractable)
+    } else if (this.activeTargetProvider === this.pokeTargetProvider) {
+      return this.positionPlaneIntersection(this.currentInteractable, this.hand.indexTip.position)
     }
+
+    return null
   }
 
   /**
@@ -358,7 +411,18 @@ more deliberate movement before dragging begins."
    * Returns true if the hand is targeting via far field raycasting.
    */
   isFarField(): boolean {
-    return this.fieldTargetingMode === FieldTargetingMode.FarField
+    // If the hand is not yet triggering, check if the raycast actually intersects within the plane's bounds.
+    if (
+      !this.isTriggering &&
+      this.currentInteractable !== null &&
+      this.currentInteractionPlane !== null &&
+      this.startPoint !== null &&
+      this.targetHitInfo !== null
+    ) {
+      return !this.currentInteractionPlane.checkRayIntersection(this.startPoint, this.targetHitInfo.hit.position)
+    } else {
+      return this.fieldTargetingMode === FieldTargetingMode.FarField
+    }
   }
 
   isWithinDirectZone(): boolean {
@@ -589,7 +653,7 @@ more deliberate movement before dragging begins."
         handDirection.direction.angleTo(normal.uniformScale(-1)) < NEAR_FIELD_ANGLE_THRESHOLD_RADIAN
 
       // Rough check if InteractionPlane is mostly in FoV.
-      const isInFov = this.cameraProvider.inFoV(interactionPlane.getSceneObject().getTransform().getWorldPosition())
+      const isInFov = planeProjection !== null ? this.cameraProvider.inFoV(planeProjection.point) : false
 
       // If all checks are true, cache the plane.
       if (isNearPlane && isTowardPlane && isInFov) {

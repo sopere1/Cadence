@@ -18,6 +18,15 @@ export class CursorControllerProvider {
   private log = new NativeLogger(TAG)
 
   private cursors = new Map<Interactor, InteractorCursor>()
+  private defaultUseV2: boolean = false
+
+  setDefaultUseV2(useV2: boolean): void {
+    this.defaultUseV2 = useV2
+  }
+
+  getDefaultUseV2(): boolean {
+    return this.defaultUseV2
+  }
 
   registerCursor(cursor: InteractorCursor, interactor: Interactor | null = null): void {
     if (cursor.interactor !== null) {

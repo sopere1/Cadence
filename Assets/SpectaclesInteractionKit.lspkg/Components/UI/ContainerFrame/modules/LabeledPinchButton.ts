@@ -137,6 +137,10 @@ export class LabeledPinchButton {
       }
       isTriggered = false
     })
+    this.interactable.onTriggerEndOutside.add(() => {
+      this.rmv.setBlendShapeWeight("Pinch", 0)
+      isTriggered = false
+    })
     this.interactable.onTriggerCanceled.add(() => {
       this.rmv.setBlendShapeWeight("Pinch", 0)
       isTriggered = false

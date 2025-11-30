@@ -1,4 +1,4 @@
-import {Interactable, SyncInteractionType} from "../../Components/Interaction/Interactable/Interactable"
+import {Interactable} from "../../Components/Interaction/Interactable/Interactable"
 import {Interactor, InteractorInputType, InteractorTriggerType, TargetingMode} from "../Interactor/Interactor"
 
 import {InteractionPlane} from "../../Components/Interaction/InteractionPlane/InteractionPlane"
@@ -6,6 +6,7 @@ import {Singleton} from "../../Decorators/Singleton"
 import {ColliderUtils} from "../../Utils/ColliderUtils"
 import {LensConfig} from "../../Utils/LensConfig"
 import NativeLogger from "../../Utils/NativeLogger"
+import {SyncKitBridge} from "../../Utils/SyncKitBridge"
 import {HandInteractor} from "../HandInteractor/HandInteractor"
 import BaseInteractor from "../Interactor/BaseInteractor"
 import {DispatchableEventArgs} from "../Interactor/InteractorEvent"
@@ -39,16 +40,11 @@ export class InteractionManager {
   private colliderToInteractableMap = new Map<ColliderComponent, Interactable>()
   private eventDispatcher = new EventDispatcher(this.interactableSceneObjects)
 
-  /**
-   * Relevant only to lenses that use SpectaclesSyncKit when it has SyncInteractionManager in its prefab.
-   * This index number is used to link instances of the same Interactable across different connections (if Interactable.isSynced = true).
-   * The InteractionManager assumes that Interactables will be created in same order.
-   * Further refinement to linking Interactables across connections without developer friction will happen on future versions.
-   */
-  private interactableIdIdx = 0
   private interactablesByInteractableId = new Map<string, Interactable>()
 
   private _debugModeEnabled = false
+
+  private syncKitBridge = SyncKitBridge.getInstance()
 
   constructor() {
     this.defineScriptEvents()
@@ -186,10 +182,9 @@ export class InteractionManager {
     }
     this.interactables.add(interactable)
     this.interactableSceneObjects.set(interactable.sceneObject, interactable)
-    // Set the Interactable's ID by the order it was instantiated in the scene if synced.
-    if (interactable.isSynced) {
-      this.interactablesByInteractableId.set(this.interactableIdIdx.toString(), interactable)
-      this.interactableIdIdx++
+
+    if (interactable.syncEntity !== null) {
+      this.interactablesByInteractableId.set(interactable.syncEntity.networkId, interactable)
     }
     const colliders = this.findOrCreateColliderForInteractable(interactable)
     for (let i = 0; i < colliders.length; i++) {
@@ -348,38 +343,29 @@ export class InteractionManager {
    * @param eventArgs The event arguments to dispatch.
    */
   dispatchEvent(eventArgs: DispatchableEventArgs, propagateEvent: boolean = false): void {
-    // Retrieve the SessionController to check if this lens is connected.
-    const sessionController = (global as any).sessionController
-    const localConnectionId = sessionController !== undefined ? sessionController.getLocalConnectionId() : null
-    const isNotSynced = localConnectionId === null || !eventArgs.target.isSynced
-
-    // If the user is not synced to any connection, dispatch the event with no further checks.
-    if (sessionController === undefined || isNotSynced) {
-      this.eventDispatcher.dispatch(eventArgs)
-      return
-    }
+    const localConnectionId =
+      this.syncKitBridge.sessionController !== undefined
+        ? this.syncKitBridge.sessionController.getLocalConnectionId()
+        : null
+    const isNotSynced = localConnectionId === null
 
     // If the connectionId is undefined, the event is coming from the local user's Interactors (rather than a propagated event).
     if (eventArgs.connectionId === undefined) {
       eventArgs.connectionId = localConnectionId
     }
 
-    // When in a synced state, check that the interaction is coming from an allowed type before dispatching the event.
-    const isLocal = eventArgs.connectionId === eventArgs.target.localConnectionId ? SyncInteractionType.Local : 0
-    const isOther = !isLocal ? SyncInteractionType.Other : 0
-
-    const hostConnectionId = sessionController.getHostConnectionId()
-    const isHost = hostConnectionId === eventArgs.connectionId ? SyncInteractionType.Host : 0
-
-    const syncInteractionType = isHost | isLocal | isOther
-
-    if ((eventArgs.target.acceptableSyncInteractionTypes & syncInteractionType) !== 0) {
-      if (propagateEvent && eventArgs.target.isSynced) {
-        this.dispatchEventArgs.push(eventArgs)
-      }
-
+    // If the user is not synced to any connection, dispatch the event with no further checks.
+    if (isNotSynced) {
       this.eventDispatcher.dispatch(eventArgs)
+      return
     }
+
+    // Propagate the event to dispatchEventArgs for SyncInteractionManager to process in other connections.
+    if (propagateEvent) {
+      this.dispatchEventArgs.push(eventArgs)
+    }
+
+    this.eventDispatcher.dispatch(eventArgs)
   }
 
   set debugModeEnabled(enabled: boolean) {
@@ -610,6 +596,30 @@ export class InteractionManager {
         true
       )
     } else if (previousTrigger === currentTrigger && currentTrigger !== InteractorTriggerType.None) {
+      const wasHoveringCurrentInteractable = interactor.wasHoveringCurrentInteractable
+      const isHoveringCurrentInteractable = interactor.isHoveringCurrentInteractable
+
+      // Whenever we detect a change in hover during a trigger, send HoverEnter and HoverExit events.
+      if (isHoveringCurrentInteractable && !wasHoveringCurrentInteractable) {
+        this.dispatchEvent(
+          {
+            target: interactor.currentInteractable,
+            interactor: interactor,
+            eventName: "HoverEnter"
+          },
+          true
+        )
+      } else if (!isHoveringCurrentInteractable && wasHoveringCurrentInteractable) {
+        this.dispatchEvent(
+          {
+            target: interactor.currentInteractable,
+            interactor: interactor,
+            eventName: "HoverExit"
+          },
+          true
+        )
+      }
+
       this.dispatchEvent(
         {
           ...eventArgs,
@@ -623,14 +633,25 @@ export class InteractionManager {
       // if the trigger was actually applied to the Interactable in a previous update.
       !isNull(interactor.previousInteractable)
     ) {
-      this.dispatchEvent(
-        {
-          ...eventArgs,
-          eventName: "TriggerEnd",
-          endedInsideInteractable: (interactor as BaseInteractor).endedInsideInteractable ?? undefined
-        },
-        true
-      )
+      if (interactor.isHoveringCurrentInteractable) {
+        this.dispatchEvent(
+          {
+            ...eventArgs,
+            eventName: "TriggerEnd",
+            endedInsideInteractable: (interactor as BaseInteractor).endedInsideInteractable ?? undefined
+          },
+          true
+        )
+      } else {
+        this.dispatchEvent(
+          {
+            ...eventArgs,
+            eventName: "TriggerEndOutside",
+            endedInsideInteractable: (interactor as BaseInteractor).endedInsideInteractable ?? undefined
+          },
+          true
+        )
+      }
     }
   }
 

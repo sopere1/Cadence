@@ -197,6 +197,8 @@ export class PokeTargetProvider extends TargetProvider {
 
   private raycastJoints() {
     this.probe.sphereCastAll(POKE_SPHERECAST_RADIUS, this.startPoint, this.endPoint, (hits) => {
+      this.updateCurrentInteractableSet(hits)
+
       const currentInteractable = this.currentInteractableHitInfo?.interactable ?? null
       this._currentInteractableHitInfo = this.getInteractableHitFromRayCast(hits)
 

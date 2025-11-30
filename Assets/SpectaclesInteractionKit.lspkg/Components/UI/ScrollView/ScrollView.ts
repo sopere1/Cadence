@@ -151,6 +151,19 @@ size."
   )
   scrollAreaBounds: vec2 = new vec2(1, 1)
 
+  /**
+   * Relevant only to lenses that use SpectaclesSyncKit when it has SyncInteractionManager in its prefab.
+   * If set to true before runtime, the ScrollView's position will be synced whenever a new user joins the same Connected Lenses session.
+   */
+  @ui.separator
+  @ui.group_start("Sync Kit Support")
+  @input
+  @hint(
+    "Relevant only to lenses that use SpectaclesSyncKit when it has SyncInteractionManager in its prefab. \
+If set to true before runtime, the ScrollView's position will be synced whenever a new user joins the same Connected Lenses session."
+  )
+  public isSynced: boolean = false
+  @ui.group_end
   private onContentLengthChangedEvent = new Event<void>()
   public onContentLengthChanged: PublicApi<void> = this.onContentLengthChangedEvent.publicApi()
 
@@ -245,6 +258,8 @@ size."
       this.scrollProvider.resetContentOrigin()
       // We recompute boundaries once more to ensure that the scroll limit anchor is set properly.
       this.scrollProvider.recomputeBoundaries()
+
+      this.scrollProvider.resyncToStore()
     })
   }
 

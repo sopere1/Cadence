@@ -1,4 +1,7 @@
+import {Interactor} from "../../../Core/Interactor/Interactor"
 import WorldCameraFinderProvider from "../../../Providers/CameraProvider/WorldCameraFinderProvider"
+import {findComponentInParents} from "../../../Utils/SceneObjectUtils"
+import {InteractableManipulation} from "../InteractableManipulation/InteractableManipulation"
 import BillboardRotationCalculator, {ALMOST_ONE} from "./BillboardRotationCalculator"
 
 export type BillboardConfig = {
@@ -35,7 +38,7 @@ export default class BillboardController {
 
   // The target will be the SceneObject to rotate.
   private target: SceneObject
-  private targetTransform: Transform
+  private _targetTransform: Transform
 
   // The target will rotate according to the camera's position for X/Y-axes rotation, camera's rotation for Z-axis rotation.
   private cameraTransform: Transform = this.worldCameraProvider.getTransform()
@@ -45,9 +48,17 @@ export default class BillboardController {
   // We wait until the first update to set the rotation due to an inaccuracy of transforms on first frame.
   private firstUpdate = true
 
+  private manipulationComponent: InteractableManipulation | null = null
+
+  private pivotPoint: vec3 = vec3.zero()
+
+  public pivotingInteractor: Interactor | null = null
+
   constructor(config: BillboardConfig) {
     this.target = config.target
-    this.targetTransform = this.target.getTransform()
+    this._targetTransform = this.target.getTransform()
+
+    this.manipulationComponent = this.findInteractableManipulation(this.target)
 
     // Set up the rotation calculators to rotate along the axes with specific behavior.
     this.xAxisCalculator = new BillboardRotationCalculator({
@@ -90,6 +101,10 @@ export default class BillboardController {
     axisCalculator.axisEnabled = enabled
   }
 
+  public get targetTransform(): Transform {
+    return this._targetTransform
+  }
+
   public get axisEasing(): vec3 {
     return new vec3(this.xAxisCalculator.axisEasing, this.yAxisCalculator.axisEasing, this.zAxisCalculator.axisEasing)
   }
@@ -110,6 +125,21 @@ export default class BillboardController {
     this.xAxisCalculator.axisBufferRadians = MathUtils.DegToRad * bufferDegrees.x
     this.yAxisCalculator.axisBufferRadians = MathUtils.DegToRad * bufferDegrees.y
     this.zAxisCalculator.axisBufferRadians = MathUtils.DegToRad * bufferDegrees.z
+  }
+
+  /**
+   * Set the pivot point and pivoting Interactor to control the Billboard's pivot axis.
+   * To turn off pivoting about a point, reset the pivot point to vec3.zero()
+   * @param pivotPoint - the pivot point to billboard the target about in local space.
+   * @param interactor - the pivoting Interactor.
+   */
+  public setPivot(pivotPoint: vec3, interactor: Interactor) {
+    this.pivotPoint = pivotPoint
+    this.pivotingInteractor = interactor
+
+    this.manipulationComponent = this.findInteractableManipulation(
+      this.pivotingInteractor.currentInteractable?.sceneObject ?? null
+    )
   }
 
   // The following functions aid with getting unit vectors relative to the target's current rotation.
@@ -183,8 +213,49 @@ export default class BillboardController {
           throw new Error(`Invalid axis: ${axis}`)
       }
 
+      // If the pivot point (in local space) is not the origin of the target, modify the position as well.
+      if (!this.pivotPoint.equal(vec3.zero())) {
+        const worldPivotPoint = this.targetTransform.getWorldTransform().multiplyPoint(this.pivotPoint)
+
+        const v = this.targetTransform.getWorldPosition().sub(worldPivotPoint)
+        const rotatedV = rotationQuaternion.multiplyVec3(v)
+
+        const position = rotatedV.add(worldPivotPoint)
+
+        this.targetTransform.setWorldPosition(position)
+      }
+
       this.targetTransform.setWorldRotation(rotationQuaternion.multiply(this.targetTransform.getWorldRotation()))
+
+      // To help InteractableManipulation ensure 1:1 movement with the initial trigger point, update the transform.
+      if (this.manipulationComponent !== null) {
+        this.manipulationComponent.updateStartTransform()
+      }
     }
+  }
+
+  private findInteractableManipulation(object: SceneObject | null): InteractableManipulation | null {
+    if (!object) {
+      return null
+    }
+
+    const interactableManipulationTypeName = InteractableManipulation.getTypeName() as unknown as keyof ComponentNameMap
+    const component = object.getComponent(interactableManipulationTypeName)
+    if (component) {
+      return component as InteractableManipulation
+    }
+
+    return findComponentInParents<InteractableManipulation>(object, interactableManipulationTypeName, 10)
+  }
+
+  /**
+   * Resets the pivot point to billboard the target about its own origin. Recommended to use after finishing
+   * some spatial interaction that sets the pivotPoint of this component manually.
+   */
+  public resetPivotPoint() {
+    this.pivotPoint = vec3.zero()
+    this.pivotingInteractor = null
+    this.manipulationComponent = null
   }
 
   public resetRotation(): void {

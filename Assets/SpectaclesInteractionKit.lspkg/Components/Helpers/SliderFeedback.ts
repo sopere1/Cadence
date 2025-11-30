@@ -100,6 +100,28 @@ component attached to allow user interaction."
     this.interactable.onTriggerEnd.add(() => {
       this.renderMeshVisual.mainPass.pinch = 0.0
     })
+    this.interactable.onTriggerEndOutside.add(() => {
+      this.renderMeshVisual.mainPass.pinch = 0.0
+    })
+
+    this.interactable.onTriggerCanceled.add(() => {
+      this.renderMeshVisual.mainPass.pinch = 0.0
+    })
+
+    this.interactable.onSyncTriggerStart.add(() => {
+      this.renderMeshVisual.mainPass.pinch = 1.0
+      this.renderMeshVisual.mainPass.level = this.currentValue
+    })
+    this.interactable.onSyncTriggerEnd.add(() => {
+      this.renderMeshVisual.mainPass.pinch = 0.0
+    })
+    this.interactable.onSyncTriggerEndOutside.add(() => {
+      this.renderMeshVisual.mainPass.pinch = 0.0
+    })
+    this.interactable.onSyncTriggerCanceled.add(() => {
+      this.renderMeshVisual.mainPass.pinch = 0.0
+    })
+
     this.slider.onValueUpdate.add((value) => {
       this.currentValue = value
       this.renderMeshVisual.mainPass.level = this.getSliderLevelFromValue(value)

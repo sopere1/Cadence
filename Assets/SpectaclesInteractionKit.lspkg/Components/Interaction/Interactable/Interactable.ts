@@ -5,6 +5,8 @@ import {InteractorInputType} from "../../../Core/Interactor/Interactor"
 import {InteractionConfigurationProvider} from "../../../Providers/InteractionConfigurationProvider/InteractionConfigurationProvider"
 import Event from "../../../Utils/Event"
 import NativeLogger from "../../../Utils/NativeLogger"
+import {isDescendantOf} from "../../../Utils/SceneObjectUtils"
+import {SyncKitBridge} from "../../../Utils/SyncKitBridge"
 
 export type InteractableEventArgs = Omit<InteractorEvent, "interactable">
 
@@ -29,6 +31,15 @@ export enum SyncInteractionType {
 }
 
 /**
+ * TargetingVisual is a bitflag that determines the targeting visual representation.
+ */
+export enum TargetingVisual {
+  None = 0,
+  Cursor = 1 << 0,
+  Ray = 1 << 1
+}
+
+/**
  * This class represents an interactable object that can respond to various interaction events such as hover, trigger,
  * and drag. It provides event handlers for these interactions and uses the InteractionConfigurationProvider for
  * configuration.
@@ -45,16 +56,41 @@ export class Interactable extends BaseScriptComponent {
   private onTriggerStartEvent = new Event<InteractorEvent>()
   private onTriggerUpdateEvent = new Event<InteractorEvent>()
   private onTriggerEndEvent = new Event<InteractorEvent>()
+  private onTriggerEndOutsideEvent = new Event<InteractorEvent>()
+
   private onInteractorTriggerStartEvent = new Event<InteractorEvent>()
   private onInteractorTriggerEndEvent = new Event<InteractorEvent>()
+  private onInteractorTriggerEndOutsideEvent = new Event<InteractorEvent>()
 
   private onDragStartEvent = new Event<DragInteractorEvent>()
   private onDragUpdateEvent = new Event<DragInteractorEvent>()
   private onDragEndEvent = new Event<DragInteractorEvent>()
   private onTriggerCanceledEvent = new Event<InteractorEvent>()
 
+  private onSyncHoverEnterEvent = new Event<InteractorEvent>()
+  private onSyncHoverUpdateEvent = new Event<InteractorEvent>()
+  private onSyncHoverExitEvent = new Event<InteractorEvent>()
+  private onSyncInteractorHoverEnterEvent = new Event<InteractorEvent>()
+  private onSyncInteractorHoverExitEvent = new Event<InteractorEvent>()
+
+  private onSyncTriggerStartEvent = new Event<InteractorEvent>()
+  private onSyncTriggerUpdateEvent = new Event<InteractorEvent>()
+  private onSyncTriggerEndEvent = new Event<InteractorEvent>()
+  private onSyncTriggerEndOutsideEvent = new Event<InteractorEvent>()
+  private onSyncInteractorTriggerStartEvent = new Event<InteractorEvent>()
+  private onSyncInteractorTriggerEndEvent = new Event<InteractorEvent>()
+  private onSyncInteractorTriggerEndOutsideEvent = new Event<InteractorEvent>()
+  private onSyncTriggerCanceledEvent = new Event<InteractorEvent>()
+
+  private onSyncDragStartEvent = new Event<DragInteractorEvent>()
+  private onSyncDragUpdateEvent = new Event<DragInteractorEvent>()
+  private onSyncDragEndEvent = new Event<DragInteractorEvent>()
+
   private interactionConfigurationProvider: InteractionConfigurationProvider =
     InteractionConfigurationProvider.getInstance()
+
+  private syncKitBridge = SyncKitBridge.getInstance()
+  public readonly syncEntity = this.syncKitBridge.createSyncEntity(this)
 
   // Native Logging
   private log = new NativeLogger(TAG)
@@ -100,14 +136,24 @@ export class Interactable extends BaseScriptComponent {
   onTriggerUpdate = this.onTriggerUpdateEvent.publicApi()
 
   /**
-   * Called whenever the interactable exits the triggered state.
+   * Called whenever the interactable exits the triggered state while the interactor is hovering it.
    */
   onTriggerEnd = this.onTriggerEndEvent.publicApi()
 
   /**
-   * Called whenever an interactor is no longer triggering the interactable.
+   * Called whenever the interactable exits the triggered state while the interactor is not hovering it.
+   */
+  onTriggerEndOutside = this.onTriggerEndOutsideEvent.publicApi()
+
+  /**
+   * Called whenever an interactor is no longer triggering the interactable while the interactor is hovering it.
    */
   onInteractorTriggerEnd = this.onInteractorTriggerEndEvent.publicApi()
+
+  /**
+   * Called whenever an interactor is no longer triggering the interactable while the interactor is not hovering it.
+   */
+  onInteractorTriggerEndOutside = this.onInteractorTriggerEndOutsideEvent.publicApi()
 
   /**
    * Called whenever an interactor is lost and was in a down event with this interactable.
@@ -131,6 +177,96 @@ export class Interactable extends BaseScriptComponent {
    * was dragging.
    */
   onDragEnd = this.onDragEndEvent.publicApi()
+
+  /**
+   * The following onSync events are only invoked when in a Connected Lens with SpectaclesSyncKit present.
+   * If another connected user invokes an onHoverEnter event, the local user will see an onSyncHoverEvent.
+   * These events are useful for simple feedback scripts to allow other users to understand when an Interactable
+   * is being interacted with another user already.
+   */
+
+  /**
+   * Called whenever the interactable enters the hovered state from another connection.
+   */
+  onSyncHoverEnter = this.onSyncHoverEnterEvent.publicApi()
+
+  /**
+   * Called whenever a new interactor hovers over this interactable from another connection.
+   */
+  onSyncInteractorHoverEnter = this.onSyncInteractorHoverEnterEvent.publicApi()
+
+  /**
+   * Called whenever an interactor remains hovering over this interactable from another connection.
+   */
+  onSyncHoverUpdate = this.onSyncHoverUpdateEvent.publicApi()
+
+  /**
+   *  Called whenever the interactable is no longer hovered from another connection.
+   */
+  onSyncHoverExit = this.onSyncHoverExitEvent.publicApi()
+
+  /**
+   * Called whenever an interactor exits hovering this interactable from another connection.
+   */
+  onSyncInteractorHoverExit = this.onSyncInteractorHoverExitEvent.publicApi()
+
+  /**
+   * Called whenever the interactable enters the triggered state from another connection.
+   */
+  onSyncTriggerStart = this.onSyncTriggerStartEvent.publicApi()
+
+  /**
+   * Called whenever an interactor triggers an interactable from another connection.
+   */
+  onSyncInteractorTriggerStart = this.onSyncInteractorTriggerStartEvent.publicApi()
+
+  /**
+   * Called whenever an interactor continues to trigger an interactable from another connection.
+   */
+  onSyncTriggerUpdate = this.onSyncTriggerUpdateEvent.publicApi()
+
+  /**
+   * Called whenever the interactable exits the triggered state while the interactor is hovering it from another connection.
+   */
+  onSyncTriggerEnd = this.onSyncTriggerEndEvent.publicApi()
+
+  /**
+   * Called whenever the interactable exits the triggered state while the interactor is not hovering it from another connection.
+   */
+  onSyncTriggerEndOutside = this.onSyncTriggerEndOutsideEvent.publicApi()
+
+  /**
+   * Called whenever an interactor is no longer triggering the interactable while the interactor is hovering it from another connection.
+   */
+  onSyncInteractorTriggerEnd = this.onSyncInteractorTriggerEndEvent.publicApi()
+
+  /**
+   * Called whenever an interactor is no longer triggering the interactable while the interactor is not hovering it from another connection.
+   */
+  onSyncInteractorTriggerEndOutside = this.onSyncInteractorTriggerEndOutsideEvent.publicApi()
+
+  /**
+   * Called whenever an interactor is lost and was in a down event with this interactable from another connection.
+   */
+  onSyncTriggerCanceled = this.onSyncTriggerCanceledEvent.publicApi()
+
+  /**
+   * Called when an interactor is in a down event with this interactable and
+   * has moved a minimum drag distance from another connection.
+   */
+  onSyncDragStart = this.onSyncDragStartEvent.publicApi()
+
+  /**
+   * Called when an interactor is in a down event with this interactable and
+   * is moving from another connection.
+   */
+  onSyncDragUpdate = this.onSyncDragUpdateEvent.publicApi()
+
+  /**
+   * Called when an interactor was in a down event with this interactable and
+   * was dragging from another connection.
+   */
+  onSyncDragEnd = this.onSyncDragEndEvent.publicApi()
 
   // Interactor
   private _hoveringInteractor: InteractorInputType = InteractorInputType.None
@@ -169,6 +305,46 @@ export class Interactable extends BaseScriptComponent {
     ])
   )
   targetingMode: number = 3
+
+  /**
+   * Sets the preferred targeting visual. (Requires the V2 Cursor to be enabled on InteractorCursors).
+   * - 0: Cursor (default)
+   * - 1: Ray
+   * - 2: None
+   */
+  @input
+  @hint(
+    "Sets the preferred targeting visual. (Requires the V2 Cursor to be enabled on InteractorCursors).\n\n\
+- 0: None\n\
+- 1: Cursor (default)\n\
+- 2: Ray"
+  )
+  @widget(new ComboBoxWidget([new ComboBoxItem("None", 0), new ComboBoxItem("Cursor", 1), new ComboBoxItem("Ray", 2)]))
+  targetingVisual: number = TargetingVisual.Cursor
+
+  /**
+   * When enabled, this Interactable ignores any parent InteractionPlane and factors into the cursor's position and
+   * targetingVisual. Use when the Interactable is parented for organization but not spatially within that plane.
+   */
+  @input
+  @hint(
+    "When enabled, this Interactable ignores any parent InteractionPlane and factors into the cursor's position and \
+targetingVisual. Use when the Interactable is parented for organization but not spatially within that plane."
+  )
+  ignoreInteractionPlane: boolean = false
+
+  /**
+   * Defines the singular source of truth for feedback + UI + cursor components to poll to check
+   * if the Interactable should exhibit sticky behavior during trigger
+   * (cursor locks on Interactable, remains in active visual state even after de-hovering).
+   */
+  @input
+  @hint(
+    "Defines the singular source of truth for feedback + UI + cursor components to poll to check \
+if the Interactable should exhibit sticky behavior during trigger \
+(cursor locks on Interactable, remains in active visual state even after de-hovering)."
+  )
+  keepHoverOnTrigger: boolean = false
 
   /**
    * Enable this to allow the Interactable to instantly be dragged on trigger rather than obeying the Interactor's
@@ -315,58 +491,7 @@ the Interactable will also use filtered pinch events."
   )
   useFilteredPinch: boolean = false
 
-  /**
-   * Relevant only to lenses that use SpectaclesSyncKit when it has SyncInteractionManager in its prefab.
-   * If set to true on the same frame as creating the Interactable component,
-   * events targeting this Interactable will be propagated to other connections in the same lens.
-   */
-  @ui.separator
-  @ui.group_start("Sync Kit Support")
-  @input
-  @hint(
-    "Relevant only to lenses that use SpectaclesSyncKit when it has SyncInteractionManager in its prefab. \
-  If set to true on the same frame as creating the Interactable component, events targeting this Interactable \
-  will be propagated to other users in the same Connected Lenses session using SyncKit's SyncInteractionManager."
-  )
-  public isSynced: boolean = false
-
-  /**
-   * Relevant only to lenses that use SpectaclesSyncKit when it has SyncInteractionManager in its prefab.
-   * If set to SyncInteractionType.All, any user connected to the session can interact with this Interactable.
-   * If set to SyncInteraction.Host, only the session host can interact with this Interactable.
-   * If set to SyncInteraction.Local, only the local user can interact with this Interactable.
-   * Make sure to programmatically define the local user by setting interactable.localConnectionId to the user's connection ID.
-   * If set to SyncInteraction.HostAndLocal, both the host and local user can interact with this Interactable.
-   */
-  @input
-  @showIf("isSynced", true)
-  @hint(
-    "Relevant only to lenses that use SpectaclesSyncKit when it has SyncInteractionManager in its prefab. \
-If set to SyncInteractionType.All, any user connected to the session can interact with this Interactable. \
-If set to SyncInteraction.Host, only the session host can interact with this Interactable. \
-If set to SyncInteraction.Local, only the local user can interact with this Interactable. \
-Make sure to programmatically define the local user by setting Interactable.localConnectionId to the user's connection ID. \
-If set to SyncInteraction.HostAndLocal, both the host and local user can interact with this Interactable. \
-The Interactable's localConnectionId must be programmatically set by the developer."
-  )
-  @widget(
-    new ComboBoxWidget([
-      new ComboBoxItem("All", 7),
-      new ComboBoxItem("Host", 1),
-      new ComboBoxItem("Local", 2),
-      new ComboBoxItem("Host and Local", 3)
-    ])
-  )
-  public acceptableSyncInteractionTypes: number = 7
-  @ui.group_end
-
-  /**
-   * Relevant only to lenses that use SpectaclesSyncKit when it has SyncInteractionManager in its prefab.
-   * The local connection ID of the user that can interact with this Interactable.
-   * Null if there is no particular user for this Interactable or if the lens is not connected.
-   * If null during a session, make sure that Interactable.acceptableSyncInteractionTypes = SyncInteractionType.All.
-   */
-  public localConnectionId: string | null = null
+  private _triggeringConnectionId: string | null = null
 
   onAwake(): void {
     this.createEvent("OnDestroyEvent").bind(() => this.release())
@@ -379,6 +504,7 @@ The Interactable's localConnectionId must be programmatically set by the develop
 
     InteractionManager.getInstance().registerInteractable(this)
   }
+
   release(): void {
     InteractionManager.getInstance().deregisterInteractable(this)
   }
@@ -388,18 +514,23 @@ The Interactable's localConnectionId must be programmatically set by the develop
    * @param eventArgs - the interactor that is driving the event {@link Interactor}
    */
   hoverEnter = (eventArgs: InteractableEventArgs): void => {
+    const isLocalEvent = this.checkLocalEvent(eventArgs)
+
     if (this._hoveringInteractor === InteractorInputType.None) {
-      this.onHoverEnterEvent.invoke({
-        ...eventArgs,
-        interactable: this
-      })
+      const event = isLocalEvent ? this.onHoverEnterEvent : this.onSyncHoverEnterEvent
+      event.invoke({...eventArgs, interactable: this})
+
       this.log.v("InteractionEvent : " + "On Hover Enter Event")
     }
+
     this._hoveringInteractor |= eventArgs.interactor.inputType
-    this.onInteractorHoverEnterEvent.invoke({
+
+    const event = isLocalEvent ? this.onInteractorHoverEnterEvent : this.onSyncInteractorHoverEnterEvent
+    event.invoke({
       ...eventArgs,
       interactable: this
     })
+
     this.log.v("InteractionEvent : " + "On Interactor Hover Enter Event")
   }
 
@@ -411,7 +542,11 @@ The Interactable's localConnectionId must be programmatically set by the develop
     if (this._hoveringInteractor === InteractorInputType.None) {
       return
     }
-    this.onHoverUpdateEvent.invoke({
+
+    const isLocalEvent = this.checkLocalEvent(eventArgs)
+
+    const event = isLocalEvent ? this.onHoverUpdateEvent : this.onSyncHoverUpdateEvent
+    event.invoke({
       ...eventArgs,
       interactable: this
     })
@@ -423,14 +558,20 @@ The Interactable's localConnectionId must be programmatically set by the develop
    */
   hoverExit = (eventArgs: InteractableEventArgs): void => {
     this._hoveringInteractor &= ~eventArgs.interactor.inputType
-    this.onInteractorHoverExitEvent.invoke({
+
+    const isLocalEvent = this.checkLocalEvent(eventArgs)
+
+    const event = isLocalEvent ? this.onInteractorHoverExitEvent : this.onSyncInteractorHoverExitEvent
+    event.invoke({
       ...eventArgs,
       interactable: this
     })
+
     this.log.v("InteractionEvent : " + "On Interactor Hover Exit Event")
 
     if (this._hoveringInteractor === InteractorInputType.None) {
-      this.onHoverExitEvent.invoke({
+      const event = isLocalEvent ? this.onHoverExitEvent : this.onSyncHoverExitEvent
+      event.invoke({
         ...eventArgs,
         interactable: this
       })
@@ -443,19 +584,32 @@ The Interactable's localConnectionId must be programmatically set by the develop
    * @param eventArgs - event parameters, with omitted interactable
    */
   triggerStart = (eventArgs: InteractableEventArgs): void => {
+    const isLocalEvent = this.checkLocalEvent(eventArgs)
+
+    if (this._triggeringConnectionId === null) {
+      this._triggeringConnectionId = eventArgs.connectionId ?? null
+    } else if (this._triggeringConnectionId !== eventArgs.connectionId) {
+      return
+    }
+
     if (this._triggeringInteractor === InteractorInputType.None) {
-      this.onTriggerStartEvent.invoke({
+      const event = isLocalEvent ? this.onTriggerStartEvent : this.onSyncTriggerStartEvent
+      event.invoke({
         ...eventArgs,
         interactable: this
       })
+
       this.log.v("InteractionEvent : " + "On Trigger Start Event")
     }
 
     this._triggeringInteractor |= eventArgs.interactor.inputType
-    this.onInteractorTriggerStartEvent.invoke({
+
+    const event = isLocalEvent ? this.onInteractorTriggerStartEvent : this.onSyncInteractorTriggerStartEvent
+    event.invoke({
       ...eventArgs,
       interactable: this
     })
+
     this.log.v("InteractionEvent : " + "On Interactor Trigger Start Event")
   }
 
@@ -464,31 +618,87 @@ The Interactable's localConnectionId must be programmatically set by the develop
    * @param eventArgs - event parameters, with omitted interactable
    */
   triggerUpdate = (eventArgs: InteractableEventArgs): void => {
-    this.onTriggerUpdateEvent.invoke({
+    const isLocalEvent = this.checkLocalEvent(eventArgs)
+
+    if (this._triggeringConnectionId !== eventArgs.connectionId) {
+      return
+    }
+
+    const event = isLocalEvent ? this.onTriggerUpdateEvent : this.onSyncTriggerUpdateEvent
+    event.invoke({
       ...eventArgs,
       interactable: this
     })
+
     this.dragStartOrUpdate(eventArgs)
   }
 
   /**
-   * Notifies the interactable that it is exiting trigger state
+   * Notifies the interactable that it is exiting trigger state  while the interactor is hovering it
    * @param eventArgs - event parameters, with omitted interactable
    */
   triggerEnd = (eventArgs: InteractableEventArgs): void => {
+    const isLocalEvent = this.checkLocalEvent(eventArgs)
+
+    if (this._triggeringConnectionId === eventArgs.connectionId) {
+      this._triggeringConnectionId = null
+    } else if (this._triggeringConnectionId !== eventArgs.connectionId) {
+      return
+    }
+
     this._triggeringInteractor &= ~eventArgs.interactor.inputType
-    this.onInteractorTriggerEndEvent.invoke({
+
+    const event = isLocalEvent ? this.onInteractorTriggerEndEvent : this.onSyncInteractorTriggerEndEvent
+    event.invoke({
       ...eventArgs,
       interactable: this
     })
+
     this.log.v("InteractionEvent : " + "On Interactor Trigger End Event")
 
     if (this._triggeringInteractor === InteractorInputType.None) {
-      this.onTriggerEndEvent.invoke({
+      const event = isLocalEvent ? this.onTriggerEndEvent : this.onSyncTriggerEndEvent
+      event.invoke({
         ...eventArgs,
         interactable: this
       })
+
       this.log.v("InteractionEvent : " + "On Trigger End Event")
+    }
+    this.dragEnd(eventArgs)
+  }
+
+  /**
+   * Notifies the interactable that it is exiting trigger state while the interactor is not hovering it.
+   * @param eventArgs - event parameters, with omitted interactable
+   */
+  triggerEndOutside = (eventArgs: InteractableEventArgs): void => {
+    const isLocalEvent = this.checkLocalEvent(eventArgs)
+
+    if (this._triggeringConnectionId === eventArgs.connectionId) {
+      this._triggeringConnectionId = null
+    } else if (this._triggeringConnectionId !== eventArgs.connectionId) {
+      return
+    }
+
+    this._triggeringInteractor &= ~eventArgs.interactor.inputType
+
+    const event = isLocalEvent ? this.onInteractorTriggerEndOutsideEvent : this.onSyncInteractorTriggerEndOutsideEvent
+    event.invoke({
+      ...eventArgs,
+      interactable: this
+    })
+
+    this.log.v("InteractionEvent : " + "On Interactor Trigger End Outside Event")
+
+    if (this._triggeringInteractor === InteractorInputType.None) {
+      const event = isLocalEvent ? this.onTriggerEndOutsideEvent : this.onSyncTriggerEndOutsideEvent
+      event.invoke({
+        ...eventArgs,
+        interactable: this
+      })
+
+      this.log.v("InteractionEvent : " + "On Trigger End Outside Event")
     }
     this.dragEnd(eventArgs)
   }
@@ -498,13 +708,31 @@ The Interactable's localConnectionId must be programmatically set by the develop
    * @param eventArgs - event parameters, with omitted interactable
    */
   triggerCanceled = (eventArgs: InteractableEventArgs): void => {
-    this._triggeringInteractor = InteractorInputType.None
-    this.onTriggerCanceledEvent.invoke({
+    const isLocalEvent = this.checkLocalEvent(eventArgs)
+
+    if (this._triggeringConnectionId === eventArgs.connectionId) {
+      this._triggeringConnectionId = null
+    } else if (this._triggeringConnectionId !== eventArgs.connectionId) {
+      return
+    }
+
+    this._triggeringInteractor &= ~eventArgs.interactor.inputType
+
+    const event = isLocalEvent ? this.onTriggerCanceledEvent : this.onSyncTriggerCanceledEvent
+    event.invoke({
       ...eventArgs,
       interactable: this
     })
+
     this.log.v("InteractionEvent : " + "On Trigger Canceled Event")
     this.dragEnd(eventArgs)
+  }
+
+  /**
+   * Returns the connection ID of the first triggering Interactor if in a Connected Lens.
+   */
+  get triggeringConnectionId(): string | null {
+    return this._triggeringConnectionId
   }
 
   /**
@@ -539,11 +767,16 @@ The Interactable's localConnectionId must be programmatically set by the develop
       planecastDragVector: eventArgs.interactor.planecastDragVector
     }
 
+    const isLocalEvent = this.checkLocalEvent(eventArgs)
+
     if (previousDragVector === null) {
-      this.onDragStartEvent.invoke(dragInteractorEvent)
+      const event = isLocalEvent ? this.onDragStartEvent : this.onSyncDragStartEvent
+      event.invoke(dragInteractorEvent)
+
       this.log.v("InteractionEvent : " + "On Drag Start Event")
     } else {
-      this.onDragUpdateEvent.invoke(dragInteractorEvent)
+      const event = isLocalEvent ? this.onDragUpdateEvent : this.onSyncDragUpdateEvent
+      event.invoke(dragInteractorEvent)
     }
   }
 
@@ -557,18 +790,36 @@ The Interactable's localConnectionId must be programmatically set by the develop
       return
     }
 
-    this.onDragEndEvent.invoke({
+    const isLocalEvent = this.checkLocalEvent(eventArgs)
+
+    const event = isLocalEvent ? this.onDragEndEvent : this.onSyncDragEndEvent
+    event.invoke({
       ...eventArgs,
       interactable: this,
       dragVector: previousDragVector,
       planecastDragVector: eventArgs.interactor.planecastDragVector
     })
+
     this.log.v("InteractionEvent : " + "On Drag End Event")
+  }
+
+  /**
+   * @returns if this Interactable is a descendant of the given Interactable.
+   */
+  public isDescendantOf(interactable: Interactable) {
+    return isDescendantOf(this.sceneObject, interactable.sceneObject)
   }
 
   private enableColliders(enable: boolean) {
     for (let i = 0; i < this.colliders.length; i++) {
       this.colliders[i].enabled = enable
     }
+  }
+
+  private checkLocalEvent(event: InteractableEventArgs): boolean {
+    const isLocalEvent =
+      !event.connectionId || this.syncKitBridge.sessionController.getLocalConnectionId() === event.connectionId
+
+    return isLocalEvent
   }
 }

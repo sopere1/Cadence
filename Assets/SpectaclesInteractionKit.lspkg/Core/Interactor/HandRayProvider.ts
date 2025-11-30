@@ -4,6 +4,7 @@ import {HandInputData} from "../../Providers/HandInputData/HandInputData"
 import {HandType} from "../../Providers/HandInputData/HandType"
 import {interpolateVec3} from "../../Utils/mathUtils"
 import {FieldTargetingMode, HandInteractor} from "../HandInteractor/HandInteractor"
+import {InteractorTriggerType} from "./Interactor"
 import RaycastProxy from "./raycastAlgorithms/RaycastProxy"
 
 export type HandRayProviderConfig = {
@@ -18,6 +19,9 @@ export class HandRayProvider implements RayProvider {
   private handProvider: HandInputData = HandInputData.getInstance()
 
   private hand = this.handProvider.getHand(this.config.handType)
+
+  private lerpValue: number = 0
+  private offsetDistance: number = 0
 
   readonly raycast = new RaycastProxy(this.hand)
 
@@ -49,8 +53,7 @@ export class HandRayProvider implements RayProvider {
         }
       }
 
-      const locus = indexTip
-      const planeProjection = this.config.handInteractor.currentInteractionPlane?.projectPoint(locus) ?? null
+      const planeProjection = this.config.handInteractor.currentInteractionPlane?.projectPoint(indexTip) ?? null
 
       if (planeProjection === null) {
         return {
@@ -59,13 +62,26 @@ export class HandRayProvider implements RayProvider {
         }
       } else {
         // When transitioning to/from nearfield mode, lerp between GestureModule data and projection data.
-        const lerpValue = planeProjection.lerpValue
+        if (this.config.handInteractor.currentTrigger === InteractorTriggerType.None) {
+          this.lerpValue = planeProjection.lerpValue
+
+          // Offset the locus of the raycast to be exactly where the direct zone starts to prevent physics issues.
+          const directZoneDistance = this.config.handInteractor.currentInteractionPlane!.directZoneDistance
+          this.offsetDistance =
+            planeProjection.distance <= directZoneDistance ? directZoneDistance - planeProjection.distance : 0
+        }
 
         const startDirection = ray.direction
-        const targetDirection = planeProjection.point.sub(locus).normalize()
-        const lerpDirection = vec3.slerp(startDirection, targetDirection, lerpValue)
+        let targetDirection = planeProjection.point.sub(indexTip).normalize()
+        if (planeProjection.isWithinBehindZone) {
+          targetDirection = targetDirection.uniformScale(-1)
+        }
+        const lerpDirection = vec3.slerp(startDirection, targetDirection, this.lerpValue)
 
-        const lerpLocus = interpolateVec3(ray.locus, locus, lerpValue)
+        const startLocus = ray.locus
+
+        const targetLocus = indexTip.add(targetDirection.uniformScale(-this.offsetDistance))
+        const lerpLocus = interpolateVec3(startLocus, targetLocus, this.lerpValue)
 
         return {
           direction: lerpDirection,

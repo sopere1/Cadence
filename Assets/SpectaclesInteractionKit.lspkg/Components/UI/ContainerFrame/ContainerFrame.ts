@@ -3,16 +3,18 @@ import Event, {PublicApi, unsubscribe} from "../../../Utils/Event"
 import {FrameInputHandler, FrameInputOptions} from "./modules/FrameInputHandler"
 
 import {Billboard} from "../../../Components/Interaction/Billboard/Billboard"
-import {Interactable} from "../../../Components/Interaction/Interactable/Interactable"
+import {Interactable, TargetingVisual} from "../../../Components/Interaction/Interactable/Interactable"
 import {InteractableManipulation} from "../../../Components/Interaction/InteractableManipulation/InteractableManipulation"
 import {InteractionPlane} from "../../../Components/Interaction/InteractionPlane/InteractionPlane"
 import {HandInteractor} from "../../../Core/HandInteractor/HandInteractor"
 import {Interactor, InteractorInputType, TargetingMode} from "../../../Core/Interactor/Interactor"
 import {InteractorEvent} from "../../../Core/Interactor/InteractorEvent"
+import {parseInputState, serializeInputState} from "../../../Core/SyncInteractionManager/SyncInteractionManager"
 import WorldCameraFinderProvider from "../../../Providers/CameraProvider/WorldCameraFinderProvider"
 import {CursorControllerProvider} from "../../../Providers/CursorControllerProvider/CursorControllerProvider"
 import {lerp} from "../../../Utils/mathUtils"
 import NativeLogger from "../../../Utils/NativeLogger"
+import {SyncKitBridge} from "../../../Utils/SyncKitBridge"
 import {validate} from "../../../Utils/validate"
 import {CursorHandler} from "./modules/CursorHandler"
 import {HoverBehavior} from "./modules/HoverBehavior"
@@ -27,7 +29,6 @@ export type InputState = {
   rawHovered: boolean
   isPinching: boolean
   position: vec3
-  drag: vec3
   innerInteractableActive: boolean
 }
 
@@ -90,6 +91,13 @@ const defaultButtonSize = 3 * buttonMagicNumber
 const BUTTON_CORNER_OFFSET = 1 / scaleFactor
 
 const NEAR_FIELD_INTERACTION_ZONE_DISTANCE_CM = 30
+
+const CONTAINER_TRANSFORM_VALUE_KEY = "ContainerTransformValue"
+const CONTAINER_INNER_SIZE_VALUE_KEY = "ContainerInnerSizeValue"
+const CONTAINER_CONNECTION_VALUE_KEY = "ContainerConnectionValue"
+const CONTAINER_INPUT_STATE_VALUE_KEY = "ContainerInputStateValue"
+
+const DEFAULT_BILLBOARD_EASING = new vec3(0.5, 0.5, 0)
 
 /**
  * This class represents a container frame that can hold and manage UI elements. It provides settings for auto
@@ -316,8 +324,37 @@ moved."
 precision when interacting with buttons and UI elements using hand tracking."
   )
   private _enableInteractionPlane: boolean = false
+
+  /**
+   * Sets the preferred targeting visual. (Requires the V2 Cursor to be enabled on InteractorCursors).
+   * - 0: Cursor (default)
+   * - 1: Ray
+   * - 2: None
+   */
+  @input
+  @showIf("_enableInteractionPlane")
+  @hint(
+    "Sets the preferred targeting visual. (Requires the V2 Cursor to be enabled on InteractorCursors).\n\n\
+- 0: None\n\
+- 1: Cursor (default)\n\
+- 2: Ray"
+  )
+  @widget(new ComboBoxWidget([new ComboBoxItem("None", 0), new ComboBoxItem("Cursor", 1), new ComboBoxItem("Ray", 2)]))
+  private _targetingVisual: number = TargetingVisual.Cursor
   @ui.group_end
+  /**
+   * Relevant only to lenses that use SpectaclesSyncKit when it has SyncInteractionManager in its prefab.
+   * If set to true, the Container's position will be synced whenever a new user joins the same Connected Lenses session.
+   */
   @ui.separator
+  @ui.group_start("Sync Kit Support")
+  @input
+  @hint(
+    "Relevant only to lenses that use SpectaclesSyncKit when it has SyncInteractionManager in its prefab. \
+If set to true, the Container's position will be synced whenever a new user joins the same Connected Lenses session."
+  )
+  public isSynced: boolean = false
+  @ui.group_end
   private squeezeAmount = this.border * 0.15
 
   private frame!: SceneObject
@@ -401,7 +438,6 @@ precision when interacting with buttons and UI elements using hand tracking."
     rawHovered: false,
     isPinching: false,
     position: vec3.zero(),
-    drag: vec3.zero(),
     innerInteractableActive: false
   }
 
@@ -497,6 +533,10 @@ precision when interacting with buttons and UI elements using hand tracking."
 
   private _interactionPlane!: InteractionPlane
 
+  // Only defined if SyncKit is present within the lens project.
+  private syncKitBridge = SyncKitBridge.getInstance()
+  private readonly syncEntity = this.isSynced ? this.syncKitBridge.createSyncEntity(this) : null
+
   get interactionPlane() {
     return this._interactionPlane
   }
@@ -506,10 +546,11 @@ precision when interacting with buttons and UI elements using hand tracking."
   }
 
   private _frameOffset = vec3.zero()
+  private currentPosition: vec3 | null = null
 
   onAwake() {
     // frame
-    this.frame = this.framePrefab.instantiate(null as unknown as SceneObject)
+    this.frame = this.framePrefab.instantiate(this.sceneObject)
     this.frameTransform = this.frame.getTransform()
 
     this.targetScaleCache = new vec2(this.innerSize.x, this.innerSize.y)
@@ -576,6 +617,9 @@ precision when interacting with buttons and UI elements using hand tracking."
     this.manipulate.setCanScale(false)
 
     this.billboardComponent = this.useBillboarding ? this.parent.createComponent(Billboard.getTypeName()) : null
+    if (this.billboardComponent) {
+      this.billboardComponent.axisEasing = DEFAULT_BILLBOARD_EASING
+    }
 
     if (this.billboardComponent !== null) {
       this.billboardComponent.xAxisEnabled = this.xAlways
@@ -704,6 +748,8 @@ precision when interacting with buttons and UI elements using hand tracking."
 
     this.unSubscribeList.push(
       this.parentHoverBehavior.onHoverEnd.add(() => {
+        this.hoveringContentInteractableLast = false
+
         if (this.autoShowHide) this.hideVisual()
         if (this.material.mainPass.isHovered > 0) {
           this.hideCursorHighlight()
@@ -728,6 +774,24 @@ precision when interacting with buttons and UI elements using hand tracking."
 
     this.unSubscribeList.push(
       this.interactable.onTriggerStart((e: InteractorEvent) => {
+        if (e.interactor.targetHitInfo === null) {
+          throw new Error(`targetHitInfo of the triggering Interactor is an invalid value.`)
+        }
+
+        const initialHit = e.interactor.targetHitInfo.localHitPosition
+        const worldHitPosition = e.interactor.targetHitInfo.interactable.sceneObject
+          .getTransform()
+          .getWorldTransform()
+          .multiplyPoint(initialHit)
+
+        // Cache the initial local hit point relative to the billboard target's transform to use as pivot point.
+        if (this.billboardComponent !== null) {
+          this.billboardComponent.setPivot(
+            this.billboardComponent.targetTransform.getInvertedWorldTransform().multiplyPoint(worldHitPosition),
+            e.interactor
+          )
+        }
+
         const targetObject = e?.target.sceneObject
         let targetParent: SceneObject | null = targetObject
         validate(e.interactor.planecastPoint)
@@ -749,6 +813,8 @@ precision when interacting with buttons and UI elements using hand tracking."
     this.unSubscribeList.push(
       this.interactable.onTriggerUpdate((event: InteractorEvent) => {
         if (event.interactor.targetHitInfo && this.inputHandler.state.scaling) {
+          this.updateCursorHighlightPosition(event)
+
           validate(event.interactor.planecastPoint)
           validate(this.scalingSizeStart)
           const dragPos = this.parentTransform
@@ -773,6 +839,13 @@ precision when interacting with buttons and UI elements using hand tracking."
 
     this.unSubscribeList.push(
       this.interactable.onTriggerEnd(() => {
+        this.inputState.isPinching = false
+        this.currentInteractor = null
+      })
+    )
+
+    this.unSubscribeList.push(
+      this.interactable.onTriggerEndOutside(() => {
         this.inputState.isPinching = false
         this.currentInteractor = null
       })
@@ -826,10 +899,15 @@ precision when interacting with buttons and UI elements using hand tracking."
     this._interactionPlane = this.sceneObject.createComponent(InteractionPlane.getTypeName())
     this._interactionPlane.planeSize = this.totalInnerSize.add(vec2.one().uniformScale(this.border * 2))
     this._interactionPlane.proximityDistance = NEAR_FIELD_INTERACTION_ZONE_DISTANCE_CM
+    this._interactionPlane.targetingVisual = this._targetingVisual
 
     this._interactionPlane.enabled = this.enableInteractionPlane
 
     this.createEvent("LateUpdateEvent").bind(this.lateUpdate)
+
+    if (this.syncEntity !== null) {
+      this.syncEntity.notifyOnReady(this.setupConnectionCallbacks.bind(this))
+    }
 
     this.update()
   }
@@ -860,12 +938,48 @@ precision when interacting with buttons and UI elements using hand tracking."
     return this.cutOut
   }
 
+  private setupConnectionCallbacks(): void {
+    if (
+      this.syncEntity.currentStore.getAllKeys().find((key: string) => {
+        return key === CONTAINER_TRANSFORM_VALUE_KEY
+      })
+    ) {
+      const locationTransform = this.syncEntity.currentStore.getMat4(CONTAINER_TRANSFORM_VALUE_KEY)
+      const worldTransform = this.syncKitBridge.locationTransformToWorldTransform(locationTransform)
+
+      const innerSize = this.syncEntity.currentStore.getVec2(CONTAINER_INNER_SIZE_VALUE_KEY)
+
+      const inputStateSerialized = this.syncEntity.currentStore.getString(CONTAINER_INPUT_STATE_VALUE_KEY)
+      const inputState = parseInputState(JSON.parse(inputStateSerialized))
+
+      this.parentTransform.setWorldTransform(worldTransform)
+      this.innerSize = innerSize
+      this.inputState = inputState
+    } else {
+      const locationTransform = this.syncKitBridge.worldTransformToLocationTransform(
+        this.parentTransform.getWorldTransform()
+      )
+
+      const inputStateSerialized = serializeInputState(this.inputState)
+
+      this.syncEntity.currentStore.putVec2(CONTAINER_INNER_SIZE_VALUE_KEY, this.innerSize)
+      this.syncEntity.currentStore.putMat4(CONTAINER_TRANSFORM_VALUE_KEY, locationTransform)
+      this.syncEntity.currentStore.putString(
+        CONTAINER_CONNECTION_VALUE_KEY,
+        this.syncKitBridge.sessionController.getLocalConnectionId()
+      )
+      this.syncEntity.currentStore.putString(CONTAINER_INPUT_STATE_VALUE_KEY, JSON.stringify(inputStateSerialized))
+    }
+  }
+
   private updateCursorHighlightPosition = (e: InteractorEvent) => {
     validate(this.colliderShape)
     validate(this.colliderTransform)
 
     if (e.interactor.targetHitInfo) {
-      const hitPosition = e.interactor.targetHitInfo?.hit.position
+      validate(e.interactor.planecastPoint)
+      const hitPosition = e.interactor.planecastPoint
+
       const normalizer = vec3.one().div(this.colliderShape.size)
       this.inputState.position = this.colliderTransform
         .getInvertedWorldTransform()
@@ -910,6 +1024,23 @@ precision when interacting with buttons and UI elements using hand tracking."
   }
 
   private update = () => {
+    // If the SyncEntity is not ready yet in a Connected Lens, defer first update for later.
+    if (
+      this.syncKitBridge.sessionController !== undefined &&
+      this.syncEntity !== null &&
+      !this.syncEntity.isSetupFinished
+    ) {
+      this.animationManager.requestAnimationFrame(this.update)
+      return
+    }
+
+    // If the local user is not the last user to interact with the ContainerFrame, do not billboard/follow.
+    const isConnection =
+      this.syncEntity !== null
+        ? this.syncKitBridge.sessionController.getLocalConnectionId() ===
+          this.syncEntity.currentStore.getString(CONTAINER_CONNECTION_VALUE_KEY)
+        : true
+
     /// if in capture getDeltaTime returns 0
     if (getDeltaTime() === 0) {
       // lighten background if in capture
@@ -935,7 +1066,7 @@ precision when interacting with buttons and UI elements using hand tracking."
 
     // only billboard on translate
     if (this.inputHandler.state.translating) {
-      if (this.billboardComponent !== null) {
+      if (this.billboardComponent !== null && isConnection) {
         this.billboardComponent.xAxisEnabled =
           (this.xOnTranslate && (this.allowTranslation || this.forceTranslate)) || this.xAlways
         this.billboardComponent.yAxisEnabled =
@@ -950,7 +1081,12 @@ precision when interacting with buttons and UI elements using hand tracking."
       }
       this.translatingLastFrame = true
     } else {
-      if (this.billboardComponent !== null && (!this.isFollowing || this.xAlways || this.yAlways)) {
+      if (this.billboardComponent !== null && (!(this.isFollowing && isConnection) || this.xAlways || this.yAlways)) {
+        if (this.translatingLastFrame) {
+          this.currentPosition = null
+          this.billboardComponent.resetPivotPoint()
+        }
+
         this.billboardComponent.xAxisEnabled = this.xAlways
         this.billboardComponent.yAxisEnabled = this.yAlways
       }
@@ -970,16 +1106,12 @@ precision when interacting with buttons and UI elements using hand tracking."
     const borderRecalculationNeeded = this.currentBorder !== this.material.mainPass.frameMargin
     const constantPaddingChanged = !this.constantPadding.equal(this.lastConstantPadding)
 
-    if (
-      innerSizeChanged ||
-      borderRecalculationNeeded ||
-      constantPaddingChanged
-    ) {
+    if (innerSizeChanged || borderRecalculationNeeded || constantPaddingChanged) {
       this.targetScaleCache.x = this.innerSize.x
       this.targetScaleCache.y = this.innerSize.y
       this.lastConstantPadding.x = this.constantPadding.x
       this.lastConstantPadding.y = this.constantPadding.y
-      
+
       const isActualScaleChange = innerSizeChanged || constantPaddingChanged
       this.scaleFrame(isActualScaleChange)
     }
@@ -1030,8 +1162,53 @@ precision when interacting with buttons and UI elements using hand tracking."
 
     if (this.inputHandler.state.translating) this.snapBehavior?.update()
 
-    if (this.isFollowing) {
+    if (this.isFollowing && isConnection) {
       this.smoothFollow?.onUpdate()
+    }
+
+    if (this.syncEntity !== null && this.syncEntity.isSetupFinished) {
+      const currentConnectionId = this.syncEntity.currentStore.getString(CONTAINER_CONNECTION_VALUE_KEY)
+
+      // When triggering the Container, set the Container to follow that connection.
+      if (
+        this.interactable.triggeringInteractor !== InteractorInputType.None &&
+        (this.interactable.triggeringInteractor & InteractorInputType.Sync) === 0
+      ) {
+        this.syncEntity.currentStore.putString(
+          CONTAINER_CONNECTION_VALUE_KEY,
+          this.syncKitBridge.sessionController.getLocalConnectionId()
+        )
+      }
+
+      if (this.syncKitBridge.sessionController.getLocalConnectionId() === currentConnectionId) {
+        const locationTransform = this.syncKitBridge.worldTransformToLocationTransform(
+          this.parentTransform.getWorldTransform()
+        )
+
+        const inputStateSerialized = serializeInputState(this.inputState)
+
+        this.syncEntity.currentStore.putVec2(CONTAINER_INNER_SIZE_VALUE_KEY, this.innerSize)
+        this.syncEntity.currentStore.putMat4(CONTAINER_TRANSFORM_VALUE_KEY, locationTransform)
+        this.syncEntity.currentStore.putString(CONTAINER_INPUT_STATE_VALUE_KEY, JSON.stringify(inputStateSerialized))
+      } else if (this.syncKitBridge.sessionController.getLocalConnectionId() !== currentConnectionId) {
+        const locationTransform = this.syncEntity.currentStore.getMat4(CONTAINER_TRANSFORM_VALUE_KEY)
+        const worldTransform = this.syncKitBridge.locationTransformToWorldTransform(locationTransform)
+
+        const innerSize = this.syncEntity.currentStore.getVec2(CONTAINER_INNER_SIZE_VALUE_KEY)
+
+        const inputStateSerialized = this.syncEntity.currentStore.getString(CONTAINER_INPUT_STATE_VALUE_KEY)
+        const inputState = parseInputState(JSON.parse(inputStateSerialized))
+
+        this.innerSize = innerSize
+        this.parentTransform.setWorldTransform(worldTransform)
+        this.inputState = inputState
+
+        if (this.inputState.isHovered) {
+          this.showCursorHighlight()
+        } else {
+          this.hideCursorHighlight()
+        }
+      }
     }
 
     this.animationManager.requestAnimationFrame(this.update)
@@ -1114,7 +1291,7 @@ precision when interacting with buttons and UI elements using hand tracking."
     this.targetTransform.setLocalRotation(quat.quatIdentity())
 
     // Determine if onScalingUpdate should be invoked before forcePreserveScale might be reset
-    const shouldInvokeScalingUpdate = !this.forcePreserveScale && isTrueScaleUpdate;
+    const shouldInvokeScalingUpdate = !this.forcePreserveScale && isTrueScaleUpdate
 
     if (this.autoScaleContent) {
       if (!this.forcePreserveScale) {
@@ -1132,7 +1309,7 @@ precision when interacting with buttons and UI elements using hand tracking."
     if (shouldInvokeScalingUpdate) {
       this.onScalingUpdate.invoke()
     }
-    
+
     // Reset forcePreserveScale after it has been used for decisions
     if (this.forcePreserveScale) {
       this.forcePreserveScale = false

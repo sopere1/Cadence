@@ -73,8 +73,12 @@ export default abstract class TargetProvider {
   /**
    * @returns whether the TargetProvider is intersecting with the Interactable
    */
-  isIntersectingInteractable(interactable: Interactable): boolean {
+  isHoveringInteractable(interactable: Interactable): boolean {
     return this._currentInteractableSet.has(interactable)
+  }
+
+  get currentInteractableSet(): Set<Interactable> {
+    return this._currentInteractableSet
   }
 
   protected updateCurrentInteractableSet(hits: RayCastHit[]): void {

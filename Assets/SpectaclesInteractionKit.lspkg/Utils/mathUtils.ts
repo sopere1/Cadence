@@ -87,6 +87,11 @@ export function lerp(value1: number, value2: number, amount: number) {
   return value1 + (value2 - value1) * amount
 }
 
+export function smoothstep(edge0: number, edge1: number, x: number): number {
+  const t = Math.max(0, Math.min(1, (x - edge0) / (edge1 - edge0)))
+  return t * t * (3 - 2 * t)
+}
+
 /**
  * Dampens a current value back to a target value with spring-damper behavior.
  * @param current - the current value (usually position along an axis)

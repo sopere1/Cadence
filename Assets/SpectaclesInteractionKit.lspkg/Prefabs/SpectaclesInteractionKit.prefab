@@ -278,6 +278,21 @@
     - !<own> e54e9514-91f3-4922-87e0-e2ac31cc4855
   Components:
     []
+- !<SceneObject/360ccda0-8a8e-4d47-b490-762cd165cc6f>
+  PrefabRemaps:
+    []
+  Name: "[OPTIONAL] Connected Lens"
+  Enabled: false
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    - !<own> b8018fa2-37b3-496d-b2fc-bd1134263af5
+  Components:
+    []
 - !<SceneObject/37a62259-1ce7-4744-b6ea-dc2c55f35328>
   PrefabRemaps:
     []
@@ -1564,6 +1579,7 @@
     - 31059286-43ff-450e-8473-4be6a35e2271: 31059286-43ff-450e-7b8c-b4195ca1dd8e
     - 340699f0-9c85-4b33-a3f1-67f303dd78d6: 340699f0-9c85-4b33-5c0e-980cfc228729
     - 34c92e27-4c85-440a-bdf3-52d7aef59d1c: 34c92e27-4c85-440a-420c-ad28510a62e3
+    - 360ccda0-8a8e-4d47-b490-762cd165cc6f: 360ccda0-8a8e-4d47-4b6f-89d32e9a3390
     - 37a62259-1ce7-4744-b6ea-dc2c55f35328: 37a62259-1ce7-4744-4915-23d3aa0cacd7
     - 3a3fe018-7d5d-4ce2-8a13-411b9a6b2d0d: 3a3fe018-7d5d-4ce2-75ec-bee46594d2f2
     - 3b2ad7c8-6228-4421-aad9-65db4e6860b7: 3b2ad7c8-6228-4421-5526-9a24b1979f48
@@ -1638,6 +1654,7 @@
     - b50d0664-596f-4bd5-9d00-f8f4d7e27a90: b50d0664-596f-4bd5-62ff-070b281d856f
     - b6ce59a2-7157-40d0-acd2-fa7d4fb00afc: b6ce59a2-7157-40d0-532d-0582b04ff503
     - b7be8856-93cb-4049-893c-1b5bca4b2fb6: b7be8856-93cb-4049-76c3-e4a435b4d049
+    - b8018fa2-37b3-496d-b2fc-bd1134263af5: b8018fa2-37b3-496d-4d03-42eecbd9c50a
     - b92e7c34-d016-4929-94af-9b325dfef94c: b92e7c34-d016-4929-6b50-64cda20106b3
     - b9d14d3a-7945-428c-a768-41692c2eba14: b9d14d3a-7945-428c-5897-be96d3d145eb
     - bb442796-5475-4695-9191-7b4a8924ddf6: bb442796-5475-4695-6e6e-84b576db2209
@@ -1650,6 +1667,7 @@
     - c6eed1bb-0a4b-4589-a0fd-3c40ba5a1f0d: c6eed1bb-0a4b-4589-5f02-c3bf45a5e0f2
     - c7fc765f-3e34-42ed-b79c-d0d0f19dfd37: c7fc765f-3e34-42ed-4863-2f2f0e6202c8
     - c99ee9c2-c940-4c10-9c00-6df31f99c027: c99ee9c2-c940-4c10-63ff-920ce0663fd8
+    - cae2d8c6-0879-4b17-ac5a-df63bc8ab292: cae2d8c6-0879-4b17-53a5-209c43754d6d
     - d2fbbe47-d72e-4471-a1f1-02ffbcbe9212: d2fbbe47-d72e-4471-5e0e-fd0043416ded
     - d4da8107-4c33-4f45-b961-1df209595381: d4da8107-4c33-4f45-469e-e20df6a6ac7e
     - d54c61ff-e215-476a-95ec-82e3ddc2bb53: d54c61ff-e215-476a-6a13-7d1c223d44ac
@@ -1688,6 +1706,7 @@
   Children:
     - !<own> 70290c16-3e1e-4ebd-8841-ee066580ac95
     - !<own> e7c7be4e-0d9b-4cd3-baea-a871d82011d6
+    - !<own> 360ccda0-8a8e-4d47-b490-762cd165cc6f
   Components:
     []
 - !<SceneObject/ac31778e-bd43-42a4-97bc-4f485fb095fc>
@@ -1856,6 +1875,21 @@
     []
   Components:
     - !<own> 8e635d88-9a0d-4a5d-9f36-9c7bc7dec824
+- !<SceneObject/b8018fa2-37b3-496d-b2fc-bd1134263af5>
+  PrefabRemaps:
+    []
+  Name: SyncInteractionManager
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    []
+  Components:
+    - !<own> cae2d8c6-0879-4b17-ac5a-df63bc8ab292
 - !<SceneObject/b92e7c34-d016-4929-94af-9b325dfef94c>
   PrefabRemaps:
     []
@@ -2041,6 +2075,22 @@
     - !<own> 9ed0157f-fd08-47e6-9180-d9eaa60dae8e
   Components:
     []
+- !<ScriptComponent/cae2d8c6-0879-4b17-ac5a-df63bc8ab292>
+  PrefabRemaps:
+    []
+  Name: SyncInteractionManager
+  Enabled: true
+  ScriptAsset: !<reference> 8a9b1d02-a363-4339-be4e-9951baeeae9b
+  ScriptInputsDefault:
+    enableSyncCursors: true
+  ScriptTypesDefault:
+    {}
+  ScriptInputs:
+    "":
+      enableSyncCursors: true
+  ScriptTypes:
+    "":
+      {}
 - !<SceneObject/d2fbbe47-d72e-4471-a1f1-02ffbcbe9212>
   PrefabRemaps:
     []
@@ -2431,12 +2481,14 @@
   Enabled: true
   ScriptAsset: !<reference> 33b8ff0f-4908-4414-8821-6b37f1775435
   ScriptInputsDefault:
-    {}
+    useV2: true
+    drawDebug: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
     "":
-      {}
+      useV2: false
+      drawDebug: false
   ScriptTypes:
     "":
       {}
