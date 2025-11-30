@@ -848,7 +848,7 @@
       barSpace: !<float> 5.000000
       staffScale: !<float> 10.000000
       numSlots: !<float> 2.000000
-      containerPrefab: !<reference.ObjectPrefab> 26cd6000-07de-46b3-8211-fad55411bf8d
+      containerPrefab: !<reference.ObjectPrefab> 1bc5ce35-b5ac-4db4-bd56-8a04177d0421
       textMat: !<reference.Material> 4140d5d4-5a0f-47e7-b9d9-71371308b0b9
   ScriptTypes:
     "":

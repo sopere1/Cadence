@@ -1,13 +1,30 @@
-- !<ObjectPrefab/26cd6000-07de-46b3-8211-fad55411bf8d>
+- !<ObjectPrefab/1bc5ce35-b5ac-4db4-bd56-8a04177d0421>
   PackagePath: ""
   objects:
-    - !<own> 2cdb6c98-6890-4f87-a417-59c389fe9cf8
+    - !<own> 56f9139e-0333-4f8f-88aa-866c1e78fa97
   LazyLoading: false
   RetainAssets: true
-- !<SceneObject/2cdb6c98-6890-4f87-a417-59c389fe9cf8>
+- !<ScriptComponent/524eec2d-1ae5-4c6a-99ad-18e5b9655b85>
   PrefabRemaps:
-    - 2cdb6c98-6890-4f87-a417-59c389fe9cf8: 2cdb6c98-6890-4f87-5be8-a63c76016307
-    - 76f3225c-a6e8-4c58-890c-fcfeb2dc9343: 76f3225c-a6e8-4c58-76f3-03014d236cbc
+    []
+  Name: toggleMode
+  Enabled: true
+  ScriptAsset: !<reference> 1fca9b47-adee-4de8-9151-5be69f911d84
+  ScriptInputsDefault:
+    playButtonPrefab: true
+  ScriptTypesDefault:
+    {}
+  ScriptInputs:
+    "":
+      highlightMaterial: !<reference.Material> 1f6acc79-0db1-4a69-9b6e-d45073e707ad
+      playButtonPrefab: !<reference.ObjectPrefab> 2e0c1bed-b495-4589-93e8-ee9870eb8ee8
+  ScriptTypes:
+    "":
+      {}
+- !<SceneObject/56f9139e-0333-4f8f-88aa-866c1e78fa97>
+  PrefabRemaps:
+    - 524eec2d-1ae5-4c6a-99ad-18e5b9655b85: 524eec2d-1ae5-4c6a-6652-e71a469aa47a
+    - 56f9139e-0333-4f8f-88aa-866c1e78fa97: 56f9139e-0333-4f8f-7755-7993e1870568
   Name: container
   Enabled: true
   Layers: 1
@@ -19,21 +36,4 @@
   Children:
     []
   Components:
-    - !<own> 76f3225c-a6e8-4c58-890c-fcfeb2dc9343
-- !<ScriptComponent/76f3225c-a6e8-4c58-890c-fcfeb2dc9343>
-  PrefabRemaps:
-    []
-  Name: toggleMode
-  Enabled: true
-  ScriptAsset: !<reference> 1fca9b47-adee-4de8-9151-5be69f911d84
-  ScriptInputsDefault:
-    {}
-  ScriptTypesDefault:
-    {}
-  ScriptInputs:
-    "":
-      highlightMaterial: !<reference.Material> 1f6acc79-0db1-4a69-9b6e-d45073e707ad
-      playButtonPrefab: !<reference.ObjectPrefab> bfe14a66-65e3-4a10-9217-9dc039a931b0
-  ScriptTypes:
-    "":
-      {}
+    - !<own> 524eec2d-1ae5-4c6a-99ad-18e5b9655b85

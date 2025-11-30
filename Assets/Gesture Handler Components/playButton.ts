@@ -24,23 +24,41 @@ export class PlayButton {
         const buttonObj = this.buttonPrefab.instantiate(this.staffContainer);
         buttonObj.name = "PlayButton";
         
-        // Position it
+        // Position at bottom right corner of staff
         const buttonTransform = buttonObj.getTransform();
+        
+        // Calculate staff dimensions
+        const staffRight = (global as any).BARLENGTH * 0.5;  // Right edge of staff
+        const staffBottom = -(global as any).BARSPACE * 2;    // Bottom line of staff (line 0 is at -2 * BARSPACE)
+        
+        // Button size (scaled)
+        const buttonScale = 0.4;
+        const buttonSize = 15 * buttonScale; // Assuming button is 15 units, scaled to 0.4
+        
+        // Position so button's bottom-right corner aligns with staff's bottom-right
         const buttonOffset = new vec3(
-            (global as any).BARLENGTH * 0.5 + 8,
-            (global as any).BARSPACE * 2.5,
-            0
+            staffRight + buttonSize * 0.5,  // Right edge + half button width
+            staffBottom + buttonSize * 0.5,  // Bottom line + half button height
+            0                                 // Same plane
         );
         buttonTransform.setLocalPosition(buttonOffset);
         
-        // Store reference to render visual for color changes
+        // Make it smaller
+        buttonTransform.setLocalScale(new vec3(buttonScale, buttonScale, buttonScale));
+        
+        // Store reference to render visual
         this.renderVisual = buttonObj.getComponent("Component.RenderMeshVisual") as RenderMeshVisual;
         
-        // Store original color and set to gray/white
+        // Store original color and set to gray
         if (this.renderVisual && this.renderVisual.mainMaterial) {
-            // Set initial color to gray
-            this.originalColor = new vec4(0.7, 0.7, 0.7, 1.0); // Gray
+            this.originalColor = new vec4(0.7, 0.7, 0.7, 1.0);
             this.renderVisual.mainMaterial.mainPass.baseColor = this.originalColor;
+        }
+        
+        // Disable LookAtComponent if it's causing fuzzy look
+        const lookAt = buttonObj.getComponent("Component.LookAtComponent");
+        if (lookAt) {
+            lookAt.enabled = false;
         }
         
         // Ensure interactivity
