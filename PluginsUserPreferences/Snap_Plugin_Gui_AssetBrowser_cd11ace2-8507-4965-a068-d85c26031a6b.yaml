@@ -1,16 +1,10 @@
 CollapsedEntities:
   type: stringset
   value:
-    size: 607
+    size: 656
     values:
       - ""
       - Camera
-      - ChatGPT
-      - ChatGPT/ChatGPT Helper__PLACE_IN_SCENE.prefab
-      - ChatGPT/Scripts
-      - ChatGPT/Scripts/ChatGPT Demo.js
-      - ChatGPT/Scripts/ChatGPT Helper.lsc
-      - ChatGPT/package.native
       - Chord Audio Files
       - "Chord Audio Files/A#7.wav"
       - "Chord Audio Files/A#add9.wav"
@@ -137,9 +131,45 @@ CollapsedEntities:
       - Constants/chordMap.js
       - Constants/labelConfig.js
       - Constants/prompts.js
+      - Control Components
       - Control Components/main.js
+      - Gesture Handler Components/playButton.ts
       - Gesture Handler Components/rightLabelPinch.ts
       - Gesture Handler Components/toggleMode.ts
+      - Imported Packages
+      - Imported Packages/ChatGPT
+      - Imported Packages/ChatGPT/ChatGPT Helper__PLACE_IN_SCENE.prefab
+      - Imported Packages/ChatGPT/Scripts
+      - Imported Packages/ChatGPT/Scripts/ChatGPT Demo.js
+      - Imported Packages/ChatGPT/Scripts/ChatGPT Helper.lsc
+      - Imported Packages/ChatGPT/package.native
+      - Imported Packages/Hint - Tap to sound.lspkg
+      - Imported Packages/Hint - Tap to sound.lspkg/Hint - Tap to sound__PUT_IN_ORTHO_CAM.prefab
+      - Imported Packages/Hint - Tap to sound.lspkg/Materials
+      - Imported Packages/Hint - Tap to sound.lspkg/Materials/SpriteGraphPreset.mat
+      - Imported Packages/Hint - Tap to sound.lspkg/Materials/SpriteGraphPreset2.mat
+      - Imported Packages/Hint - Tap to sound.lspkg/Shaders
+      - Imported Packages/Hint - Tap to sound.lspkg/Shaders/SpriteGraphPreset.ss_graph
+      - Imported Packages/Hint - Tap to sound.lspkg/Textures
+      - Imported Packages/Hint - Tap to sound.lspkg/Textures/Hand_tap_to_sound_ripples.lensanim
+      - Imported Packages/Hint - Tap to sound.lspkg/Textures/Hand_tap_to_sound_ripples.lensanim/Hand_tap_to_sound_ripples
+      - Imported Packages/Hint - Tap to sound.lspkg/Textures/Hand_tap_to_sound_ripples.lensanim/Hand_tap_to_sound_ripples.png
+      - Imported Packages/Hint - Tap to sound.lspkg/Textures/Hint_Tap_No_Dot.lensanim
+      - Imported Packages/Hint - Tap to sound.lspkg/Textures/Hint_Tap_No_Dot.lensanim/Hint_Tap_No_Dot
+      - Imported Packages/Hint - Tap to sound.lspkg/Textures/Hint_Tap_No_Dot.lensanim/LPD_87_Hint_TAP_out_v01.png
+      - Imported Packages/Hint - Tap to sound.lspkg/package.native
+      - Imported Packages/Hint - Tap to sound.lspkg/package_dependencies.json
+      - Imported Packages/Hint - Turn On Sound.lspkg
+      - Imported Packages/Hint - Turn On Sound.lspkg/Hint - Sound on__PUT_IN_ORTHO_CAM.prefab
+      - Imported Packages/Hint - Turn On Sound.lspkg/Materials
+      - Imported Packages/Hint - Turn On Sound.lspkg/Materials/SpriteGraphPreset.mat
+      - Imported Packages/Hint - Turn On Sound.lspkg/Shaders
+      - Imported Packages/Hint - Turn On Sound.lspkg/Shaders/SpriteGraphPreset.ss_graph
+      - Imported Packages/Hint - Turn On Sound.lspkg/Textures
+      - Imported Packages/Hint - Turn On Sound.lspkg/Textures/HINT_Sound_turn_on_v01.lensanim/HINT_Sound_turn_on_v01
+      - Imported Packages/Hint - Turn On Sound.lspkg/Textures/HINT_Sound_turn_on_v01.lensanim/HINT_Sound_turn_on_v01.png
+      - Imported Packages/Hint - Turn On Sound.lspkg/package.native
+      - Imported Packages/Hint - Turn On Sound.lspkg/package_dependencies.json
       - LSTween.lspkg
       - LSTween.lspkg/Examples
       - LSTween.lspkg/Examples/Assets
@@ -165,6 +195,18 @@ CollapsedEntities:
       - LSTween.lspkg/TweenJS/Version.ts
       - LSTween.lspkg/TweenJS/mainGroup.ts
       - LSTween.lspkg/package.native
+      - Leaderboard.lspkg
+      - Leaderboard.lspkg/Leaderboard__PLACE_IN_SCENE.prefab
+      - Leaderboard.lspkg/Prefabs
+      - Leaderboard.lspkg/Prefabs/ScrollViewListItemLB.prefab
+      - Leaderboard.lspkg/README.md
+      - Leaderboard.lspkg/Scripts
+      - Leaderboard.lspkg/Scripts/GridContentCreatorLeaderboard.ts
+      - Leaderboard.lspkg/Scripts/LeaderboardDemo.ts
+      - Leaderboard.lspkg/Scripts/LeaderboardExample.ts
+      - Leaderboard.lspkg/Scripts/LeaderboardItemExample.ts
+      - Leaderboard.lspkg/package.native
+      - Leaderboard.lspkg/package_dependencies.json
       - Materials
       - Materials/Bridge.mat
       - Materials/ImageMaterial.mat
@@ -175,22 +217,27 @@ CollapsedEntities:
       - Materials/Shaders/occluder.ss_graph
       - Materials/Shaders/unlit.ss_graph
       - Materials/Staff.mat
+      - Materials/Text3D.mat
       - Materials/Textures
       - Materials/chord_label.mat
       - Materials/occ.mat
+      - Materials/text_3d.ss_graph
       - Prefabs
       - Prefabs/Bridge.prefab
+      - Prefabs/ChordLabel.prefab
+      - Prefabs/Container.prefab
       - Prefabs/Line.prefab
       - Prefabs/Meshes
       - Prefabs/Meshes/Cylinder.mesh
       - Prefabs/Meshes/Plane.mesh
       - Prefabs/Meshes/Sphere.mesh
       - Prefabs/Note.prefab
+      - Prefabs/PlayButton.prefab
       - Prefabs/Sphere.prefab
       - Prefabs/Staff.prefab
       - Prefabs/bridge_cylinder_open.glb
-      - Prefabs/chord_label.prefab
-      - Prefabs/container.prefab
+      - Sound Manager.lsc
+      - Spawners
       - Spawners/spawnChord.js
       - Spawners/spawnLabels.js
       - Spawners/spawnStaff.js
@@ -606,8 +653,10 @@ CollapsedEntities:
       - Utils
       - Utils/customGPT.ts
       - Utils/gptExplain.js
+      - Utils/progressionPlayer.ts
       - Utils/requestGPT.js
       - Utils/setColliders.ts
       - Utils/testCustom.ts
       - Utils/waitForGPT.js
+      - Visual Demonstration.lsc
   options: 4

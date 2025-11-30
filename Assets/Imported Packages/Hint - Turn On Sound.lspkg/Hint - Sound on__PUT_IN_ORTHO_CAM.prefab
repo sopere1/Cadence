@@ -1,0 +1,195 @@
+- !<ObjectPrefab/61980b13-d4ab-48cd-92b7-244062fd309c>
+  PackagePath: ""
+  objects:
+    - !<own> dbc7c24e-29ad-4673-9608-cf3245e07763
+  LazyLoading: false
+  RetainAssets: true
+- !<ScreenRegionComponent/036258c9-dc76-432b-9406-87b9d529e384>
+  PrefabRemaps:
+    []
+  Name: Screen Region
+  Enabled: true
+  ScreenRegionType: FullFrame
+  ResizeWithKeyboard: false
+- !<ScreenTransform/2182dc02-1621-4962-b578-f5b843ca82cc>
+  PrefabRemaps:
+    []
+  Name: Screen Transform
+  Enabled: true
+  IsAdvanced: false
+  Constraints:
+    pinToLeft: false
+    pinToTop: false
+    pinToRight: false
+    pinToBottom: false
+    fixedWidth: false
+    fixedHeight: false
+    deactivatedFixedSprite: false
+    deactivatedFixedPivot: false
+  Pivot: {x: 0.000000, y: 0.000000}
+  Transform:
+    position: {x: -0.065677, y: 0.060133, z: -80.000000}
+    rotation: {x: 0.000000, y: -0.000000, z: 0.000000}
+    scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    hasSegmentScaleCompensation: false
+  RawMode: true
+  ForceBasic: true
+  Anchor:
+    left: -0.505459
+    bottom: -0.185646
+    right: 0.473752
+    top: 0.196386
+  Offset:
+    left: 0.000000
+    bottom: 0.000000
+    right: 0.000000
+    top: 0.000000
+- !<SceneObject/4205d07c-e9ac-4a3e-801f-f78c70272862>
+  PrefabRemaps:
+    []
+  Name: Sound_turn_on
+  Enabled: true
+  Layers: 1048576
+  LocalTransform: !<TransformEntity>
+    Position: {x: -0.065677, y: 0.060133, z: -80.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    []
+  Components:
+    - !<own> 2182dc02-1621-4962-b578-f5b843ca82cc
+    - !<own> 5e25cede-fedc-4e5d-a9ac-af6b75c3b12c
+    - !<own> 96bf2a17-0f3a-48b6-9ac6-277ca0973415
+- !<ScreenTransform/435ecbb6-c7c7-489f-a4c8-bb7f4b63995b>
+  PrefabRemaps:
+    []
+  Name: Screen Transform
+  Enabled: true
+  IsAdvanced: false
+  Constraints:
+    pinToLeft: false
+    pinToTop: false
+    pinToRight: false
+    pinToBottom: false
+    fixedWidth: false
+    fixedHeight: false
+    deactivatedFixedSprite: false
+    deactivatedFixedPivot: false
+  Pivot: {x: 0.000000, y: 0.000000}
+  Transform:
+    position: {x: 0.000000, y: 0.000000, z: -1.000000}
+    rotation: {x: 0.000000, y: -0.000000, z: 0.000000}
+    scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    hasSegmentScaleCompensation: false
+  RawMode: true
+  ForceBasic: true
+  Anchor:
+    left: -1.000000
+    bottom: -1.000000
+    right: 1.000000
+    top: 1.000000
+  Offset:
+    left: 0.000000
+    bottom: 0.000000
+    right: 0.000000
+    top: 0.000000
+- !<ScriptComponent/5e25cede-fedc-4e5d-a9ac-af6b75c3b12c>
+  PrefabRemaps:
+    []
+  Name: VisualDemonstration
+  Enabled: true
+  ScriptAsset: !<reference> f705ac27-bd04-41fe-8cf3-6d3f651318bf
+  ScriptInputsDefault:
+    autostart: true
+    showType: true
+    appearDelay: true
+    advanced: true
+    disableHiding: true
+    hideOnCapture: true
+    hideOnCameraSwitch: true
+    eventCallbacks: true
+    callbackType: true
+    onVisualDemonstrationStartBehaviors: true
+    onVisualDemonstrationFinishBehaviors: true
+    onVisualDemonstrationStartCustomTriggers: true
+    onVisualDemonstrationFinishCustomTriggers: true
+    customFunctionScript: true
+    onVisualDemonstrationStartFunctions: true
+    onVisualDemonstrationFinishFunctions: true
+  ScriptTypesDefault:
+    {}
+  ScriptInputs:
+    "":
+      autostart: true
+      visualDemonstration: !<reference.BaseMeshVisual> 96bf2a17-0f3a-48b6-9ac6-277ca0973415
+      showType: 2
+      appearDelay: !<float> 0.000000
+      appearDuration: !<float> 0.000000
+      screenDuration: !<float> 5.000000
+      disappearDuration: 0.300000
+      repeatCount: 5
+      advanced: false
+      disableHiding: false
+      showOnce: true
+      hideOnCapture: true
+      hideOnCameraSwitch: true
+      eventCallbacks: false
+      callbackType: 0
+      onVisualDemonstrationStartBehaviors: !<reference.ScriptComponent[]>
+        []
+      onVisualDemonstrationFinishBehaviors: !<reference.ScriptComponent[]>
+        []
+      onVisualDemonstrationStartCustomTriggers: !<string[]>
+        []
+      onVisualDemonstrationFinishCustomTriggers: !<string[]>
+        []
+      customFunctionScript: !<reference.ScriptComponent> 00000000-0000-0000-0000-000000000000
+      onVisualDemonstrationStartFunctions: !<string[]>
+        []
+      onVisualDemonstrationFinishFunctions: !<string[]>
+        []
+  ScriptTypes:
+    "":
+      {}
+- !<Image/96bf2a17-0f3a-48b6-9ac6-277ca0973415>
+  PrefabRemaps:
+    []
+  Name: Image
+  Enabled: true
+  RenderOrder: 35
+  StretchMode: Fit
+  VerticalAlignment: Center
+  HorizontalAlignment: Center
+  MeshShadowMode: None
+  ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
+  ShadowDensity: 1.000000
+  Materials:
+    - !<reference> 6c98927a-af85-4001-844f-12f32195f967
+  FlipX: false
+  FlipY: false
+  RotationAngle: 0
+  Pivot: {x: 0.000000, y: 0.000000}
+  ExtentsTarget: !<reference> 00000000-0000-0000-0000-000000000000
+- !<SceneObject/dbc7c24e-29ad-4673-9608-cf3245e07763>
+  PrefabRemaps:
+    - 036258c9-dc76-432b-9406-87b9d529e384: 036258c9-dc76-432b-6bf9-78462ad61c7b
+    - 2182dc02-1621-4962-b578-f5b843ca82cc: 2182dc02-1621-4962-4a87-0a47bc357d33
+    - 4205d07c-e9ac-4a3e-801f-f78c70272862: 4205d07c-e9ac-4a3e-7fe0-08738fd8d79d
+    - 435ecbb6-c7c7-489f-a4c8-bb7f4b63995b: 435ecbb6-c7c7-489f-5b37-4480b49c66a4
+    - 5e25cede-fedc-4e5d-a9ac-af6b75c3b12c: 5e25cede-fedc-4e5d-5653-50948a3c4ed3
+    - 96bf2a17-0f3a-48b6-9ac6-277ca0973415: 96bf2a17-0f3a-48b6-6539-d8835f68cbea
+    - dbc7c24e-29ad-4673-9608-cf3245e07763: dbc7c24e-29ad-4673-69f7-30cdba1f889c
+  Name: Hint - Sound on
+  Enabled: true
+  Layers: 1048576
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: -1.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    - !<own> 4205d07c-e9ac-4a3e-801f-f78c70272862
+  Components:
+    - !<own> 036258c9-dc76-432b-9406-87b9d529e384
+    - !<own> 435ecbb6-c7c7-489f-a4c8-bb7f4b63995b

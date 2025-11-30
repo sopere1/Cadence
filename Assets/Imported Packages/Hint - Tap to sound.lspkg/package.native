@@ -1,0 +1,41 @@
+- !<NativePackageDescriptor/bc34116b-9093-4730-815c-6b1b8d698e71>
+  PackagePath: ""
+  StudioVersion:
+    major: 5
+    minor: 15
+    patch: 1
+    build: 25102815
+    type: Unset
+    buildFlavor: ""
+    timestamp: 0
+    commit: ""
+  Description: |-
+    Tap to sound Provides an animated graphic hint and a helper script that allows to configure hint behavior Tap to sound. Using it when need to emphasize an interactive element.
+    
+    Usage:
+    Drag and drop the asset "Hint - Tap to sound__PUT_IN_ORTHO_CAM" into your scene, under the Orthographic Camera. The hint will start playing automatically when the Lens is opened.
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  VersionMajor: 1
+  VersionMinor: 0
+  VersionPatch: 0
+  UpdateCheckpoint: 76
+  ExportUid: 20145602-68b8-4e4a-8569-c3cb493ac6f6
+  ComponentUid: cb4d8d5a-fd9f-4fed-ab60-7e28e44718b1
+  PackagePolicy: CanBeUnpackedTransparent
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  Instantiable: !<reference> 00000000-0000-0000-0000-000000000000
+  AssetLibraryDependencyStructure: !<AssetLibraryDependencyStructure>
+    Name: ""
+    AssetId: ""
+    Hash: ""
+    Version:
+      major: 0
+      minor: 0
+      patch: 0
+      build: 0

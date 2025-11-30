@@ -17,8 +17,7 @@ export function setCollidersEnabled(root: SceneObject, enabled: boolean): void {
     }
 }
 
-// Ensure the object has a valid interactable and collider
-// colliderSize: Optional custom size. If not provided, will try to calculate from Text3D bounding box
+// Ensure the object has a valid interactable and collider.
 export function ensureInteractableAndCollider(obj: SceneObject, colliderSize: vec3): void {
     // Setup Interactable component
     let interactable = obj.getComponent(Interactable.getTypeName() as any) as unknown as Interactable | null;

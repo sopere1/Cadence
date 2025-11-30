@@ -1,0 +1,942 @@
+{
+
+"images": [
+    "HINT_Sound_turn_on_v01.png"
+],
+
+"frames": [
+{
+    "name": "LPD-395_v01_0.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 3,
+        "y": 3,
+        "width": 82,
+        "height": 82
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 229,
+        "height": 228
+    },
+    "clipping": {
+        "left": 75,
+        "top": 73,
+        "right": 157,
+        "bottom": 155
+    }
+},{
+    "name": "LPD-395_v01_1.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 89,
+        "y": 3,
+        "width": 92,
+        "height": 92
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 229,
+        "height": 228
+    },
+    "clipping": {
+        "left": 70,
+        "top": 68,
+        "right": 162,
+        "bottom": 160
+    }
+},{
+    "name": "LPD-395_v01_2.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 185,
+        "y": 3,
+        "width": 103,
+        "height": 103
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 229,
+        "height": 228
+    },
+    "clipping": {
+        "left": 64,
+        "top": 63,
+        "right": 167,
+        "bottom": 166
+    }
+},{
+    "name": "LPD-395_v01_3.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 292,
+        "y": 3,
+        "width": 104,
+        "height": 105
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 229,
+        "height": 228
+    },
+    "clipping": {
+        "left": 64,
+        "top": 62,
+        "right": 168,
+        "bottom": 167
+    }
+},{
+    "name": "LPD-395_v01_4.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 400,
+        "y": 3,
+        "width": 98,
+        "height": 98
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 229,
+        "height": 228
+    },
+    "clipping": {
+        "left": 67,
+        "top": 65,
+        "right": 165,
+        "bottom": 163
+    }
+},{
+    "name": "LPD-395_v01_5.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 502,
+        "y": 3,
+        "width": 84,
+        "height": 84
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 229,
+        "height": 228
+    },
+    "clipping": {
+        "left": 74,
+        "top": 72,
+        "right": 158,
+        "bottom": 156
+    }
+},{
+    "name": "LPD-395_v01_6.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 590,
+        "y": 3,
+        "width": 84,
+        "height": 84
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 229,
+        "height": 228
+    },
+    "clipping": {
+        "left": 74,
+        "top": 72,
+        "right": 158,
+        "bottom": 156
+    }
+},{
+    "name": "LPD-395_v01_7.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 678,
+        "y": 3,
+        "width": 99,
+        "height": 99
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 229,
+        "height": 228
+    },
+    "clipping": {
+        "left": 66,
+        "top": 65,
+        "right": 165,
+        "bottom": 164
+    }
+},{
+    "name": "LPD-395_v01_8.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 781,
+        "y": 3,
+        "width": 105,
+        "height": 105
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 229,
+        "height": 228
+    },
+    "clipping": {
+        "left": 63,
+        "top": 62,
+        "right": 168,
+        "bottom": 167
+    }
+},{
+    "name": "LPD-395_v01_9.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 3,
+        "y": 112,
+        "width": 103,
+        "height": 103
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 229,
+        "height": 228
+    },
+    "clipping": {
+        "left": 64,
+        "top": 63,
+        "right": 167,
+        "bottom": 166
+    }
+},{
+    "name": "LPD-395_v01_10.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 110,
+        "y": 112,
+        "width": 90,
+        "height": 90
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 229,
+        "height": 228
+    },
+    "clipping": {
+        "left": 71,
+        "top": 69,
+        "right": 161,
+        "bottom": 159
+    }
+},{
+    "name": "LPD-395_v01_11.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 204,
+        "y": 112,
+        "width": 82,
+        "height": 82
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 229,
+        "height": 228
+    },
+    "clipping": {
+        "left": 75,
+        "top": 73,
+        "right": 157,
+        "bottom": 155
+    }
+},{
+    "name": "LPD-395_v01_12.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 290,
+        "y": 112,
+        "width": 94,
+        "height": 94
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 229,
+        "height": 228
+    },
+    "clipping": {
+        "left": 69,
+        "top": 66,
+        "right": 163,
+        "bottom": 160
+    }
+},{
+    "name": "LPD-395_v01_13.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 388,
+        "y": 112,
+        "width": 106,
+        "height": 106
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 229,
+        "height": 228
+    },
+    "clipping": {
+        "left": 63,
+        "top": 60,
+        "right": 169,
+        "bottom": 166
+    }
+},{
+    "name": "LPD-395_v01_14.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 498,
+        "y": 112,
+        "width": 118,
+        "height": 118
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 229,
+        "height": 228
+    },
+    "clipping": {
+        "left": 57,
+        "top": 54,
+        "right": 175,
+        "bottom": 172
+    }
+},{
+    "name": "LPD-395_v01_15.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 620,
+        "y": 112,
+        "width": 178,
+        "height": 177
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 229,
+        "height": 228
+    },
+    "clipping": {
+        "left": 26,
+        "top": 25,
+        "right": 204,
+        "bottom": 202
+    }
+},{
+    "name": "LPD-395_v01_16.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 3,
+        "y": 293,
+        "width": 200,
+        "height": 200
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 229,
+        "height": 228
+    },
+    "clipping": {
+        "left": 15,
+        "top": 13,
+        "right": 215,
+        "bottom": 213
+    }
+},{
+    "name": "LPD-395_v01_17.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 207,
+        "y": 293,
+        "width": 218,
+        "height": 217
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 229,
+        "height": 228
+    },
+    "clipping": {
+        "left": 6,
+        "top": 5,
+        "right": 224,
+        "bottom": 222
+    }
+},{
+    "name": "LPD-395_v01_18.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 429,
+        "y": 293,
+        "width": 220,
+        "height": 221
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 229,
+        "height": 228
+    },
+    "clipping": {
+        "left": 5,
+        "top": 3,
+        "right": 225,
+        "bottom": 224
+    }
+},{
+    "name": "LPD-395_v01_19.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 653,
+        "y": 293,
+        "width": 224,
+        "height": 223
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 229,
+        "height": 228
+    },
+    "clipping": {
+        "left": 3,
+        "top": 2,
+        "right": 227,
+        "bottom": 225
+    }
+},{
+    "name": "LPD-395_v01_20.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 3,
+        "y": 520,
+        "width": 224,
+        "height": 225
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 229,
+        "height": 228
+    },
+    "clipping": {
+        "left": 3,
+        "top": 1,
+        "right": 227,
+        "bottom": 226
+    }
+},{
+    "name": "LPD-395_v01_21.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 231,
+        "y": 520,
+        "width": 204,
+        "height": 205
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 229,
+        "height": 228
+    },
+    "clipping": {
+        "left": 13,
+        "top": 11,
+        "right": 217,
+        "bottom": 216
+    }
+},{
+    "name": "LPD-395_v01_22.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 439,
+        "y": 520,
+        "width": 210,
+        "height": 211
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 229,
+        "height": 228
+    },
+    "clipping": {
+        "left": 10,
+        "top": 8,
+        "right": 220,
+        "bottom": 219
+    }
+},{
+    "name": "LPD-395_v01_23.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 653,
+        "y": 520,
+        "width": 216,
+        "height": 217
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 229,
+        "height": 228
+    },
+    "clipping": {
+        "left": 7,
+        "top": 5,
+        "right": 223,
+        "bottom": 222
+    }
+},{
+    "name": "LPD-395_v01_24.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 3,
+        "y": 749,
+        "width": 220,
+        "height": 219
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 229,
+        "height": 228
+    },
+    "clipping": {
+        "left": 5,
+        "top": 4,
+        "right": 225,
+        "bottom": 223
+    }
+},{
+    "name": "LPD-395_v01_25.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 227,
+        "y": 749,
+        "width": 222,
+        "height": 223
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 229,
+        "height": 228
+    },
+    "clipping": {
+        "left": 4,
+        "top": 2,
+        "right": 226,
+        "bottom": 225
+    }
+},{
+    "name": "LPD-395_v01_26.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 453,
+        "y": 749,
+        "width": 224,
+        "height": 223
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 229,
+        "height": 228
+    },
+    "clipping": {
+        "left": 3,
+        "top": 2,
+        "right": 227,
+        "bottom": 225
+    }
+},{
+    "name": "LPD-395_v01_27.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 681,
+        "y": 749,
+        "width": 224,
+        "height": 223
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 229,
+        "height": 228
+    },
+    "clipping": {
+        "left": 3,
+        "top": 2,
+        "right": 227,
+        "bottom": 225
+    }
+},{
+    "name": "LPD-395_v01_28.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 3,
+        "y": 976,
+        "width": 202,
+        "height": 203
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 229,
+        "height": 228
+    },
+    "clipping": {
+        "left": 16,
+        "top": 12,
+        "right": 218,
+        "bottom": 215
+    }
+},{
+    "name": "LPD-395_v01_29.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 209,
+        "y": 976,
+        "width": 210,
+        "height": 209
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 229,
+        "height": 228
+    },
+    "clipping": {
+        "left": 12,
+        "top": 9,
+        "right": 222,
+        "bottom": 218
+    }
+},{
+    "name": "LPD-395_v01_30.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 423,
+        "y": 976,
+        "width": 216,
+        "height": 215
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 229,
+        "height": 228
+    },
+    "clipping": {
+        "left": 9,
+        "top": 6,
+        "right": 225,
+        "bottom": 221
+    }
+},{
+    "name": "LPD-395_v01_31.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 643,
+        "y": 976,
+        "width": 220,
+        "height": 219
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 229,
+        "height": 228
+    },
+    "clipping": {
+        "left": 7,
+        "top": 4,
+        "right": 227,
+        "bottom": 223
+    }
+},{
+    "name": "LPD-395_v01_32.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 3,
+        "y": 1199,
+        "width": 222,
+        "height": 221
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 229,
+        "height": 228
+    },
+    "clipping": {
+        "left": 6,
+        "top": 3,
+        "right": 228,
+        "bottom": 224
+    }
+},{
+    "name": "LPD-395_v01_33.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 229,
+        "y": 1199,
+        "width": 224,
+        "height": 223
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 229,
+        "height": 228
+    },
+    "clipping": {
+        "left": 5,
+        "top": 2,
+        "right": 229,
+        "bottom": 225
+    }
+},{
+    "name": "LPD-395_v01_34.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 457,
+        "y": 1199,
+        "width": 224,
+        "height": 225
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 229,
+        "height": 228
+    },
+    "clipping": {
+        "left": 5,
+        "top": 1,
+        "right": 229,
+        "bottom": 226
+    }
+},{
+    "name": "LPD-395_v01_35.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 685,
+        "y": 1199,
+        "width": 208,
+        "height": 207
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 229,
+        "height": 228
+    },
+    "clipping": {
+        "left": 13,
+        "top": 10,
+        "right": 221,
+        "bottom": 217
+    }
+},{
+    "name": "LPD-395_v01_36.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 3,
+        "y": 1428,
+        "width": 214,
+        "height": 213
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 229,
+        "height": 228
+    },
+    "clipping": {
+        "left": 10,
+        "top": 7,
+        "right": 224,
+        "bottom": 220
+    }
+},{
+    "name": "LPD-395_v01_37.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 221,
+        "y": 1428,
+        "width": 218,
+        "height": 217
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 229,
+        "height": 228
+    },
+    "clipping": {
+        "left": 8,
+        "top": 5,
+        "right": 226,
+        "bottom": 222
+    }
+},{
+    "name": "LPD-395_v01_38.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 443,
+        "y": 1428,
+        "width": 220,
+        "height": 221
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 229,
+        "height": 228
+    },
+    "clipping": {
+        "left": 7,
+        "top": 3,
+        "right": 227,
+        "bottom": 224
+    }
+},{
+    "name": "LPD-395_v01_39.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 667,
+        "y": 1428,
+        "width": 224,
+        "height": 223
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 229,
+        "height": 228
+    },
+    "clipping": {
+        "left": 5,
+        "top": 2,
+        "right": 229,
+        "bottom": 225
+    }
+}
+],
+
+"animations": {
+    "LPD-395_v01": { "frames": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39] }
+},
+
+"meta": {
+        "app": "http://www.codeandweb.com/texturepacker",
+        "description": "Json file for Lens Studio Framework",
+        "version": "1.0",
+        "smartupdate": "$TexturePacker:SmartUpdate:34eb07e11a305d88fdc5094bda99a8b4:b9e1f3fb4e7a21297676654b8c632c81:db5563a58a486953e4f99bf8d6dec0a4$"
+        "Created with TexturePacker (https://www.codeandweb.com/texturepacker) for Lens Studio"
+    }
+}

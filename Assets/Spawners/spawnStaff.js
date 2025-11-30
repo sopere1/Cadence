@@ -1,16 +1,17 @@
-function createSlots(root, numSlots){
+function createSlots(root, numSlots) {
     const slotSpacing = global.BARLENGTH * 0.25;
 
     for (let i = 0; i < numSlots; i++) {
+        // slots are placed symmetrically from center
         const sign = i % 2 === 0 ? -1 : 1;
         const offset = new vec3(sign * slotSpacing, 0, 0);
 
         const slotObj = global.scene.createSceneObject("Slot_" + i);
         slotObj.setParent(root);
-        
+
         const slotTransform = slotObj.getTransform();
         slotTransform.setLocalPosition(offset);
-        
+
         slotObj.slotIndex = i;
         root.slotObjects.push(slotObj);
     }

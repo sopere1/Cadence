@@ -1,0 +1,54 @@
+- !<ObjectPrefab/bfe14a66-65e3-4a10-9217-9dc039a931b0>
+  PackagePath: ""
+  objects:
+    - !<own> 2715b162-954c-4d07-b25d-dbc9d061ae94
+  LazyLoading: false
+  RetainAssets: true
+- !<SceneObject/2715b162-954c-4d07-b25d-dbc9d061ae94>
+  PrefabRemaps:
+    - 2715b162-954c-4d07-b25d-dbc9d061ae94: 2715b162-954c-4d07-4da2-24362f9e516b
+    - 3cf484c7-6b0f-47b9-b714-b26220b804d0: 3cf484c7-6b0f-47b9-48eb-4d9ddf47fb2f
+    - ffb86f18-2c49-46c4-9678-4017e42d4635: ffb86f18-2c49-46c4-6987-bfe81bd2b9ca
+  Name: PlayButton
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    []
+  Components:
+    - !<own> 3cf484c7-6b0f-47b9-b714-b26220b804d0
+    - !<own> ffb86f18-2c49-46c4-9678-4017e42d4635
+- !<LookAtComponent/3cf484c7-6b0f-47b9-b714-b26220b804d0>
+  PrefabRemaps:
+    []
+  Name: Look At
+  Enabled: true
+  LookAtMode: LookAtPoint
+  AimVectors: ZAimYUp
+  WorldUpVector: SceneY
+  Target: !<reference> 00000000-0000-0065-0000-000000000064
+  OffsetRotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+- !<RenderMeshVisual/ffb86f18-2c49-46c4-9678-4017e42d4635>
+  PrefabRemaps:
+    []
+  Name: Render Mesh Visual
+  Enabled: true
+  RenderOrder: 0
+  StretchMode: Stretch
+  VerticalAlignment: Center
+  HorizontalAlignment: Center
+  MeshShadowMode: None
+  ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
+  ShadowDensity: 1.000000
+  Materials:
+    - !<reference> 6c98927a-af85-4001-844f-12f32195f967
+  Mesh: !<reference> 30236ec2-a183-4ab8-b7cb-eb5aca3101e1
+  Skin: !<reference> 00000000-0000-0000-0000-000000000000
+  BlendShapesEnabled: true
+  BlendNormals: false
+  BlendShapes:
+    {}

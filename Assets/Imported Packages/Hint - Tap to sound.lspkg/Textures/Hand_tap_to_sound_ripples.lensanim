@@ -1,0 +1,482 @@
+{
+
+"images": [
+    "Hand_tap_to_sound_ripples.png"
+],
+
+"frames": [
+{
+    "name": "ripple0001.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 3,
+        "y": 3,
+        "width": 5,
+        "height": 5
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 192,
+        "height": 192
+    },
+    "clipping": {
+        "left": 0,
+        "top": 0,
+        "right": 5,
+        "bottom": 5
+    }
+},{
+    "name": "ripple0020.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 3,
+        "y": 3,
+        "width": 5,
+        "height": 5
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 192,
+        "height": 192
+    },
+    "clipping": {
+        "left": 0,
+        "top": 0,
+        "right": 5,
+        "bottom": 5
+    }
+},{
+    "name": "ripple0002.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 12,
+        "y": 3,
+        "width": 70,
+        "height": 70
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 192,
+        "height": 192
+    },
+    "clipping": {
+        "left": 61,
+        "top": 61,
+        "right": 131,
+        "bottom": 131
+    }
+},{
+    "name": "ripple0003.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 86,
+        "y": 3,
+        "width": 80,
+        "height": 80
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 192,
+        "height": 192
+    },
+    "clipping": {
+        "left": 56,
+        "top": 56,
+        "right": 136,
+        "bottom": 136
+    }
+},{
+    "name": "ripple0004.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 170,
+        "y": 3,
+        "width": 92,
+        "height": 92
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 192,
+        "height": 192
+    },
+    "clipping": {
+        "left": 50,
+        "top": 50,
+        "right": 142,
+        "bottom": 142
+    }
+},{
+    "name": "ripple0005.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 266,
+        "y": 3,
+        "width": 102,
+        "height": 102
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 192,
+        "height": 192
+    },
+    "clipping": {
+        "left": 45,
+        "top": 45,
+        "right": 147,
+        "bottom": 147
+    }
+},{
+    "name": "ripple0006.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 372,
+        "y": 3,
+        "width": 112,
+        "height": 112
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 192,
+        "height": 192
+    },
+    "clipping": {
+        "left": 40,
+        "top": 40,
+        "right": 152,
+        "bottom": 152
+    }
+},{
+    "name": "ripple0007.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 3,
+        "y": 119,
+        "width": 124,
+        "height": 124
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 192,
+        "height": 192
+    },
+    "clipping": {
+        "left": 34,
+        "top": 34,
+        "right": 158,
+        "bottom": 158
+    }
+},{
+    "name": "ripple0008.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 131,
+        "y": 119,
+        "width": 134,
+        "height": 134
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 192,
+        "height": 192
+    },
+    "clipping": {
+        "left": 29,
+        "top": 29,
+        "right": 163,
+        "bottom": 163
+    }
+},{
+    "name": "ripple0009.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 269,
+        "y": 119,
+        "width": 146,
+        "height": 146
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 192,
+        "height": 192
+    },
+    "clipping": {
+        "left": 23,
+        "top": 23,
+        "right": 169,
+        "bottom": 169
+    }
+},{
+    "name": "ripple0010.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 3,
+        "y": 269,
+        "width": 156,
+        "height": 156
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 192,
+        "height": 192
+    },
+    "clipping": {
+        "left": 18,
+        "top": 18,
+        "right": 174,
+        "bottom": 174
+    }
+},{
+    "name": "ripple0011.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 163,
+        "y": 269,
+        "width": 168,
+        "height": 167
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 192,
+        "height": 192
+    },
+    "clipping": {
+        "left": 12,
+        "top": 13,
+        "right": 180,
+        "bottom": 180
+    }
+},{
+    "name": "ripple0012.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 335,
+        "y": 269,
+        "width": 156,
+        "height": 155
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 192,
+        "height": 192
+    },
+    "clipping": {
+        "left": 18,
+        "top": 19,
+        "right": 174,
+        "bottom": 174
+    }
+},{
+    "name": "ripple0013.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 3,
+        "y": 440,
+        "width": 166,
+        "height": 166
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 192,
+        "height": 192
+    },
+    "clipping": {
+        "left": 13,
+        "top": 13,
+        "right": 179,
+        "bottom": 179
+    }
+},{
+    "name": "ripple0014.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 173,
+        "y": 440,
+        "width": 156,
+        "height": 155
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 192,
+        "height": 192
+    },
+    "clipping": {
+        "left": 18,
+        "top": 19,
+        "right": 174,
+        "bottom": 174
+    }
+},{
+    "name": "ripple0015.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 333,
+        "y": 440,
+        "width": 166,
+        "height": 166
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 192,
+        "height": 192
+    },
+    "clipping": {
+        "left": 13,
+        "top": 13,
+        "right": 179,
+        "bottom": 179
+    }
+},{
+    "name": "ripple0016.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 3,
+        "y": 610,
+        "width": 142,
+        "height": 142
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 192,
+        "height": 192
+    },
+    "clipping": {
+        "left": 25,
+        "top": 25,
+        "right": 167,
+        "bottom": 167
+    }
+},{
+    "name": "ripple0017.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 149,
+        "y": 610,
+        "width": 150,
+        "height": 150
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 192,
+        "height": 192
+    },
+    "clipping": {
+        "left": 21,
+        "top": 21,
+        "right": 171,
+        "bottom": 171
+    }
+},{
+    "name": "ripple0018.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 303,
+        "y": 610,
+        "width": 160,
+        "height": 159
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 192,
+        "height": 192
+    },
+    "clipping": {
+        "left": 16,
+        "top": 17,
+        "right": 176,
+        "bottom": 176
+    }
+},{
+    "name": "ripple0019.png",
+    "texture": 0,
+    "samplingRect": {
+        "objectName": "",
+        "x": 3,
+        "y": 773,
+        "width": 168,
+        "height": 168
+    },
+    "rotated": false,
+    "trimmed": true,
+    "sourceSize": {
+        "objectName": "",
+        "width": 192,
+        "height": 192
+    },
+    "clipping": {
+        "left": 12,
+        "top": 12,
+        "right": 180,
+        "bottom": 180
+    }
+}
+],
+
+"animations": {
+    "default": { "frames": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19] }
+},
+
+"meta": {
+        "app": "http://www.codeandweb.com/texturepacker",
+        "description": "Json file for Lens Studio Framework",
+        "version": "1.0",
+        "smartupdate": "$TexturePacker:SmartUpdate:34eb07e11a305d88fdc5094bda99a8b4:b9e1f3fb4e7a21297676654b8c632c81:db5563a58a486953e4f99bf8d6dec0a4$"
+        "Created with TexturePacker (https://www.codeandweb.com/texturepacker) for Lens Studio"
+    }
+}

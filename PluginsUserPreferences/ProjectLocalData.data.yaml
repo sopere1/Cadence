@@ -82,6 +82,7 @@ data:
     - 8f2b6e52-ef69-41cf-952a-deb577c26977: /Users/evan/Downloads/all_sounds/Asus4.wav
     - 977c2777-30b8-462c-89f4-d061e459c6d9: /Applications/Lens Studio.app/Contents/JsPlugins/PresetsRegistry/Assets/Script/Resources/Untitled JavaScript.js
     - 97e3a505-e0e5-4568-b4ca-ac269a41b3c8: "/Users/evan/Downloads/all_sounds/A#dim.wav"
+    - 97e7b0cc-08b3-4c02-be44-b759803a2d40: /Applications/Lens Studio.app/Contents/JsPlugins/PresetsRegistry/Assets/TypeScript/Resources/Untitled TypeScript.ts
     - 98829751-fc15-4e67-be4a-99c1ba693ef7: /Users/evan/Downloads/all_sounds/Fmaj.wav
     - 98954f7a-63fc-46e6-9208-01312b74b53e: /Users/evan/Downloads/all_sounds/Gsus4.wav
     - 9bf6cf9e-e760-4634-a9b4-bca9925d6e12: /Users/evan/Downloads/all_sounds/Eadd9.wav
@@ -102,6 +103,7 @@ data:
     - b0aff1e3-8f5f-4d69-bcd2-40b28061405e: /Users/evan/Downloads/all_sounds/Fadd9.wav
     - b14a2116-cf6d-482d-a86e-9a65c9ce9f0f: /Users/evan/Downloads/all_sounds/Emin.wav
     - b1a3777d-2512-439a-9cb9-abd3cf1d864b: "/Users/evan/Downloads/all_sounds/C#min7.wav"
+    - b2c3cadd-1fb4-4e40-aebc-bb900599d61f: /Users/evan/Library/Preferences/Snap/Lens Studio/LibraryComponents/Sound Manager@3.0.0/Sound Manager.lsc
     - b35f7e1b-8bc3-4763-b280-d2a68fa04899: /Applications/Lens Studio.app/Contents/JsPlugins/PresetsRegistry/Assets/TypeScript/Resources/Untitled TypeScript.ts
     - b4700f75-6acf-4cdc-a469-e932460d6f29: /Users/evan/Downloads/all_sounds/Bsus4.wav
     - b8c5f01d-3e3f-475b-ba62-c8ffeb117482: /Users/evan/Downloads/all_sounds/Aaug.wav
@@ -114,12 +116,15 @@ data:
     - d1547f78-67b1-4ab5-869b-bab28b86833f: /Users/evan/Downloads/all_sounds/Eaug.wav
     - d2cc5832-098a-4004-859a-2898bbdb59b3: /Users/evan/Library/Preferences/Snap/Lens Studio/LibraryComponents/LSTween@1.1.0/LSTween.lspkg
     - d4398a0f-cc87-4a31-a83a-f8b5a75cff86: /Applications/Lens Studio.app/Contents/JsPlugins/PresetsRegistry/Assets/Text3DMaterial/Resources/text_3d.ss_graph
+    - d60850a1-6132-47a7-a04a-8e818016ccdb: /Applications/Lens Studio.app/Contents/JsPlugins/PresetsRegistry/Assets/Text3DMaterial/Resources/text_3d.ss_graph
     - d65ebd08-3764-490a-a508-3de0c4248464: /Users/evan/Downloads/all_sounds/Gmin7.wav
     - d6c976f3-bef1-4daf-9e67-be8f504cdfb3: /Users/evan/Downloads/all_sounds/Amaj.wav
     - daec61eb-85bd-4505-accb-07b757d14a1f: /Users/evan/Downloads/all_sounds/Adim.wav
+    - db9e658f-ea72-4b97-b03f-37aa23b67e25: /Applications/Lens Studio.app/Contents/JsPlugins/PresetsRegistry/Assets/TypeScript/Resources/Untitled TypeScript.ts
     - dc0c1b70-165e-4eaa-ace9-772d1ab872ce: /Users/evan/Downloads/all_sounds/Bsus2.wav
     - dda62cc9-d2b9-45c5-870d-e2620f371096: /Users/evan/Downloads/all_sounds/Asus2.wav
     - e0392734-f59c-4386-847d-20c61971dfa3: /Users/evan/Downloads/all_sounds/Gmaj.wav
+    - e16b095e-1a0e-4490-87f4-00ef90d673bf: /Users/evan/Library/Preferences/Snap/Lens Studio/LibraryComponents/Visual Demonstration@5.10.0/Visual Demonstration.lsc
     - e1a4c9a5-4678-48af-983f-6c524003a59c: /Users/evan/Downloads/all_sounds/Baug.wav
     - e68be838-a659-4902-9fea-9ec94cadda23: "/Users/evan/Downloads/all_sounds/D#min7.wav"
     - e6d2619e-f305-4921-9da1-28432726989a: "/Users/evan/Downloads/all_sounds/F#sus2.wav"
@@ -136,6 +141,7 @@ data:
     - f379de25-1931-4088-ad34-387626d6e856: /Users/evan/Downloads/all_sounds/Fmin7.wav
     - f6000390-da1b-4eb9-8460-32b62c568c48: "/Users/evan/Downloads/all_sounds/D#maj7.wav"
     - f63ce359-c0ed-4f1a-ae6f-f792b453d01a: /Users/evan/Downloads/all_sounds/Caug.wav
+    - f6d6016f-1c03-45a4-af5b-35e43d6d7c9b: /Users/evan/Library/Preferences/Snap/Lens Studio/LibraryComponents/Leaderboard@1.1.0/Leaderboard.lspkg
     - f80bcdae-a472-4cbc-be77-d240179414ae: /Users/evan/Downloads/all_sounds/A7.wav
     - f885a127-0723-4792-83d2-6355f59544dd: "/Users/evan/Downloads/all_sounds/F#add9.wav"
     - f9262655-c1df-497b-82dd-e46f2a97f030: /Users/evan/Downloads/all_sounds/B7.wav

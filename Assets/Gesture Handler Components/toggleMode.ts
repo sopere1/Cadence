@@ -38,9 +38,9 @@ export class toggleMode extends BaseScriptComponent {
         
         // calculate the collider size
         const bb = text3D.getBoundingBox();
-        const w = Math.max(0.01, bb.right - bb.left);
-        const h = Math.max(0.01, bb.top - bb.bottom);
-        const d = 0.02;
+        const w = Math.max(10, bb.right - bb.left);
+        const h = Math.max(10, bb.top - bb.bottom);
+        const d = 10;
         const size = new vec3(w, h, d);
         ensureInteractableAndCollider(label, size);
     }
