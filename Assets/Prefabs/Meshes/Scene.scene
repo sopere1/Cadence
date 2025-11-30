@@ -839,6 +839,7 @@
       chordFwdDist: !<float> 100.000000
       chordVerDist: !<float> 0.000000
       chordScale: !<float> 12.000000
+      keyGPT:
       staffPre: !<reference.ObjectPrefab> 152e8683-c493-4904-b84e-d05cd8e0a779
       linePre: !<reference.ObjectPrefab> c5d55847-1be9-4cdd-8644-ee91f16b35d5
       notePre: !<reference.ObjectPrefab> f37986e5-374a-438b-8dae-d459d53b4913

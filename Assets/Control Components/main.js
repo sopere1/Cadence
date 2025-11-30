@@ -10,6 +10,7 @@
 // @input float chordFwdDist
 // @input float chordVerDist
 // @input float chordScale
+// @input string keyGPT
 
 // @input Asset.ObjectPrefab staffPre
 // @input Asset.ObjectPrefab linePre
@@ -26,9 +27,9 @@
 
 const spawnLabels = require('../Spawners/spawnLabels');
 const spawnStaff = require('../Spawners/spawnStaff');
-const waitForGPT = require('../Utils/waitForGPT');
 
 // Set global variables for Spawners
+global.INTERNET = require("LensStudio:InternetModule");
 global.CAM = script.camera;
 global.BARLENGTH = script.barLength;
 global.BARSPACE = script.barSpace;
@@ -48,31 +49,29 @@ global.chordTextPre = script.labelPre;
 
 // Start Spawners when ChatGPT server is connected
 function onStart() {
-    waitForGPT(script, function () {
-        const staff = spawnStaff(
-            script.staffPre,
-            script.linePre,
-            script.staffFwdDist,
-            script.staffVerDist,
-            script.numSlots
-        );
+    const staff = spawnStaff(
+        script.staffPre,
+        script.linePre,
+        script.staffFwdDist,
+        script.staffVerDist,
+        script.numSlots
+    );
 
-        spawnLabels(
-            script.ringPre,
-            script.labelPre,
-            script.bridgePre,
-            script.occluderMat,
-            script.textMat,
-            script.chords,
-            script.chordFwdDist,
-            script.chordVerDist,
-            function (ringContainer) {
-                global.ringContainer = ringContainer;
-                global.staffContainer = staff;
-                script.containerPrefab.instantiate(null);
-            }
-        );
-    });
+    spawnLabels(
+        script.ringPre,
+        script.labelPre,
+        script.occluderMat,
+        script.textMat,
+        script.chords,
+        script.chordFwdDist,
+        script.chordVerDist,
+        script.keyGPT,
+        function (ringContainer) {
+            global.ringContainer = ringContainer;
+            global.staffContainer = staff;
+            script.containerPrefab.instantiate(null);
+        }
+    );
 }
 
 script.createEvent("OnStartEvent").bind(onStart);

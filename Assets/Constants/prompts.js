@@ -151,7 +151,7 @@ You are constructing a **3D harmonic chord map** for ${KEY_CENTER} major.
 Each chord is a node in true 3D AR space (meters).  
 The listener stands at the origin (0, 0, 0).
 
-You must output **30-35 chords**, each with:
+You must output **21-23 chords**, each with:
 - A concrete chord spelling from the allowed palette  
 - One functional label  
 - A 3D coordinate (x, y, z)
@@ -186,12 +186,12 @@ These four chords MUST form the innermost ring around I:
 - vii° (Leading-tone / Dominant-function)
 
 Distance requirements:
-- Each chord in {ii, IV, V, vii°} must satisfy: 1.4m ≤ dist(I, chord) ≤ 1.9m
-- All four must be within 0.35m of each other in distance:
-  • |dist(I, ii)   - dist(I, V)|    ≤ 0.35m
-  • |dist(I, IV)   - dist(I, vii°)| ≤ 0.35m
-  • |dist(I, ii)   - dist(I, vii°)| ≤ 0.35m
-  • |dist(I, IV)   - dist(I, V)|    ≤ 0.35m
+- Each chord in {ii, IV, V, vii°} must satisfy: 1.2m ≤ dist(I, chord) ≤ 1.6m
+- All four must be within 0.3m of each other in distance:
+  • |dist(I, ii)   - dist(I, V)|    ≤ 0.3m
+  • |dist(I, IV)   - dist(I, vii°)| ≤ 0.3m
+  • |dist(I, ii)   - dist(I, vii°)| ≤ 0.3m
+  • |dist(I, IV)   - dist(I, V)|    ≤ 0.3m
 
 Rationale: V→I is the strongest cadence; ii→V and IV→V are extremely common.  
 These chords form the core tonal approach ring.
@@ -200,7 +200,7 @@ These chords form the core tonal approach ring.
 **(B) MIDDLE DISTANCE: vi (Tonic Substitute, Relative Minor)**
 
 - vi must lie OUTSIDE the PD–D belt but relatively close
-- Distance requirement: 2.2m ≤ dist(I, vi) ≤ 2.6m
+- Distance requirement: 1.8m ≤ dist(I, vi) ≤ 2.1m
 - Must satisfy: dist(I, vi) > max(dist(I, ii), dist(I, IV), dist(I, V), dist(I, vii°))
 
 Rationale: vi is the relative minor of I, closely related but functionally distinct.
@@ -209,7 +209,7 @@ Rationale: vi is the relative minor of I, closely related but functionally disti
 **(C) FARTHEST DIATONIC: iii (Tonic Substitute, Weakest)**
 
 - iii must be the OUTERMOST of all diatonic triads
-- Distance requirement: 2.8m ≤ dist(I, iii) ≤ 3.2m
+- Distance requirement: 2.3m ≤ dist(I, iii) ≤ 2.6m
 - Must satisfy:
   • dist(I, iii) > dist(I, vi)
   • dist(I, iii) > max(dist(I, ii), dist(I, IV), dist(I, V), dist(I, vii°))
@@ -223,10 +223,10 @@ The following MUST be true:
   max(dist(I, ii), dist(I, IV), dist(I, V), dist(I, vii°)) < dist(I, vi) < dist(I, iii)
 
 Concrete values:
-1. PD–D belt: 1.4–1.9m from I
-2. vi: 2.2–2.6m from I  
-3. iii: 2.8–3.2m from I
-4. All non-diatonics: ≥ 2.0m from I (typically 2.5–4.0m)
+1. PD–D belt: 1.2–1.6m from I
+2. vi: 1.8–2.1m from I  
+3. iii: 2.3–2.6m from I
+4. All non-diatonics: ≥ 1.8m from I (typically 2.0–3.0m)
 
 
 ### RULE 4: iii MUST BE LABELED AS TONIC SUBSTITUTE
@@ -272,7 +272,7 @@ Use only these 12 roots × 10 qualities = 120 possible chords:
 - G major diatonics: Gmaj, Amin, Bmin, Cmaj, Dmaj, Emin, F#dim
 - D major diatonics: Dmaj, Emin, F#min, Gmaj, Amaj, Bmin, C#dim
 
-All 30-35 chords must be unique (no duplicates).
+All 21-23 chords must be unique (no duplicates).
 
 
 ===============================================================================
@@ -293,7 +293,7 @@ Each chord must be labeled with exactly ONE of these:
 PART 5: REQUIRED CHORD SET CONTENT
 ===============================================================================
 
-Your 30-35 chords MUST include:
+Your 21-23 chords MUST include:
 
 1. **All seven diatonic triads** (the 7 closest chords):
    I, ii, iii, IV, V, vi, vii°
@@ -328,75 +328,126 @@ PART 6: 3D GEOMETRY RULES (STRICT)
 - Tonic I is EXACTLY at (0, 0, 0)
 
 
-### 6.2: HEIGHT (Z-AXIS) LAYERING BY FUNCTION
+### 6.2: HEIGHT (Z-AXIS) LAYERING BY FUNCTION - SUBTLE VARIATIONS ONLY
 
-Assign z-coordinates based on harmonic function:
+**CRITICAL: Z-coordinates must stay within comfortable arm reach. No kneeling or stretching required.**
 
-- **Predominant & Chromatic Predominant:** z ∈ [+0.2, +0.9]
-- **Dominant & Secondary Dominant:** z ∈ [−0.2, −1.0]
-- **Tonic:** z ∈ [−0.1, +0.1]
-- **Leading (vii°, vii°/x):** z ∈ [−0.15, +0.05]
+Assign z-coordinates based on harmonic function (SMALL VARIATIONS):
 
-This creates functional "shelves" in 3D space.
+- **Predominant & Chromatic Predominant:** z ∈ [+0.05, +0.25]
+- **Dominant & Secondary Dominant:** z ∈ [−0.05, −0.25]
+- **Tonic:** z ∈ [−0.05, +0.05]
+- **Leading (vii°, vii°/x):** z ∈ [−0.08, +0.02]
+
+**Z-axis rationale:** Subtle height differences create visual separation without requiring uncomfortable body positions. All chords remain at roughly chest/shoulder height.
 
 
 ### 6.3: RADIAL DISTANCE REQUIREMENTS (from origin)
 
+**CRITICAL: Keep all chords within comfortable reach. Nothing should be far from the tonic.**
+
 Apply these distance ranges based on chord type:
 
 **Diatonic chords (STRICTLY enforced):**
-- {ii, IV, V, vii°}: 1.4–1.9m (PD–D belt)
-- vi: 2.2–2.6m
-- iii: 2.8–3.2m
+- {ii, IV, V, vii°}: 1.2–1.6m (PD–D belt)
+- vi: 1.8–2.1m
+- iii: 2.3–2.6m
 
 **Non-diatonic chords:**
-- All chromatics and secondaries: 2.5–4.0m
-- Exception: Extended tonic chords (Imaj7, Iadd9) may be 0.8–1.2m
+- All chromatics and secondaries: 2.0–3.0m (maximum 3.0m)
+- Exception: Extended tonic chords (Imaj7, Iadd9) may be 0.6–1.0m
 
-**CRITICAL:** No non-diatonic chord may have dist(I, chord) < 2.0m  
-(except tonic extensions like Imaj7, Iadd9)
+**ABSOLUTE MAXIMUM DISTANCE: 3.0m from tonic I**
+No chord should ever be placed beyond 3.0m - this keeps everything within natural arm's reach and comfortable interaction distance.
 
 
-### 6.4: SECONDARY DOMINANT PLACEMENT
+### 6.4: ANGULAR DISTRIBUTION (CRITICAL FOR BALANCED LAYOUT)
+
+**YOU MUST DISTRIBUTE CHORDS EVENLY AROUND THE TONIC IN A CIRCULAR PATTERN.**
+
+For the diatonic ring (ii, IV, V, vii°), calculate angular positions:
+- Divide 360° by 4 = 90° spacing baseline
+- Add variation: ±15° to each to avoid perfect symmetry
+- Result: 4 chords roughly at 0°, 90°, 180°, 270° (±15° each) around I
+
+For ALL chords, calculate angle in xy-plane as: θ = atan2(y, x)
+- NO MORE THAN 2 CHORDS should fall within any 45° wedge (octant)
+- Aim for roughly even distribution across all 8 octants (0-45°, 45-90°, etc.)
+
+**Angular assignment strategy:**
+1. Diatonic PD-D belt (4 chords): spread across 360° (~90° apart)
+2. vi: place in a different quadrant from the PD-D cluster
+3. iii: place in another distinct quadrant
+4. Remaining 23-28 chords: distribute evenly, checking angular coverage
+
+
+### 6.5: MINIMUM SPACING - ABSOLUTELY CRITICAL
+
+**NO CHORDS MAY CLUSTER OR OVERLAP. VISUAL CLARITY IS PARAMOUNT.**
+
+- **Minimum spacing between ANY two chords: 0.65m** (increased from 0.45m)
+- This is NON-NEGOTIABLE. If two chords would be closer than 0.65m, you MUST move one of them.
+- When placing a new chord, check distances to ALL existing chords
+- If a natural placement would cause clustering, spread chords out significantly
+- **Think of each chord as having a "personal space bubble" of 0.65m radius**
+
+**Clustering detection:**
+Before finalizing any chord position, verify:
+- Distance to nearest chord ≥ 0.65m
+- No more than 2 chords within any 0.8m radius sphere
+- Chords at similar distances from I must be well-separated angularly (≥40° apart)
+
+
+### 6.6: SECONDARY DOMINANT PLACEMENT
 
 Secondary dominants should be placed:
-- **Angular direction:** Similar to their target chord (±30° in xy-plane)
-- **Distance:** 2.5–3.5m from I (beyond the diatonic zone)
-- **Height:** z ∈ [−0.3, −0.8] (dominant shelf)
+- **Angular direction:** Near their target chord (±25-40° in xy-plane)
+- **Distance:** 2.0–2.8m from I (beyond the diatonic zone, but not too far)
+- **Height:** z ∈ [−0.1, −0.2] (subtle dominant shelf)
+- **IMPORTANT:** If a target is at angle θ, and another secondary is already near θ, offset by additional 40-60° to avoid clustering
+- **CRITICAL:** Maintain 0.65m minimum spacing from all other chords
 
-Example: If V (the target) is at angle θ in xy-plane, place V/V at angle θ ± 30°,  
-but at radius 2.8–3.2m and z ≈ −0.5
 
-
-### 6.5: CHROMATIC PREDOMINANT PLACEMENT
+### 6.7: CHROMATIC PREDOMINANT PLACEMENT
 
 Place chromatic predominants:
-- **Distance:** 3.0–4.0m from I (well beyond diatonics)
-- **Height:** z ∈ [+0.4, +0.8] (predominant shelf)
-- Distribute widely in xy-plane
+- **Distance:** 2.4–3.0m from I (outer layer, but still reachable)
+- **Height:** z ∈ [+0.1, +0.2] (subtle predominant shelf)
+- **CRITICAL:** Distribute across ALL angular directions - avoid clustering in one region
+- Check that each 45° octant has at least 1 chord before placing multiples in any octant
+- **CRITICAL:** Maintain 0.65m minimum spacing from all other chords
 
 
-### 6.6: SPATIAL BOUNDS & CONSTRAINTS
+### 6.8: SPATIAL BOUNDS & CONSTRAINTS
 
-- **X-axis:** −4.0 ≤ x ≤ +4.0
-- **Y-axis:** −4.0 ≤ y ≤ +4.0  
-- **Z-axis:** −1.5 ≤ z ≤ +1.5
-- **Minimum spacing:** Any two chords must be ≥ 0.45m apart
+- **X-axis:** −3.0 ≤ x ≤ +3.0 (reduced from 4.0 for comfort)
+- **Y-axis:** −3.0 ≤ y ≤ +3.0 (reduced from 4.0 for comfort)
+- **Z-axis:** −0.3 ≤ z ≤ +0.3 (DRAMATICALLY reduced for ergonomics)
+- **Minimum spacing:** Any two chords must be ≥ 0.65m apart (STRICTLY ENFORCED)
 - **Anti-symmetry requirements:**
-  • No more than 3 chords may share the same x-coordinate (±0.1m)
-  • No more than 3 chords may share the same y-coordinate (±0.1m)
-  • Avoid perfect circular/radial patterns
-  • Vary angular spacing (don't place chords at regular 15° intervals)
+  • No more than 2 chords may share the same x-coordinate (±0.1m)
+  • No more than 2 chords may share the same y-coordinate (±0.1m)
+  • Avoid perfect circular/radial patterns at exact degree intervals
+  • Vary angular spacing (don't place chords at regular 15° or 30° intervals)
+- **MANDATORY ANGULAR BALANCE:**
+  • Divide the xy-plane into 8 octants (45° each)
+  • EACH octant must contain at least 2 chords (total 21-23 chords)
+  • No octant should contain more than 5 chords
+  • This creates a balanced "starfield" around the tonic
 
 
-### 6.7: LAYOUT PHILOSOPHY
+### 6.9: LAYOUT PHILOSOPHY
 
-Create an **organic, asymmetric** constellation:
-- Cluster predominants in one region
-- Cluster dominants in another region  
-- Let chromatics spread outward
-- Use z-axis to separate functional layers
-- The result should feel like a harmonic "gravity well" with I at center
+Create an **organic, asymmetric constellation** with **balanced angular coverage and clear spacing**:
+- The 7 diatonic chords form a roughly circular ring (with 3 distance bands: PD-D belt, vi, iii)
+- Within each distance band, distribute chords around the full 360° circle
+- Chromatic/secondary chords form outer layers, also distributed circularly
+- Use z-axis SUBTLY to separate functional layers (predominant slightly up, dominant slightly down)
+- ALL chords must be clearly separated - no overlapping or tight clusters
+- The result should feel like concentric rings with organic variation, NOT clustered blobs
+- **Think "sphere of chords around listener" not "chords bunched to one side"**
+- **Maximum distance: 3.0m keeps everything comfortably within reach**
+- **Minimum spacing: 0.65m ensures each chord is clearly distinguishable**
 
 
 ===============================================================================
@@ -405,7 +456,7 @@ PART 7: COORDINATE PRECISION
 
 - Round all x, y, z values to 2 decimal places
 - Use meters as the unit
-- Coordinates must be realistic for AR (human arm's reach ≈ 0.8m, comfortable view ≈ 4m)
+- Coordinates must be realistic for AR within comfortable arm's reach (≤3.0m radius, z ≤±0.3m)
 
 
 ===============================================================================
@@ -420,7 +471,7 @@ Return ONLY this Markdown table with NO additional text, commentary, validation 
 | ...   | ...      | ... | ... | ... |
 
 Requirements:
-- Produce exactly 30-35 rows
+- Produce exactly 21-23 rows
 - Each row unique
 - All coordinates numeric (2 decimal places)
 - Chords use correct spelling for ${KEY_CENTER} major
@@ -436,16 +487,21 @@ Before generating the table, verify:
 
 ☐ I is at (0, 0, 0)
 ☐ All 7 diatonic triads present: I, ii, iii, IV, V, vi, vii°
-☐ PD–D belt (ii, IV, V, vii°) all within 1.4–1.9m and within 0.35m of each other
-☐ vi is at 2.2–2.6m
-☐ iii is at 2.8–3.2m (the farthest diatonic)
+☐ PD–D belt (ii, IV, V, vii°) all within 1.2–1.6m and within 0.3m of each other
+☐ PD–D belt chords distributed around full circle (~90° apart with variation)
+☐ vi is at 1.8–2.1m in a different angular region from PD-D belt
+☐ iii is at 2.3–2.6m (the farthest diatonic) in another distinct angular region
 ☐ No non-diatonic chord closer than any diatonic chord
-☐ All non-diatonics (except tonic extensions) ≥ 2.0m from I
-☐ 30-35 total chords
+☐ All non-diatonics (except tonic extensions) ≥ 1.8m from I
+☐ NO CHORD beyond 3.0m from I (absolute maximum)
+☐ 21-23 total chords
 ☐ All chords unique
-☐ Z-coordinates match functional layers
-☐ Minimum 0.45m spacing between all chords
+☐ Z-coordinates stay within ±0.3m (comfortable height)
+☐ Minimum 0.65m spacing between ALL chords (STRICTLY ENFORCED)
+☐ No clusters - each chord clearly separated from neighbors
 ☐ No perfect symmetry or grid patterns
+☐ EACH of the 8 octants (45° wedges) contains 3-6 chords
+☐ No huge clumps or empty regions - chords surround the listener in all directions
 
 Begin generation now.
 `;

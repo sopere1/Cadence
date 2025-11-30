@@ -36,14 +36,25 @@ export function requestGPTCompletion(
         })
         .then((response) => response.json())
         .then((data) => {
+            print("[requestGPTCompletion] Response received, parsing...");
+            print("[requestGPTCompletion] Response data: " + JSON.stringify(data).substring(0, 500)); // First 500 chars
+            
             var openAIResponse = data as AzureOpenAIResponse;
+            
+            print("[requestGPTCompletion] Has choices? " + (openAIResponse.choices ? "yes" : "no"));
+            if (openAIResponse.choices) {
+                print("[requestGPTCompletion] Choices length: " + openAIResponse.choices.length);
+            }
+            
             if (openAIResponse.choices && openAIResponse.choices.length > 0) {
+                print("[requestGPTCompletion] Calling onSuccess callback");
                 if (onSuccess) {
                     onSuccess(data);
                 }
             } else {
+                print("[requestGPTCompletion] No choices found, calling onError");
                 if (onError) {
-                    onError("Unexpected response format");
+                    onError("Unexpected response format: " + JSON.stringify(data).substring(0, 200));
                 }
             }
         })

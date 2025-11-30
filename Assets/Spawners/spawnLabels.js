@@ -1,48 +1,6 @@
 const chordIndex = require("../Constants/chordIndex.js");
-const config = require("../Constants/labelConfig.js");
-
-// Create a bridge chord between startObj and endObj
-function spawnBridge(prefab, parent, startObj, endObj, colorA, colorB, bridgeName, chords) {
-    // instantiate and orient bridge at the midpoint
-    const start = startObj.getTransform().getWorldPosition();
-    const end = endObj.getTransform().getWorldPosition();
-    const dir = end.sub(start);
-    const length = dir.length;
-    const mid = start.add(end).uniformScale(0.5);
-
-    const bridge = prefab.instantiate(parent);
-    const t = bridge.getTransform();
-    t.setWorldPosition(mid);
-
-    const fwd = dir.normalize();
-    const up = new vec3(0, 1, 0);
-    const rot = quat.lookAt(fwd, up);
-    t.setWorldRotation(rot);
-    t.setLocalScale(new vec3(global.BRIDGE_THICKNESS, global.BRIDGE_THICKNESS, length * 0.65));
-
-    // clone and customize bridge material per-instance
-    const vis = bridge.getComponent("Component.MaterialMeshVisual");
-    if (vis) {
-        vis.mainMaterial = vis.mainMaterial.clone();
-        const pass = vis.mainMaterial.mainPass;
-        pass.colorA = colorA;
-        pass.colorB = colorB;
-        pass.scrollSpeed = global.SCROLLSPEED;
-        pass.pulseSpeed = global.PULSESPEED;
-        pass.brightness = global.BRIGHTNESS;
-    }
-
-    // attach chord audio
-    const audioIndex = chordIndex[bridgeName];
-    if (audioIndex !== undefined && chords[audioIndex]) {
-        const audio = bridge.createComponent("Component.AudioComponent");
-        audio.audioTrack = chords[audioIndex];
-    } else {
-        print(`[spawnLabels] No audio found for bridge ${bridgeName}`);
-    }
-    bridge.enabled = false;
-    return bridge;
-}
+const { generateCrds } = require("../Constants/prompts.js");
+const { requestGPTCompletion } = require("../Utils/customGPT");
 
 // Add occluder behind text so objects behind don't visually leak
 function addOccluder(labelSO, text3D, padding, mat) {
@@ -53,7 +11,6 @@ function addOccluder(labelSO, text3D, padding, mat) {
 
     const plate = global.scene.createSceneObject("OccluderPlate");
     plate.setParent(labelSO);
-
     const pt = plate.getTransform();
     pt.setLocalPosition(new vec3(0, 0, -0.002));
     pt.setLocalScale(new vec3(w, h, 1));
@@ -76,12 +33,11 @@ function addOccluder(labelSO, text3D, padding, mat) {
     ]);
     mb.appendIndices([0, 1, 2, 2, 3, 0]);
 
+    // apply visual components for visibility
     const rmv = plate.createComponent("Component.RenderMeshVisual");
     rmv.mesh = mb.getMesh();
     mb.updateMesh();
-    if (mat) {
-        rmv.mainMaterial = mat;
-    }
+    rmv.mainMaterial = mat;
 
     const look = plate.createComponent("Component.LookAtComponent");
     look.target = global.CAM.getSceneObject();
@@ -112,8 +68,51 @@ function createLabel(prefab, container, labelMap, pos, chordName, chords, textMa
     return label;
 }
 
+// Parse GPT response to extract chord data
+function parseGPTResponse(responseText) {
+    const chords = [];
+    const lines = responseText.split('\n');
+    let headerFound = false;
+    
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        // look for table header
+        if (line.includes('Chord') && line.includes('Function') && line.includes('x')) {
+            headerFound = true;
+            continue;
+        }
+        // skip separator line
+        if (headerFound && line.match(/^\|[\s-:]+$/)) {
+            continue;
+        }
+        // parse table rows for chord information
+        if (headerFound && line.startsWith('|') && !line.match(/^\|[\s-:]+$/)) {
+            const parts = line.split('|').map(p => p.trim()).filter(p => p);
+            if (parts.length >= 5) {
+                const chordName = parts[0];
+                const functionLabel = parts[1];
+                const x = parseFloat(parts[2]);
+                const y = parseFloat(parts[3]);
+                const z = parseFloat(parts[4]);
+                
+                if (!isNaN(x) && !isNaN(y) && !isNaN(z) && chordName) {
+                    chords.push({
+                        name: chordName,
+                        function: functionLabel,
+                        position: new vec3(x, y, z)
+                    });
+                }
+            }
+        } else if (headerFound && line.length > 0 && !line.startsWith('|')) {
+            // hit non-table content, terminate parsing
+            break;
+        }
+    }
+    return chords;
+}
+
 // Spawn all chord labels around a ring and their connecting bridges
-function spawn(ringPre, labelPre, bridgePre, occluderMat, textMaterial, chords, fwdDist, verDist, onReady) {
+function spawn(ringPre, labelPre, occluderMat, textMaterial, chords, fwdDist, verDist, apiKey, onReady) {
     // create ring container and position in front of camera
     const container = ringPre.instantiate(null);
     const labelMap = {};
@@ -124,46 +123,74 @@ function spawn(ringPre, labelPre, bridgePre, occluderMat, textMaterial, chords, 
         .add(new vec3(0, verDist, 0));
     container.getTransform().setWorldPosition(haloCenter);
 
-    // create label for each chord
-    const chordNames = Object.keys(config.labelPositions);
-    for (let i = 0; i < chordNames.length; i++) {
-        const chordName = chordNames[i];
-        const raw = config.labelPositions[chordName];
-        const pos = new vec3(
-            raw.x * global.RINGRADIUS,
-            raw.z * (global.RINGRADIUS * 0.6),
-            raw.y * global.RINGRADIUS
-        );
+    // call GPT to get chord coordinates
+    const prompt = generateCrds("C major");
+    const payload = {
+        messages: [
+            {
+                role: "user",
+                content: prompt
+            }
+        ],
+        temperature: 0,
+        max_tokens: 4000
+    };
 
-        const label = createLabel(labelPre, container, labelMap, pos, chordName, chords, textMaterial);
-        const text3D = label.getComponent("Component.Text3D");
-        // add occluder behind text to help with depth sorting
-        addOccluder(label, text3D, 0.02, occluderMat);
-    }
-
-    // create bridges between chords
-    const conns = config.connections;
-    const funcs = config.chordFunctions;
-    for (let i = 0; i < conns.length; i++) {
-        const conn = conns[i];
-        const startObj = labelMap[conn.source];
-        const endObj = labelMap[conn.target];
-
-        if (!startObj || !endObj) {
-            print(`[spawnLabels] Missing label for ${conn.source} or ${conn.target}; skipping bridge ${conn.bridge}`);
-            continue;
+    requestGPTCompletion(
+        apiKey,
+        payload,
+        (response) => {
+            if (response && response.choices && response.choices.length > 0) {
+                const responseText = response.choices[0].message.content;
+                const chordData = parseGPTResponse(responseText);
+                
+                // spawn labels dynamically from GPT response
+                for (let i = 0; i < chordData.length; i++) {
+                    const chord = chordData[i];
+                    print(chord)
+                    const pos = chord.position;
+                    
+                    // scale positions to fit the ring radius
+                    const scaledPos = new vec3(
+                        pos.x * (global.RINGRADIUS),
+                        pos.z * (global.RINGRADIUS),
+                        pos.y * (global.RINGRADIUS)
+                    );
+                    
+                    const label = createLabel(labelPre, container, labelMap, scaledPos, chord.name, chords, textMaterial);
+                    const text3D = label.getComponent("Component.Text3D");
+                    // add occluder behind text to help with depth sorting
+                    addOccluder(label, text3D, 0.02, occluderMat);
+                }
+                
+                // store chord data for later bridge generation
+                container.chordData = chordData;
+                container.labelMap = labelMap;
+            
+                // Notify caller when labels have been created
+                if (typeof onReady === "function") {
+                    try { 
+                        onReady(container); 
+                        print('backback')
+                    }
+                    catch (err) { 
+                        print("Error in callback: " + err); 
+                    }
+                }
+            } else {
+                print("ERROR: Invalid GPT response format");
+                if (onReady) {
+                    onReady(container);
+                }
+            }
+        },
+        (error) => {
+            print("ERROR: GPT request failed: " + error);
+            if (onReady) {
+                onReady(container);
+            }
         }
-        const colorA = funcs[conn.source]?.color || new vec4(1, 1, 1, 1);
-        const colorB = funcs[conn.target]?.color || new vec4(1, 1, 1, 1);
-
-        spawnBridge(bridgePre, container, endObj, startObj, colorB, colorA, conn.bridge, chords);
-    }
-
-    // notify caller when labels have been created
-    if (typeof onReady === "function") {
-        try { onReady(container); }
-        catch (err) { print("Error in callback: " + err); }
-    }
+    );
     return container;
 }
 
