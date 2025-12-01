@@ -7,16 +7,40 @@
 - !<ScriptComponent/0844ebbb-b52d-4ee8-a40a-2ea4d65ff4e8>
   PrefabRemaps:
     []
-  Name: sessionSync
+  Name: main
   Enabled: true
   ScriptAsset: !<reference> 58e02e55-1730-4a85-a3a4-bf168d0f6512
   ScriptInputsDefault:
-    {}
+    camera: true
+    ringPrefab: true
+    labelPrefab: true
+    ringRadius: true
+    chordFwdDist: true
+    chordVerDist: true
+    chordScale: true
+    occluderMat: true
+    textMat: true
+    keyGPT: true
+    personalStaffManagerPrefab: true
+    containerPrefab: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
     "":
-      {}
+      camera: !<reference.Camera> 00000000-0000-0000-0000-000000000000
+      ringPrefab: !<reference.ObjectPrefab> 152e8683-c493-4904-b84e-d05cd8e0a779
+      labelPrefab: !<reference.ObjectPrefab> 53072afc-ea44-4b6e-8fa9-07c48f284bd1
+      ringRadius: !<float> 100.000000
+      chordFwdDist: !<float> 100.000000
+      chordVerDist: !<float> 0.000000
+      chordScale: !<float> 12.000000
+      occluderMat: !<reference.Material> ffffad38-87f1-4857-a8ad-88db637a2a6e
+      textMat: !<reference.Material> 4140d5d4-5a0f-47e7-b9d9-71371308b0b9
+      chords: !<reference.AudioTrackAsset[]>
+        []
+      keyGPT: ""
+      personalStaffManagerPrefab: !<reference.ObjectPrefab> ce00e316-7bb7-4d3f-870c-26101bdd2db2
+      containerPrefab: !<reference.ObjectPrefab> 1bc5ce35-b5ac-4db4-bd56-8a04177d0421
   ScriptTypes:
     "":
       {}

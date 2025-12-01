@@ -27,7 +27,7 @@ function createSlots(root, numSlots) {
 }
 
 // Spawns a staff that supports one chord per slot
-function spawn(staffPre, linePre, fwdDist, verDist, numSlots) {
+function spawn(staffPre, linePre, fwdDist, verDist, numSlots, staffScale) {
     var staffRoot = staffPre.instantiate(null);
 
     // compute spawn position for staff root
@@ -37,7 +37,7 @@ function spawn(staffPre, linePre, fwdDist, verDist, numSlots) {
         .add(new vec3(0, verDist, 0));
     var t = staffRoot.getTransform();
     t.setWorldPosition(spawnPos);
-    t.setWorldScale(new vec3(global.STAFFSCALE, global.STAFFSCALE, global.STAFFSCALE));
+    t.setWorldScale(new vec3(staffScale, staffScale, staffScale));
 
     // initialize staff lines
     for (var i = 0; i < 5; i++) {

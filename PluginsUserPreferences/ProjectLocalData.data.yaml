@@ -7,7 +7,6 @@ data:
     - 05f9b568-9ea5-4188-a0eb-7988581b250f: /Applications/Lens Studio.app/Contents/JsPlugins/PresetsRegistry/Assets/TypeScript/Resources/Untitled TypeScript.ts
     - 06b9c731-687a-47ab-a3f2-494e9f583226: "/Users/evan/Downloads/all_sounds/D#maj.wav"
     - 08688e88-6c89-4883-bedf-ec8f554dd5e9: /Users/evan/Downloads/all_sounds/Gsus2.wav
-    - 09e45b5f-f57d-44df-9255-84c08b994f40: /Applications/Lens Studio.app/Contents/JsPlugins/PresetsRegistry/Assets/Script/Resources/Untitled JavaScript.js
     - 0aea136a-6602-406d-af16-30f1c9f0e420: /Users/evan/Downloads/all_sounds/Emaj7.wav
     - 112f4be0-1d5e-43b2-a6d6-2ed31f9f2579: /Users/evan/Downloads/all_sounds/D7.wav
     - 12af399b-63f2-4342-8aba-23c5d1c1d50c: "/Users/evan/Downloads/all_sounds/C#maj.wav"
@@ -70,7 +69,6 @@ data:
     - 7e3897ac-f2d5-4d7b-b0d7-f7363e61bdc3: "/Users/evan/Downloads/all_sounds/D#sus2.wav"
     - 7f667a16-dbc6-4882-831e-45d87628ed9a: /Users/evan/Downloads/all_sounds/Bmaj.wav
     - 806ed89d-4eba-497c-be54-a01b562c1e66: /Users/evan/Downloads/all_sounds/Fmaj7.wav
-    - 8465b430-41db-4e53-b8c6-9d7b9ebf71e8: /Applications/Lens Studio.app/Contents/JsPlugins/PresetsRegistry/Assets/Script/Resources/Untitled JavaScript.js
     - 85cf43b1-80c1-4a78-b7c2-7d881f11047f: "/Users/evan/Downloads/all_sounds/D#sus4.wav"
     - 86793aaa-d180-48f1-80cd-c27589e46f63: /Users/evan/Downloads/all_sounds/Cmaj7.wav
     - 86fe3d16-ab59-46b2-9dec-1aacf93b4d59: /Applications/Lens Studio.app/Contents/JsPlugins/PresetsRegistry/Assets/Meshes/Resources/Plane.mesh

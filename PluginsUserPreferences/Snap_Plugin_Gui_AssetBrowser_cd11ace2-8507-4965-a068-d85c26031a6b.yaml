@@ -1,7 +1,7 @@
 CollapsedEntities:
   type: stringset
   value:
-    size: 957
+    size: 956
     values:
       - ""
       - Camera
@@ -129,13 +129,13 @@ CollapsedEntities:
       - Constants
       - Constants/chordIndex.js
       - Constants/chordMap.js
-      - Constants/labelConfig.js
       - Constants/prompts.js
-      - Control Components/main.js
-      - Control Components/sessionSync.ts
+      - Control Components
+      - Control Components/main.ts
       - Control Components/staffManager.ts
       - Gesture Handlers
       - Gesture Handlers/playButton.ts
+      - Gesture Handlers/progressionPlayer.ts
       - Gesture Handlers/rightLabelPinch.ts
       - Gesture Handlers/toggleMode.ts
       - Imported Packages
@@ -953,7 +953,6 @@ CollapsedEntities:
       - Utils/claude.ts
       - Utils/customGPT.ts
       - Utils/gptExplain.js
-      - Utils/progressionPlayer.ts
       - Utils/requestGPT.js
       - Utils/setColliders.ts
       - Utils/testClaude.ts

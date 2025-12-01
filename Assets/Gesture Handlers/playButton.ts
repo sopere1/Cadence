@@ -2,26 +2,34 @@ import { Interactable } from '../SpectaclesInteractionKit.lspkg/Components/Inter
 import { InteractorEvent } from '../SpectaclesInteractionKit.lspkg/Core/Interactor/InteractorEvent';
 import { InteractorInputType } from '../SpectaclesInteractionKit.lspkg/Core/Interactor/Interactor';
 import { ensureInteractableAndCollider } from '../Utils/setColliders';
+import { PersonalStaffManager } from '../Control Components/staffManager';
 
 export class PlayButton {
     private buttonObj: SceneObject | null = null;
     private isPlaying: boolean = false;
     private animationEvent: SceneEvent | null = null;
     private onPlayCallback: (() => void) | null = null;
-    private staffContainer: SceneObject;
+    private personalStaff: PersonalStaffManager;
     private buttonPrefab: ObjectPrefab;
     private renderVisual: RenderMeshVisual | null = null;
     private originalColor: vec4 | null = null;
     private colorAnimationEvent: SceneEvent | null = null;
 
-    constructor(staffContainer: SceneObject, buttonPrefab: ObjectPrefab) {
-        this.staffContainer = staffContainer;
+    constructor(personalStaff: PersonalStaffManager, buttonPrefab: ObjectPrefab) {
+        this.personalStaff = personalStaff;
         this.buttonPrefab = buttonPrefab;
     }
 
     // Create the play button from prefab
     create(): void {
-        const buttonObj = this.buttonPrefab.instantiate(this.staffContainer);
+        // Get staff object from PersonalStaffManager
+        const staffObj = this.personalStaff.getStaffObject();
+        if (!staffObj) {
+            print("Error: Staff object not available for PlayButton");
+            return;
+        }
+        
+        const buttonObj = this.buttonPrefab.instantiate(staffObj);
         buttonObj.name = "PlayButton";
         
         // Position at bottom right corner of staff

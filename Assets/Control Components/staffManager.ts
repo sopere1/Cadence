@@ -1,13 +1,34 @@
+import { setCollidersEnabled } from '../Utils/setColliders';
+
 @component
 export class PersonalStaffManager extends BaseScriptComponent {
+    // Staff prefabs, positioning, and scaling
     @input('Asset.ObjectPrefab')
     staffPrefab: ObjectPrefab;
     
     @input('Asset.ObjectPrefab')
-    notePrefab: ObjectPrefab;
+    linePrefab: ObjectPrefab;
     
     @input('Asset.ObjectPrefab')
-    labelPrefab: ObjectPrefab;
+    notePrefab: ObjectPrefab;
+
+    @input('float')
+    staffFwdDist: number;
+    
+    @input('float')
+    staffVerDist: number;
+    
+    @input('float')
+    barLength: number;
+    
+    @input('float')
+    barSpace: number;
+    
+    @input('float')
+    staffScale: number;
+    
+    @input('float')
+    numSlots: number;
     
     private myStaff: SceneObject | null = null;
     private slotChords: SceneObject[] = [];
@@ -15,22 +36,24 @@ export class PersonalStaffManager extends BaseScriptComponent {
     private myProgression: string[] = [];
     
     onAwake() {
-        this.createPersonalStaff();
-    }
-    
-    private createPersonalStaff(): void {
-        // Create staff for this user only (not synced)
-        const staffContainer = (global as any).staffContainer as SceneObject;
-        if (!staffContainer || !this.staffPrefab) return;
+        // Setup globals for spawnStaff and spawnChord
+        (global as any).BARLENGTH = this.barLength;
+        (global as any).BARSPACE = this.barSpace;
         
-        // Clone the staff container for personal use
-        this.myStaff = this.staffPrefab.instantiate(null);
-        this.myStaff.enabled = false; // Hidden until submission phase
+        // Use spawnStaff to create the staff (handles positioning, lines, slots)
+        const spawnStaff = require('../Spawners/spawnStaff');
+        this.myStaff = spawnStaff(
+            this.staffPrefab,
+            this.linePrefab,
+            this.staffFwdDist,
+            this.staffVerDist,
+            this.numSlots,
+            this.staffScale
+        );
         
-        // Get slot objects from the staff
+        // Initialize slot tracking
         const slotObjects = (this.myStaff as any).slotObjects as SceneObject[];
         if (slotObjects) {
-            // Initialize slot tracking
             this.slotChords = new Array(slotObjects.length).fill(null);
         }
     }
@@ -52,11 +75,13 @@ export class PersonalStaffManager extends BaseScriptComponent {
         
         if (!notes) return false;
         
+        // Get label prefab from global (set by main.ts)
+        const labelPrefab = (global as any).TEXTPREFAB as ObjectPrefab;
         // Spawn chord
         const chordObj = spawnChord(
             this.myStaff,
             this.notePrefab,
-            this.labelPrefab,
+            labelPrefab,
             notes,
             chordName,
             slotPos
@@ -76,17 +101,36 @@ export class PersonalStaffManager extends BaseScriptComponent {
     }
     
     public getProgression(): string[] {
-        return [...this.myProgression]; // Return copy
+        return [...this.myProgression];
     }
-    
-    public showStaff(): void {
+
+    // Get chords with audio components for playback
+    public getChordsForPlayback(ringLabels: SceneObject[]): Array<{chordName: string, audioComponent: AudioComponent}> {
+        const chordsToPlay: Array<{chordName: string, audioComponent: AudioComponent}> = [];
+        const progression = this.getProgression();
+        
+        for (const chordName of progression) {
+            const label = ringLabels.find((l: SceneObject) => (l as any).chord === chordName);
+            if (label) {
+                const audioComponent = label.getComponent('Component.AudioComponent') as AudioComponent;
+                if (audioComponent && audioComponent.audioTrack) {
+                    chordsToPlay.push({ chordName, audioComponent });
+                }
+            }
+        }
+        return chordsToPlay;
+    }
+
+    public show(): void {
         if (this.myStaff) {
             this.myStaff.enabled = true;
+            setCollidersEnabled(this.myStaff, true);
         }
     }
-    
-    public hideStaff(): void {
+
+    public hide(): void {
         if (this.myStaff) {
+            setCollidersEnabled(this.myStaff, false);
             this.myStaff.enabled = false;
         }
     }
