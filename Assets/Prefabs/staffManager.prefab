@@ -41,14 +41,14 @@
   ScriptInputs:
     "":
       staffPrefab: !<reference.ObjectPrefab> 152e8683-c493-4904-b84e-d05cd8e0a779
-      linePrefab: !<reference.ObjectPrefab> 00000000-0000-0000-0000-000000000000
+      linePrefab: !<reference.ObjectPrefab> c5d55847-1be9-4cdd-8644-ee91f16b35d5
       notePrefab: !<reference.ObjectPrefab> f37986e5-374a-438b-8dae-d459d53b4913
-      staffFwdDist: !<float> 0.000000
-      staffVerDist: !<float> 0.000000
-      barLength: !<float> 0.000000
-      barSpace: !<float> 0.000000
-      staffScale: !<float> 0.000000
-      numSlots: !<float> 0.000000
+      staffFwdDist: !<float> 500.000000
+      staffVerDist: !<float> 30.000000
+      barLength: !<float> 40.000000
+      barSpace: !<float> 5.000000
+      staffScale: !<float> 10.000000
+      numSlots: !<float> 5.000000
   ScriptTypes:
     "":
       {}

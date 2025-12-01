@@ -72,6 +72,10 @@ export class SessionStateSync extends BaseScriptComponent {
     private onStaffsMixedEvent: EntityEventWrapper<{staff1Id: string, staff2Id: string, mixedProgression: string[]}> | null = null;
 
     onAwake() {
+        // control sync logs
+        const SyncKitLogLevelProvider = require('../SpectaclesSyncKit.lspkg/Utils/SyncKitLogLevelProvider');
+        SyncKitLogLevelProvider.default.getInstance().logLevel = 0;
+
         this.setupGlobals();
         // initialize sync entity
         const propertySet = new StoragePropertySet([
@@ -106,11 +110,12 @@ export class SessionStateSync extends BaseScriptComponent {
     }
 
     private onReady() {
+        print("Users in session: " + SessionController.getInstance().getUsers().length);
         this.onProgressionSubmittedEvent = this.syncEntity.getEntityEventWrapper<{connectionId: string, progression: string[]}>("onProgressionSubmitted");
         this.onAllSubmittedEvent = this.syncEntity.getEntityEventWrapper<void>("onAllSubmitted");
         this.onStaffsMixedEvent = this.syncEntity.getEntityEventWrapper<{staff1Id: string, staff2Id: string, mixedProgression: string[]}>("onStaffsMixed");
 
-        // Begin listening for remote events
+        // Begin listening for remote even ts
         if (this.onProgressionSubmittedEvent) {
             this.onProgressionSubmittedEvent.onRemoteEventReceived.add((message) => {
                 const data = message.data as {connectionId: string, progression: string[]};

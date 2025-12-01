@@ -1,7 +1,7 @@
 CollapsedEntities:
   type: stringset
   value:
-    size: 956
+    size: 954
     values:
       - ""
       - Camera
@@ -133,7 +133,6 @@ CollapsedEntities:
       - Control Components
       - Control Components/main.ts
       - Control Components/staffManager.ts
-      - Gesture Handlers
       - Gesture Handlers/playButton.ts
       - Gesture Handlers/progressionPlayer.ts
       - Gesture Handlers/rightLabelPinch.ts
@@ -242,7 +241,6 @@ CollapsedEntities:
       - Prefabs/sessionSync.prefab
       - Prefabs/staffManager.prefab
       - Sound Manager.lsc
-      - Spawners
       - Spawners/spawnChord.js
       - Spawners/spawnLabels.js
       - Spawners/spawnStaff.js

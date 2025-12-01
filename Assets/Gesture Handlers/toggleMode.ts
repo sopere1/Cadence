@@ -36,11 +36,16 @@ export class toggleMode extends BaseScriptComponent {
     private readonly toggleCooldown = 0.3;
 
     // multiplayer components
-    private personalStaff: PersonalStaffManager = (global as any).personalStaffManager;
+    private personalStaff: PersonalStaffManager | null = null;
     private sessionSync: SessionStateSync | null = null;
     private isInDisplayPhase: boolean = false;
 
     onAwake() {
+        // get the PersonalStaffManager component
+        const staffManagerObj = (global as any).personalStaffManager as SceneObject;
+        const scriptComp = staffManagerObj.getComponent("ScriptComponent") as ScriptComponent;
+        this.personalStaff = scriptComp as unknown as PersonalStaffManager;
+
         // setup chord labels and toggle handlers
         this.personalStaff.hide();
         this.setupLabelInteractions();
@@ -60,8 +65,7 @@ export class toggleMode extends BaseScriptComponent {
         });
 
         // setup session sync
-        const sessionSyncObj = (global as any).sessionStateSync as SceneObject;
-        this.sessionSync = sessionSyncObj.getComponent(SessionStateSync.getTypeName() as any) as SessionStateSync;
+        this.sessionSync = (global as any).sessionStateSync as SessionStateSync;
         this.setupSyncListeners();
     }
 
