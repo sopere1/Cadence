@@ -4,62 +4,96 @@ import { InteractorInputType } from '../SpectaclesInteractionKit.lspkg/Core/Inte
 import { SIK } from '../SpectaclesInteractionKit.lspkg/SIK';
 import { PlayButton } from './playButton';
 import { ChordProgressionPlayer } from '../Utils/progressionPlayer';
-import { handleRightLabelPinch } from './rightLabelPinch'
+import { handleRightLabelPinch } from './rightLabelPinch';
 import { setCollidersEnabled, ensureInteractableAndCollider } from '../Utils/setColliders';
-const { chordNotes } = require('../Constants/chordMap.js');
-const spawnChord = require('../Spawners/spawnChord');
+import { SessionStateSync } from '../Control Components/sessionSync';
+import { SessionController } from '../SpectaclesSyncKit.lspkg/Core/SessionController';
+import { PersonalStaffManager } from '../Control Components/staffManager';
 
 @component
 export class toggleMode extends BaseScriptComponent {
     @input('Asset.Material')
     highlightMaterial: Material;
+    
     @input('Asset.ObjectPrefab')
     playButtonPrefab: ObjectPrefab;
 
+    // containers for chord labels and staff
     private ringContainer: SceneObject = (global as any).ringContainer as SceneObject;
     private labels: SceneObject[] = this.ringContainer.children;
     private staffContainer: SceneObject = (global as any).staffContainer as SceneObject;
 
+    // tracks progression state for playback
     private playButton: PlayButton | null = null;
     private progressionPlayer: ChordProgressionPlayer | null = null;
 
+    // tracks active chord state for highlight, explanation labels, etc.
     private prevSelected: SceneObject | null = null;
     private activeLabel: SceneObject | null = null;
     private lastChordName: string = 'Cmaj';
-    private nextSlotIndex: number = 0;
-    private slotChords: SceneObject[] = [];
 
+    // prevents left pinch from accidentally triggering rapid toggle
     private lastToggleTime = 0;
     private readonly toggleCooldown = 0.3;
+
+    // multiplayer components
+    private sessionSync: SessionStateSync | null = null;
+    private personalStaff: PersonalStaffManager | null = null;
+    private isInDisplayPhase: boolean = false;
 
     onAwake() {
         // setup chord labels and toggle handlers
         setCollidersEnabled(this.staffContainer, false);
         this.setupLabelInteractions();
         this.setupHandModeToggle();
-        
+
         // initialize play button
         this.playButton = new PlayButton(this.staffContainer, this.playButtonPrefab);
         this.playButton.create();
         this.playButton.setOnPlayCallback(() => {
             this.handlePlayProgression();
         });
-        
+
         // initialize progression player
         this.progressionPlayer = new ChordProgressionPlayer(this);
         this.progressionPlayer.setOnCompleteCallback(() => {
-            if (this.playButton) {
-                this.playButton.stopAnimation(this);
+            this.playButton.stopAnimation(this);
+        });
+
+        // setup session sync and personal staff
+        const sessionSyncObj = (global as any).sessionStateSync as SceneObject;
+        this.sessionSync = sessionSyncObj.getComponent(SessionStateSync.getTypeName() as any) as SessionStateSync;
+        this.setupSyncListeners();
+
+        const staffManagerObj = (global as any).personalStaffManager as SceneObject;
+        this.personalStaff = staffManagerObj.getComponent(PersonalStaffManager.getTypeName() as any) as PersonalStaffManager;
+    }
+
+    private setupSyncListeners(): void {
+        if (!this.sessionSync) return;
+
+        // Listen for phase changes
+        this.sessionSync.sessionPhase.onAnyChange.add(() => {
+            const phase = this.sessionSync?.getSessionPhase() || 0;
+            if (phase === 1) {
+                this.handleAllSubmitted();
             }
         });
+
+        // Listen for all submitted event
+        if (this.sessionSync.onAllSubmittedEvent) {
+            this.sessionSync.onAllSubmittedEvent.onRemoteEventReceived.add(() => {
+                this.handleAllSubmitted();
+            });
+        }
     }
 
     // Helper to ensure a chord label is interactive
-    private ensureLabelInteractive(label: any){
+    private ensureLabelInteractive(label: any) {
         const text3D = label.getComponent("Component.Text3D") as any;
         if (!text3D || !text3D.getBoundingBox) return;
-        
-        // calculate the collider size
+
+        // Calculate the collider size
         const bb = text3D.getBoundingBox();
         const w = Math.max(10, bb.right - bb.left);
         const h = Math.max(10, bb.top - bb.bottom);
@@ -73,10 +107,10 @@ export class toggleMode extends BaseScriptComponent {
         for (let i = 0; i < this.labels.length; i++) {
             const label = this.labels[i];
             this.ensureLabelInteractive(label);
-            
+
             const interactable = label.getComponent(Interactable.getTypeName() as any) as any;
             const audioComponent = label.getComponent('Component.AudioComponent');
-            
+
             const handler = (event: InteractorEvent) => {
                 const inputType = (event.interactor as any)?.inputType;
 
@@ -84,8 +118,8 @@ export class toggleMode extends BaseScriptComponent {
                     this.handleLeftHandLabelPinch(label);
                 } else if (inputType === InteractorInputType.RightHand) {
                     handleRightLabelPinch(
-                        label, 
-                        audioComponent, 
+                        label,
+                        audioComponent,
                         this.lastChordName,
                         (labelObj: SceneObject) => {
                             this.destroyActiveLabel();
@@ -99,14 +133,21 @@ export class toggleMode extends BaseScriptComponent {
         }
     }
 
-    // Left-hand pinch: hide ring, show staff, place a chord
+    // Left-hand pinch: add chord to personal staff (local only)
     private handleLeftHandLabelPinch(label: SceneObject) {
-        const chordName = (label as any).chord as string;
-        const slotObjects = (this.staffContainer as any).slotObjects as SceneObject[];
+        // Don't allow adding chords if in display phase
+        if (this.isInDisplayPhase) return;
 
-        // Switch to staff mode
+        const chordName = (label as any).chord as string;
+
+        // Switch to staff mode (show personal staff)
         this.ringContainer.enabled = false;
-        this.staffContainer.enabled = true;
+        if (this.personalStaff) {
+            const staffObj = this.personalStaff.getStaffObject();
+            if (staffObj) {
+                staffObj.enabled = true;
+            }
+        }
         setCollidersEnabled(this.staffContainer, true);
         this.playButton.show();
 
@@ -115,25 +156,21 @@ export class toggleMode extends BaseScriptComponent {
         this.destroyActiveLabel();
         this.highlightSelectedLabel(label);
 
-        const notes: string[] = (chordNotes as any)[chordName];   
-        // Get slot position from slot object's transform
-        const slotObj = slotObjects[this.nextSlotIndex];
-        const slotPos = slotObj.getTransform().getLocalPosition();
+        // Add to PERSONAL staff (not synced)
+        if (this.personalStaff) {
+            const added = this.personalStaff.addChordToStaff(chordName);
 
-        // Track and clear existing chord in this slot
-        const existingChord = this.slotChords[this.nextSlotIndex] as SceneObject;
-        if (existingChord) {
-            existingChord.destroy();
+            if (!added) {
+                print("Staff is full!");
+                return;
+            }
+
+            // Check if staff is full - show submit button
+            if (this.personalStaff.isFull()) {
+                this.showSubmitButton();
+            }
         }
 
-        // Spawn the chord on the staff
-        const chordObj = spawnChord(this.staffContainer, (global as any).notePre, (global as any).TEXTPREFAB, notes, chordName, slotPos);
-        this.slotChords[this.nextSlotIndex] = chordObj;
-        // Store chord name for later retrieval
-        (chordObj as any).chordName = chordName;
-
-        // Advance slot index and remember last chord
-        this.nextSlotIndex = (this.nextSlotIndex + 1) % slotObjects.length;
         this.lastChordName = chordName;
     }
 
@@ -169,25 +206,24 @@ export class toggleMode extends BaseScriptComponent {
         if (this.playButton.isCurrentlyPlaying()) {
             return;
         }
-        // Find the label each chord to get its audio
-        const chordsToPlay: Array<{chordName: string, audioComponent: AudioComponent}> = [];
-        for (let i = 0; i < this.slotChords.length; i++) {
-            const chordObj = this.slotChords[i] as SceneObject;
-            if (!chordObj) continue;
-            
-            const chordName = (chordObj as any).chordName as string;
-            if (!chordName) continue;
-            
-            const label = this.labels.find((l: SceneObject) => (l as any).chord === chordName);
-            if (label) {
-                const audioComponent = label.getComponent('Component.AudioComponent') as AudioComponent;
-                if (audioComponent && audioComponent.audioTrack) {
-                    chordsToPlay.push({ chordName, audioComponent });
+
+        // Get progression from personal staff
+        let chordsToPlay: Array<{chordName: string, audioComponent: AudioComponent}> = [];
+
+        if (this.personalStaff) {
+            const progression = this.personalStaff.getProgression();
+            for (const chordName of progression) {
+                const label = this.labels.find((l: SceneObject) => (l as any).chord === chordName);
+                if (label) {
+                    const audioComponent = label.getComponent('Component.AudioComponent') as AudioComponent;
+                    if (audioComponent && audioComponent.audioTrack) {
+                        chordsToPlay.push({ chordName, audioComponent });
+                    }
                 }
             }
         }
-        
-        // start animation and play progression
+
+        // Start animation and play progression
         this.playButton.startAnimation(this);
         this.progressionPlayer.playSequence(chordsToPlay, 2.0);
     }
@@ -210,11 +246,53 @@ export class toggleMode extends BaseScriptComponent {
     private toggleToRingMode() {
         this.staffContainer.enabled = false;
         setCollidersEnabled(this.staffContainer, false);
+
+        // Hide personal staff
+        if (this.personalStaff) {
+            this.personalStaff.hideStaff();
+        }
+
         this.ringContainer.enabled = true;
         this.playButton.hide();
 
         for (let i = 0; i < this.labels.length; i++) {
-            this.ensureLabelInteractive(this.labels[i])
+            this.ensureLabelInteractive(this.labels[i]);
         }
+    }
+
+    // Submission and display phase methods
+    private showSubmitButton(): void {
+        // TODO: Show submit button in UI
+        print("Staff is full! Ready to submit.");
+    }
+
+    public submitProgression(): void {
+        if (!this.personalStaff || !this.sessionSync) return;
+
+        const progression = this.personalStaff.getProgression();
+        const sessionController = SessionController.getInstance();
+        const myConnectionId = sessionController.getLocalConnectionId();
+
+        if (myConnectionId) {
+            this.sessionSync.submitProgression(myConnectionId, progression);
+            print("Progression submitted!");
+        }
+    }
+
+    // When all progressions have been submitted, set up group display
+    private handleAllSubmitted(): void {
+        this.isInDisplayPhase = true;
+        this.ringContainer.enabled = false;
+
+        // Show personal staff
+        if (this.personalStaff) {
+            this.personalStaff.showStaff();
+        }
+
+        // TODO: Display all other users' staffs
+        // TODO: Get GPT explanations
+        // TODO: Setup mixing detection
+
+        print("All users have submitted! Display phase active.");
     }
 }

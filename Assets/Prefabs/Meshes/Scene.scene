@@ -711,6 +711,8 @@
   ScriptInputs:
     "":
       camera: !<reference.Camera> 00000000-0000-0065-0000-000000000065
+      sessionStateSyncPrefab: !<reference.ObjectPrefab> 7bc2e945-0779-4767-bd6f-970b9dc5f707
+      personalStaffManagerPrefab: !<reference.ObjectPrefab> ce00e316-7bb7-4d3f-870c-26101bdd2db2
       ringPre: !<reference.ObjectPrefab> 152e8683-c493-4904-b84e-d05cd8e0a779
       labelPre: !<reference.ObjectPrefab> 53072afc-ea44-4b6e-8fa9-07c48f284bd1
       bridgePre: !<reference.ObjectPrefab> e8d380ed-9d34-45cd-a133-dccefc8dbabc

@@ -121,7 +121,6 @@ export class PlayButton {
     private changeColorToYellow(scriptComponent: BaseScriptComponent): void {
         if (!this.renderVisual || !this.renderVisual.mainMaterial) return;
         
-        const material = this.renderVisual.mainMaterial;
         const targetColor = new vec4(1.0, 0.84, 0.0, 1.0); // Yellow
         const startColor = this.originalColor || new vec4(0.7, 0.7, 0.7, 1.0);
         
@@ -159,7 +158,6 @@ export class PlayButton {
     private changeColorToGray(scriptComponent: BaseScriptComponent): void {
         if (!this.renderVisual || !this.renderVisual.mainMaterial) return;
         
-        const material = this.renderVisual.mainMaterial;
         const targetColor = this.originalColor || new vec4(0.7, 0.7, 0.7, 1.0); // Gray
         const startColor = this.renderVisual.mainMaterial.mainPass.baseColor;
         

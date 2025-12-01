@@ -1,0 +1,38 @@
+- !<ObjectPrefab/7bc2e945-0779-4767-bd6f-970b9dc5f707>
+  PackagePath: ""
+  objects:
+    - !<own> 3a49f0a3-c95f-4fa8-883c-029fe9db9e1c
+  LazyLoading: false
+  RetainAssets: true
+- !<ScriptComponent/0844ebbb-b52d-4ee8-a40a-2ea4d65ff4e8>
+  PrefabRemaps:
+    []
+  Name: sessionSync
+  Enabled: true
+  ScriptAsset: !<reference> 58e02e55-1730-4a85-a3a4-bf168d0f6512
+  ScriptInputsDefault:
+    {}
+  ScriptTypesDefault:
+    {}
+  ScriptInputs:
+    "":
+      {}
+  ScriptTypes:
+    "":
+      {}
+- !<SceneObject/3a49f0a3-c95f-4fa8-883c-029fe9db9e1c>
+  PrefabRemaps:
+    - 0844ebbb-b52d-4ee8-a40a-2ea4d65ff4e8: 0844ebbb-b52d-4ee8-5bf5-d15b29a00b17
+    - 3a49f0a3-c95f-4fa8-883c-029fe9db9e1c: 3a49f0a3-c95f-4fa8-77c3-fd60162461e3
+  Name: sessionSync
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    []
+  Components:
+    - !<own> 0844ebbb-b52d-4ee8-a40a-2ea4d65ff4e8

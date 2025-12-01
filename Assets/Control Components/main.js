@@ -1,6 +1,9 @@
 // @input Component.Camera camera
 // @input Component.Camera camera
 
+// @input Asset.ObjectPrefab sessionStateSyncPrefab
+// @input Asset.ObjectPrefab personalStaffManagerPrefab
+
 // @input Asset.ObjectPrefab ringPre
 // @input Asset.ObjectPrefab labelPre
 // @input Asset.ObjectPrefab bridgePre
@@ -47,7 +50,10 @@ global.textMaterial = script.textMat;
 global.notePre = script.notePre;
 global.chordTextPre = script.labelPre;
 
-// Start Spawners when ChatGPT server is connected
+// sync components
+const sessionSyncObj = script.sessionStateSyncPrefab.instantiate(null);
+global.sessionStateSync = sessionSyncObj;
+
 function onStart() {
     const staff = spawnStaff(
         script.staffPre,
@@ -69,9 +75,68 @@ function onStart() {
         function (ringContainer) {
             global.ringContainer = ringContainer;
             global.staffContainer = staff;
+            
+            const staffManagerObj = script.personalStaffManagerPrefab.instantiate(null);
+            global.personalStaffManager = staffManagerObj;
+            // initialize mode toggle
             script.containerPrefab.instantiate(null);
         }
     );
 }
 
 script.createEvent("OnStartEvent").bind(onStart);
+
+
+const mainContainer = script.containerPrefab.instantiate(null);
+
+const sessionSyncObj = script.sessionStateSyncPrefab.instantiate(mainContainer);
+sessionSyncObj.name = "SessionStateSync";
+global.sessionStateSync = sessionSyncObj;
+
+const staffManagerObj = script.personalStaffManagerPrefab.instantiate(mainContainer);
+staffManagerObj.name = "PersonalStaffManager";
+global.personalStaffManager = staffManagerObj;
+
+// Get SessionStateSync component and wait for it to be ready BEFORE onStart
+const SessionStateSync = require('../Control Components/sessionSync');
+const sessionSync = sessionSyncObj.getComponent(SessionStateSync.getTypeName());
+
+// Wait for sync to be ready, THEN execute onStart
+sessionSync.notifyOnReady(() => {
+    // Now sync is ready - safe to run onStart
+    onStart();
+});
+
+function onStart() {
+    const staff = spawnStaff(
+        script.staffPre,
+        script.linePre,
+        script.staffFwdDist,
+        script.staffVerDist,
+        script.numSlots
+    );
+
+    // Set staff container immediately
+    global.staffContainer = staff;
+
+    // Now spawn labels (sessionSync is already ready)
+    spawnLabels(
+        script.ringPre,
+        script.labelPre,
+        script.occluderMat,
+        script.textMat,
+        script.chords,
+        script.chordFwdDist,
+        script.chordVerDist,
+        script.keyGPT,
+        function (ringContainer) {
+            global.ringContainer = ringContainer;
+            
+            // Initialize mode toggle (container already created above)
+            // The container prefab should have toggleMode component attached
+        }
+    );
+}
+
+// Don't bind onStart to OnStartEvent - we call it manually after sync is ready
+// script.createEvent("OnStartEvent").bind(onStart);  // ← Remove this line

@@ -1,0 +1,42 @@
+- !<ObjectPrefab/ce00e316-7bb7-4d3f-870c-26101bdd2db2>
+  PackagePath: ""
+  objects:
+    - !<own> 302f81c6-2bcb-4882-a608-ac8827111700
+  LazyLoading: false
+  RetainAssets: true
+- !<SceneObject/302f81c6-2bcb-4882-a608-ac8827111700>
+  PrefabRemaps:
+    - 302f81c6-2bcb-4882-a608-ac8827111700: 302f81c6-2bcb-4882-59f7-5377d8eee8ff
+    - 8d012dd7-49d5-4ae3-b464-d2ea0a22f17f: 8d012dd7-49d5-4ae3-4b9b-2d15f5dd0e80
+  Name: staffManager
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    []
+  Components:
+    - !<own> 8d012dd7-49d5-4ae3-b464-d2ea0a22f17f
+- !<ScriptComponent/8d012dd7-49d5-4ae3-b464-d2ea0a22f17f>
+  PrefabRemaps:
+    []
+  Name: staffManager
+  Enabled: true
+  ScriptAsset: !<reference> bb24386f-9eb9-4c71-8afe-8f2010de63ec
+  ScriptInputsDefault:
+    staffPrefab: true
+    notePrefab: true
+    labelPrefab: true
+  ScriptTypesDefault:
+    {}
+  ScriptInputs:
+    "":
+      staffPrefab: !<reference.ObjectPrefab> 152e8683-c493-4904-b84e-d05cd8e0a779
+      notePrefab: !<reference.ObjectPrefab> f37986e5-374a-438b-8dae-d459d53b4913
+      labelPrefab: !<reference.ObjectPrefab> 53072afc-ea44-4b6e-8fa9-07c48f284bd1
+  ScriptTypes:
+    "":
+      {}

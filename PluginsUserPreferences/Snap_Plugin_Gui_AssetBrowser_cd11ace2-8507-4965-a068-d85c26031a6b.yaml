@@ -1,7 +1,7 @@
 CollapsedEntities:
   type: stringset
   value:
-    size: 954
+    size: 957
     values:
       - ""
       - Camera
@@ -131,12 +131,13 @@ CollapsedEntities:
       - Constants/chordMap.js
       - Constants/labelConfig.js
       - Constants/prompts.js
-      - Control Components
       - Control Components/main.js
-      - Gesture Handler Components
-      - Gesture Handler Components/playButton.ts
-      - Gesture Handler Components/rightLabelPinch.ts
-      - Gesture Handler Components/toggleMode.ts
+      - Control Components/sessionSync.ts
+      - Control Components/staffManager.ts
+      - Gesture Handlers
+      - Gesture Handlers/playButton.ts
+      - Gesture Handlers/rightLabelPinch.ts
+      - Gesture Handlers/toggleMode.ts
       - Imported Packages
       - Imported Packages/ChatGPT
       - Imported Packages/ChatGPT/ChatGPT Helper__PLACE_IN_SCENE.prefab
@@ -238,6 +239,8 @@ CollapsedEntities:
       - Prefabs/Sphere.prefab
       - Prefabs/Staff.prefab
       - Prefabs/bridge_cylinder_open.glb
+      - Prefabs/sessionSync.prefab
+      - Prefabs/staffManager.prefab
       - Sound Manager.lsc
       - Spawners
       - Spawners/spawnChord.js
