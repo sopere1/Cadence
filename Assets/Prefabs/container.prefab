@@ -19,7 +19,7 @@
     "":
       highlightMaterial: !<reference.Material> 1f6acc79-0db1-4a69-9b6e-d45073e707ad
       playButtonPrefab: !<reference.ObjectPrefab> 2e0c1bed-b495-4589-93e8-ee9870eb8ee8
-      submitButtonPrefab: !<reference.ObjectPrefab> 00000000-0000-0000-0000-000000000000
+      submitButtonPrefab: !<reference.ObjectPrefab> f6d583ea-8388-40c2-8306-6c30e94dd822
   ScriptTypes:
     "":
       {}

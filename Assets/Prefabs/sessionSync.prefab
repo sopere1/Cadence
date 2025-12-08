@@ -41,7 +41,7 @@
         []
       keyGPT: ""
       personalStaffManagerPrefab: !<reference.ObjectPrefab> ce00e316-7bb7-4d3f-870c-26101bdd2db2
-      allStaffsDisplayManagerPrefab: !<reference.ObjectPrefab> 00000000-0000-0000-0000-000000000000
+      allStaffsDisplayManagerPrefab: !<reference.ObjectPrefab> 10777077-72ac-481f-8e92-fc02001cc8ff
       containerPrefab: !<reference.ObjectPrefab> 1bc5ce35-b5ac-4db4-bd56-8a04177d0421
   ScriptTypes:
     "":

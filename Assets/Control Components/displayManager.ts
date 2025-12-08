@@ -2,6 +2,9 @@
 // Creates a layout of staffs showing each user's progression side-by-side or in a grid.
 
 import { setCollidersEnabled } from '../Utils/setColliders';
+import { SessionController } from 'SpectaclesSyncKit.lspkg/Core/SessionController';
+import { PlayButton } from '../Gesture Handlers/playButton';
+import { ChordProgressionPlayer } from '../Gesture Handlers/progressionPlayer';
 
 @component
 export class AllStaffsDisplayManager extends BaseScriptComponent {
@@ -26,7 +29,7 @@ export class AllStaffsDisplayManager extends BaseScriptComponent {
     displayVerDist: number = 0.0; // Vertical offset from camera
     
     @input('float')
-    staffSpacing: number = 1.5; // Horizontal spacing between staffs
+    staffSpacing: number = 10; // Horizontal spacing between staffs
     
     @input('float')
     staffScale: number = 0.8; // Scale for display staffs (smaller than personal)
@@ -40,50 +43,72 @@ export class AllStaffsDisplayManager extends BaseScriptComponent {
     @input('float')
     numSlots: number;
 
+    // Multiplayer testing
+    @input('bool')
+    enableTestMode: boolean = true;
+
+    @input('string[]')
+    testProgressions: string[] = [];
+
+    // Playback
+    @input('Asset.ObjectPrefab')
+    playButtonPrefab: ObjectPrefab;
+
     // Reference to sessionStateSync for getting progressions
     private sessionStateSync: any = null;
     
     // Store created display staffs
     private displayStaffs: Map<string, SceneObject> = new Map();
     private displayContainer: SceneObject | null = null;
+    private playButtons: Map<string, PlayButton> = new Map();
+    private progressionPlayers: Map<string, ChordProgressionPlayer> = new Map();
 
     onAwake() {
         // Get sessionStateSync from global
         this.sessionStateSync = (global as any).sessionStateSync;
-        
-        // Setup globals for spawnStaff and spawnChord
-        (global as any).BARLENGTH = this.barLength;
-        (global as any).BARSPACE = this.barSpace;
     }
 
     // Main method to display all staffs
     public displayAllStaffs(): void {
+        if (!this.sessionStateSync) {
+            this.sessionStateSync = (global as any).sessionStateSync;
+        }
         const submittedUsers = this.sessionStateSync.getSubmittedConnectionIds();
 
-        // Create container for all display staffs
-        this.displayContainer = global.scene.createSceneObject("AllStaffsDisplay");
-        
-        // Calculate layout
-        const numStaffs = submittedUsers.length;
-        const layout = this.calculateLayout(numStaffs);
-        
-        // Create staff for each submitted user
-        for (let i = 0; i < submittedUsers.length; i++) {
-            const connectionId = submittedUsers[i];
-            const progression = this.sessionStateSync.getProgression(connectionId);
+        // If test mode, add fake users
+        const testUsers: string[] = [];
+        if (this.enableTestMode && this.testProgressions.length > 0) {
+            testUsers.push("test_user_1");
+        }
 
-            // Create staff at calculated position
+        const allUsers = [...submittedUsers, ...testUsers];
+        // Create container
+        this.displayContainer = global.scene.createSceneObject("AllStaffsDisplay");
+        const layout = this.calculateLayout(allUsers.length);
+        
+        // Create staffs
+        for (let i = 0; i < allUsers.length; i++) {
+            const connectionId = allUsers[i];
+            let progression: string[] = [];
+            
+            // Get progression from real user or use test data
+            if (submittedUsers.indexOf(connectionId) !== -1) {
+                progression = this.sessionStateSync.getProgression(connectionId);
+            } else if (this.enableTestMode && connectionId.startsWith("test_")) {
+                // Use test progression
+                progression = this.testProgressions;
+            }
+            
+            if (progression.length === 0) continue;
+            
             const position = layout.positions[i];
             const staff = this.createDisplayStaff(position, connectionId, i);
             
             if (staff) {
-                // Populate staff with progression
                 this.populateStaffWithProgression(staff, progression);
-                
-                // Store reference
+                this.createUserLabel(staff, connectionId, i);
+                this.createPlayButtonForStaff(staff, connectionId, progression);
                 this.displayStaffs.set(connectionId, staff);
-                
-                // Show the staff
                 staff.enabled = true;
             }
         }
@@ -129,8 +154,8 @@ export class AllStaffsDisplayManager extends BaseScriptComponent {
         for (let i = 0; i < 5; i++) {
             const line = this.linePrefab.instantiate(staffRoot);
             const lt = line.getTransform();
-            lt.setLocalPosition(new vec3(0, (i - 2) * (global as any).BARSPACE, 0));
-            lt.setLocalScale(new vec3((global as any).BARLENGTH, 1, 1));
+            lt.setLocalPosition(new vec3(0, (i - 2) * this.barSpace, 0));
+            lt.setLocalScale(new vec3(this.barLength, 1, 1));
         }
 
         // Create slot objects
@@ -145,8 +170,8 @@ export class AllStaffsDisplayManager extends BaseScriptComponent {
 
     // Create slots for a staff (similar to spawnStaff.js)
     private createSlotsForStaff(root: SceneObject): void {
-        const edgePadding = (global as any).BARLENGTH * 0.08;
-        const usableWidth = (global as any).BARLENGTH - (2 * edgePadding);
+        const edgePadding = this.barLength * 0.08;
+        const usableWidth = this.barLength - (2 * edgePadding);
         const adjustedSlotSpacing = this.numSlots > 1 ? usableWidth / (this.numSlots - 1) : 0;
         const totalWidth = (this.numSlots - 1) * adjustedSlotSpacing;
         const startX = -totalWidth / 2;
@@ -198,6 +223,148 @@ export class AllStaffsDisplayManager extends BaseScriptComponent {
         }
     }
 
+    // Create a play button for a display staff
+private createPlayButtonForStaff(staff: SceneObject, connectionId: string, progression: string[]): void {
+    if (!this.playButtonPrefab || !staff) return;
+
+    const thisSceneObject = this.getSceneObject();
+    if (thisSceneObject && !thisSceneObject.enabled) {
+        print("WARNING: AllStaffsDisplayManager scene object is disabled! Enabling it...");
+        thisSceneObject.enabled = true;
+    }
+
+    // DEBUG: Print progression being set up
+    print("Setting up play button for " + connectionId + " with progression: " + progression.join(", "));
+
+    // Create minimal wrapper that mimics PersonalStaffManager interface
+    const playbackWrapper = {
+        getChordsForPlayback: (ringLabels: SceneObject[]) => {
+            const chordsToPlay: Array<{chordName: string, audioComponent: AudioComponent}> = [];
+            print("getChordsForPlayback called with " + ringLabels.length + " labels, looking for: " + progression.join(", "));
+            
+            for (const chordName of progression) {
+                const label = ringLabels.find((l: SceneObject) => (l as any).chord === chordName);
+                if (label) {
+                    const audioComponent = label.getComponent('Component.AudioComponent') as AudioComponent;
+                    if (audioComponent && audioComponent.audioTrack) {
+                        chordsToPlay.push({ chordName, audioComponent });
+                        print("Found chord: " + chordName);
+                    } else {
+                        print("Label found for " + chordName + " but no audioComponent or audioTrack");
+                    }
+                } else {
+                    print("Label NOT found for chord: " + chordName);
+                }
+            }
+            print("Returning " + chordsToPlay.length + " chords for playback");
+            return chordsToPlay;
+        },
+        getStaffObject: () => staff
+    };
+
+    // Create play button
+    const playButton = new PlayButton(playbackWrapper as any, this.playButtonPrefab);
+    playButton.create();
+    
+    // Create progression player (one per staff)
+    const progressionPlayer = new ChordProgressionPlayer(this);
+    progressionPlayer.setOnCompleteCallback(() => {
+        print("Playback complete for " + connectionId);
+        playButton.stopAnimation(this);
+    });
+
+    // Set up callback
+    playButton.setOnPlayCallback(() => {
+        print("Play button pressed for " + connectionId);
+        
+        if (playButton.isCurrentlyPlaying()) {
+            print("Already playing, ignoring");
+            return;
+        }
+        
+        // Get ring labels from global
+        const ringContainer = (global as any).ringContainer as SceneObject;
+        if (!ringContainer) {
+            print("Error: ringContainer not found");
+            return;
+        }
+        
+        // DEBUG: Check if ringContainer is enabled
+        print("ringContainer enabled: " + ringContainer.enabled);
+        
+        const labels = ringContainer.children || [];
+        print("Found " + labels.length + " labels in ringContainer");
+        
+        // DEBUG: Print first few label chord names
+        for (let i = 0; i < Math.min(3, labels.length); i++) {
+            print("Label " + i + " chord: " + ((labels[i] as any).chord || "undefined"));
+        }
+        
+        const chordsToPlay = playbackWrapper.getChordsForPlayback(labels);
+        
+        if (chordsToPlay.length === 0) {
+            print("Warning: No chords found for playback");
+            return;
+        }
+        
+        print("Starting playback with " + chordsToPlay.length + " chords");
+        print("Chord names: " + chordsToPlay.map(c => c.chordName).join(", "));
+        
+        // Start animation and playback
+        playButton.startAnimation(this);
+        print("Animation started, isPlaying: " + playButton.isCurrentlyPlaying());
+        
+        progressionPlayer.playSequence(chordsToPlay, 2.0);
+        print("playSequence called with " + chordsToPlay.length + " chords");
+    });
+
+    // Store references
+    this.playButtons.set(connectionId, playButton);
+    this.progressionPlayers.set(connectionId, progressionPlayer);
+    
+    playButton.show();
+}
+
+    // Create a user identifier label above a staff
+    private createUserLabel(staff: SceneObject, connectionId: string, userIndex: number): void {
+        if (!this.labelPrefab || !staff) return;
+
+        // Get user info from SessionController
+        const sessionController = SessionController.getInstance();
+        const userInfo = sessionController.getUserByConnectionId(connectionId);
+        
+        let displayName: string;
+        
+        if (userInfo && userInfo.displayName) {
+            // Use the actual display name from Snapchat
+            displayName = userInfo.displayName;
+        } else if (connectionId.startsWith("test_")) {
+            // For test users, use a friendly name
+            displayName = "Christie";
+        } else {
+            // Fallback: use shortened connectionId
+            displayName = "Lucy";
+        }
+
+        // Create label using the existing labelPrefab
+        const labelObj = this.labelPrefab.instantiate(staff);
+        labelObj.name = "UserLabel_" + connectionId;
+        
+        // Position above the staff
+        const labelTransform = labelObj.getTransform();
+        const labelY = this.barSpace * 2.0;
+        labelTransform.setLocalPosition(new vec3(0, labelY + 3, 0));
+
+        // Bigger label
+        labelTransform.setLocalScale(new vec3(3, 3, 3));
+        
+        // Set the text
+        const text3D = labelObj.getComponent("Component.Text3D");
+        if (text3D) {
+            text3D.text = displayName;
+        }
+    }
+
     // Hide all display staffs
     public hideAllStaffs(): void {
         if (this.displayContainer) {
@@ -222,6 +389,13 @@ export class AllStaffsDisplayManager extends BaseScriptComponent {
 
     // Clean up display staffs
     public cleanup(): void {
+        // Clean up play buttons
+        this.playButtons.forEach((playButton) => {
+            playButton.hide();
+        });
+        this.playButtons.clear();
+        this.progressionPlayers.clear();
+        
         if (this.displayContainer) {
             this.displayContainer.destroy();
             this.displayContainer = null;

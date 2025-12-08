@@ -1,15 +1,15 @@
-- !<ObjectPrefab/2c07d75b-407c-46f8-9362-dbbb9b314bda>
+- !<ObjectPrefab/10777077-72ac-481f-8e92-fc02001cc8ff>
   PackagePath: ""
   objects:
-    - !<own> 20bbc5a9-20ce-4650-b996-366cd0932a5a
+    - !<own> aaa32211-771f-40d0-aa26-0093e4457cec
   LazyLoading: false
   RetainAssets: true
-- !<SceneObject/20bbc5a9-20ce-4650-b996-366cd0932a5a>
+- !<SceneObject/aaa32211-771f-40d0-aa26-0093e4457cec>
   PrefabRemaps:
-    - 20bbc5a9-20ce-4650-b996-366cd0932a5a: 20bbc5a9-20ce-4650-4669-c9932f6cd5a5
-    - 35e00068-5063-47fe-9baa-8631ffcdc3fb: 35e00068-5063-47fe-6455-79ce00323c04
+    - aaa32211-771f-40d0-aa26-0093e4457cec: aaa32211-771f-40d0-55d9-ff6c1bba8313
+    - d5aed55d-984f-47fc-a6ce-7275700e32e4: d5aed55d-984f-47fc-5931-8d8a8ff1cd1b
   Name: displayManager
-  Enabled: true
+  Enabled: false
   Layers: 1
   LocalTransform: !<TransformEntity>
     Position: {x: 0.000000, y: 0.000000, z: 0.000000}
@@ -19,8 +19,8 @@
   Children:
     []
   Components:
-    - !<own> 35e00068-5063-47fe-9baa-8631ffcdc3fb
-- !<ScriptComponent/35e00068-5063-47fe-9baa-8631ffcdc3fb>
+    - !<own> d5aed55d-984f-47fc-a6ce-7275700e32e4
+- !<ScriptComponent/d5aed55d-984f-47fc-a6ce-7275700e32e4>
   PrefabRemaps:
     []
   Name: displayManager
@@ -31,13 +31,8 @@
     linePrefab: true
     notePrefab: true
     labelPrefab: true
-    displayFwdDist: true
-    displayVerDist: true
-    staffSpacing: true
-    staffScale: true
-    barLength: true
-    barSpace: true
     numSlots: true
+    enableTestMode: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
@@ -46,13 +41,21 @@
       linePrefab: !<reference.ObjectPrefab> c5d55847-1be9-4cdd-8644-ee91f16b35d5
       notePrefab: !<reference.ObjectPrefab> f37986e5-374a-438b-8dae-d459d53b4913
       labelPrefab: !<reference.ObjectPrefab> 53072afc-ea44-4b6e-8fa9-07c48f284bd1
-      displayFwdDist: !<float> 2.000000
-      displayVerDist: !<float> 0.000000
-      staffSpacing: 1.500000
-      staffScale: 0.800000
-      barLength: !<float> 0.000000
-      barSpace: !<float> 0.000000
+      displayFwdDist: !<float> 150.000000
+      displayVerDist: !<float> 10.000000
+      staffSpacing: !<float> 135.000000
+      staffScale: !<float> 3.000000
+      barLength: !<float> 30.000000
+      barSpace: !<float> 6.000000
       numSlots: !<float> 5.000000
+      enableTestMode: true
+      testProgressions: !<string[]>
+        - Cmaj
+        - Fmaj
+        - Gmaj
+        - Bdim
+        - Cmaj
+      playButtonPrefab: !<reference.ObjectPrefab> 2e0c1bed-b495-4589-93e8-ee9870eb8ee8
   ScriptTypes:
     "":
       {}

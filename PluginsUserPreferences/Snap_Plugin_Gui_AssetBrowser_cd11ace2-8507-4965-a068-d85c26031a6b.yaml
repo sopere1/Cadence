@@ -1,51 +1,9 @@
 CollapsedEntities:
   type: stringset
   value:
-    size: 1000
+    size: 1003
     values:
-      - Button.lsc
-      - Button.lsc/Button.ts
-      - Button.lsc/Modules
-      - Button.lsc/Modules/Animation
-      - Button.lsc/Modules/Animation/AnimationUtils.ts
-      - Button.lsc/Modules/Animation/Easing.ts
-      - Button.lsc/Modules/Animation/PropertyAnimator.ts
-      - Button.lsc/Modules/BehaviorSupport
-      - Button.lsc/Modules/BehaviorSupport/BehaviorEventCallbacks.ts
-      - Button.lsc/Modules/BehaviorSupport/BehaviorSystem.d.ts
-      - Button.lsc/Modules/Debug
-      - Button.lsc/Modules/Debug/ComponentWithDebug.ts
-      - Button.lsc/Modules/Event
-      - Button.lsc/Modules/Event/Event.ts
-      - Button.lsc/Modules/Event/IEvent.ts
-      - Button.lsc/Modules/Scene
-      - Button.lsc/Modules/Scene/DestructionHelper.ts
-      - Button.lsc/Modules/Scene/PassHelper.ts
-      - Button.lsc/Modules/Scene/SceneEventHelper.ts
-      - Button.lsc/Modules/Scene/ScreenTransformHelper.ts
-      - Button.lsc/Prefabs
-      - Button.lsc/Prefabs/Button Background
-      - Button.lsc/Prefabs/Button Background/.hidden.hidden
-      - Button.lsc/Prefabs/Button Background/.hidden.hidden/Button Default.ss_graph
-      - Button.lsc/Prefabs/Button Background/Button Background.prefab
-      - Button.lsc/Prefabs/Button Background/Materials
-      - Button.lsc/Prefabs/Button Background/Materials/Materials
-      - Button.lsc/Prefabs/Button Background/Materials/Materials/Button Default.mat
-      - Button.lsc/Prefabs/Button Background/Textures
-      - Button.lsc/Prefabs/Button Background/Textures/Button_10X.png
-      - Button.lsc/Prefabs/Button Icon
-      - Button.lsc/Prefabs/Button Icon/.hidden
-      - Button.lsc/Prefabs/Button Icon/.hidden/.hidden
-      - Button.lsc/Prefabs/Button Icon/.hidden/.hidden/SpritePreset.lsmat.mat
-      - Button.lsc/Prefabs/Button Icon/.hidden/SpritePreset1.lsmat.ss_graph
-      - Button.lsc/Prefabs/Button Icon/.hidden/Textures
-      - Button.lsc/Prefabs/Button Icon/.hidden/Textures/Image.png
-      - Button.lsc/Prefabs/Button Icon/Button Icon.prefab
-      - Button.lsc/Prefabs/Button Text
-      - Button.lsc/Prefabs/Button Text/Button Text.prefab
-      - Button.lsc/Prefabs/Button Text/Fonts
-      - Button.lsc/Prefabs/Button Text/Fonts/Poppins-Medium.ttf
-      - Button.lsc/package.native
+      - ""
       - Camera
       - Chord Audio Files
       - "Chord Audio Files/A#7.wav"
@@ -183,6 +141,49 @@ CollapsedEntities:
       - Gesture Handlers/submitButton.ts
       - Gesture Handlers/toggleMode.ts
       - Imported Packages
+      - Imported Packages/Button.lsc
+      - Imported Packages/Button.lsc/Button.ts
+      - Imported Packages/Button.lsc/Modules
+      - Imported Packages/Button.lsc/Modules/Animation
+      - Imported Packages/Button.lsc/Modules/Animation/AnimationUtils.ts
+      - Imported Packages/Button.lsc/Modules/Animation/Easing.ts
+      - Imported Packages/Button.lsc/Modules/Animation/PropertyAnimator.ts
+      - Imported Packages/Button.lsc/Modules/BehaviorSupport
+      - Imported Packages/Button.lsc/Modules/BehaviorSupport/BehaviorEventCallbacks.ts
+      - Imported Packages/Button.lsc/Modules/BehaviorSupport/BehaviorSystem.d.ts
+      - Imported Packages/Button.lsc/Modules/Debug
+      - Imported Packages/Button.lsc/Modules/Debug/ComponentWithDebug.ts
+      - Imported Packages/Button.lsc/Modules/Event
+      - Imported Packages/Button.lsc/Modules/Event/Event.ts
+      - Imported Packages/Button.lsc/Modules/Event/IEvent.ts
+      - Imported Packages/Button.lsc/Modules/Scene
+      - Imported Packages/Button.lsc/Modules/Scene/DestructionHelper.ts
+      - Imported Packages/Button.lsc/Modules/Scene/PassHelper.ts
+      - Imported Packages/Button.lsc/Modules/Scene/SceneEventHelper.ts
+      - Imported Packages/Button.lsc/Modules/Scene/ScreenTransformHelper.ts
+      - Imported Packages/Button.lsc/Prefabs
+      - Imported Packages/Button.lsc/Prefabs/Button Background
+      - Imported Packages/Button.lsc/Prefabs/Button Background/.hidden.hidden
+      - Imported Packages/Button.lsc/Prefabs/Button Background/.hidden.hidden/Button Default.ss_graph
+      - Imported Packages/Button.lsc/Prefabs/Button Background/Button Background.prefab
+      - Imported Packages/Button.lsc/Prefabs/Button Background/Materials
+      - Imported Packages/Button.lsc/Prefabs/Button Background/Materials/Materials
+      - Imported Packages/Button.lsc/Prefabs/Button Background/Materials/Materials/Button Default.mat
+      - Imported Packages/Button.lsc/Prefabs/Button Background/Textures
+      - Imported Packages/Button.lsc/Prefabs/Button Background/Textures/Button_10X.png
+      - Imported Packages/Button.lsc/Prefabs/Button Icon
+      - Imported Packages/Button.lsc/Prefabs/Button Icon/.hidden
+      - Imported Packages/Button.lsc/Prefabs/Button Icon/.hidden/.hidden
+      - Imported Packages/Button.lsc/Prefabs/Button Icon/.hidden/.hidden/SpritePreset.lsmat.mat
+      - Imported Packages/Button.lsc/Prefabs/Button Icon/.hidden/SpritePreset1.lsmat.ss_graph
+      - Imported Packages/Button.lsc/Prefabs/Button Icon/.hidden/Textures
+      - Imported Packages/Button.lsc/Prefabs/Button Icon/.hidden/Textures/Image.png
+      - Imported Packages/Button.lsc/Prefabs/Button Icon/Button Icon.prefab
+      - Imported Packages/Button.lsc/Prefabs/Button Text
+      - Imported Packages/Button.lsc/Prefabs/Button Text/Button Text.prefab
+      - Imported Packages/Button.lsc/Prefabs/Button Text/Fonts
+      - Imported Packages/Button.lsc/Prefabs/Button Text/Fonts/Poppins-Medium.ttf
+      - Imported Packages/Button.lsc/package.native
       - Imported Packages/ChatGPT
       - Imported Packages/ChatGPT/ChatGPT Helper__PLACE_IN_SCENE.prefab
       - Imported Packages/ChatGPT/Scripts
@@ -270,6 +271,7 @@ CollapsedEntities:
       - Materials/text_3d.ss_graph
       - Prefabs
       - Prefabs/Bridge.prefab
+      - Prefabs/Button.prefab
       - Prefabs/ChordLabel.prefab
       - Prefabs/Container.prefab
       - Prefabs/Line.prefab
@@ -283,6 +285,7 @@ CollapsedEntities:
       - Prefabs/Sphere.prefab
       - Prefabs/Staff.prefab
       - Prefabs/bridge_cylinder_open.glb
+      - Prefabs/displayManager.prefab
       - Prefabs/sessionSync.prefab
       - Prefabs/staffManager.prefab
       - Sound Manager.lsc

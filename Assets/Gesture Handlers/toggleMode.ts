@@ -231,6 +231,7 @@ export class toggleMode extends BaseScriptComponent {
     }
 
     private toggleToRingMode() {
+        if (this.isInDisplayPhase) return;
         this.personalStaff.hide();
         this.playButton.hide();
         this.ringContainer.enabled = true;
