@@ -1,9 +1,51 @@
 CollapsedEntities:
   type: stringset
   value:
-    size: 954
+    size: 1000
     values:
-      - ""
+      - Button.lsc
+      - Button.lsc/Button.ts
+      - Button.lsc/Modules
+      - Button.lsc/Modules/Animation
+      - Button.lsc/Modules/Animation/AnimationUtils.ts
+      - Button.lsc/Modules/Animation/Easing.ts
+      - Button.lsc/Modules/Animation/PropertyAnimator.ts
+      - Button.lsc/Modules/BehaviorSupport
+      - Button.lsc/Modules/BehaviorSupport/BehaviorEventCallbacks.ts
+      - Button.lsc/Modules/BehaviorSupport/BehaviorSystem.d.ts
+      - Button.lsc/Modules/Debug
+      - Button.lsc/Modules/Debug/ComponentWithDebug.ts
+      - Button.lsc/Modules/Event
+      - Button.lsc/Modules/Event/Event.ts
+      - Button.lsc/Modules/Event/IEvent.ts
+      - Button.lsc/Modules/Scene
+      - Button.lsc/Modules/Scene/DestructionHelper.ts
+      - Button.lsc/Modules/Scene/PassHelper.ts
+      - Button.lsc/Modules/Scene/SceneEventHelper.ts
+      - Button.lsc/Modules/Scene/ScreenTransformHelper.ts
+      - Button.lsc/Prefabs
+      - Button.lsc/Prefabs/Button Background
+      - Button.lsc/Prefabs/Button Background/.hidden.hidden
+      - Button.lsc/Prefabs/Button Background/.hidden.hidden/Button Default.ss_graph
+      - Button.lsc/Prefabs/Button Background/Button Background.prefab
+      - Button.lsc/Prefabs/Button Background/Materials
+      - Button.lsc/Prefabs/Button Background/Materials/Materials
+      - Button.lsc/Prefabs/Button Background/Materials/Materials/Button Default.mat
+      - Button.lsc/Prefabs/Button Background/Textures
+      - Button.lsc/Prefabs/Button Background/Textures/Button_10X.png
+      - Button.lsc/Prefabs/Button Icon
+      - Button.lsc/Prefabs/Button Icon/.hidden
+      - Button.lsc/Prefabs/Button Icon/.hidden/.hidden
+      - Button.lsc/Prefabs/Button Icon/.hidden/.hidden/SpritePreset.lsmat.mat
+      - Button.lsc/Prefabs/Button Icon/.hidden/SpritePreset1.lsmat.ss_graph
+      - Button.lsc/Prefabs/Button Icon/.hidden/Textures
+      - Button.lsc/Prefabs/Button Icon/.hidden/Textures/Image.png
+      - Button.lsc/Prefabs/Button Icon/Button Icon.prefab
+      - Button.lsc/Prefabs/Button Text
+      - Button.lsc/Prefabs/Button Text/Button Text.prefab
+      - Button.lsc/Prefabs/Button Text/Fonts
+      - Button.lsc/Prefabs/Button Text/Fonts/Poppins-Medium.ttf
+      - Button.lsc/package.native
       - Camera
       - Chord Audio Files
       - "Chord Audio Files/A#7.wav"
@@ -131,11 +173,14 @@ CollapsedEntities:
       - Constants/chordMap.js
       - Constants/prompts.js
       - Control Components
+      - Control Components/displayManager.ts
       - Control Components/main.ts
       - Control Components/staffManager.ts
+      - Gesture Handlers
       - Gesture Handlers/playButton.ts
       - Gesture Handlers/progressionPlayer.ts
       - Gesture Handlers/rightLabelPinch.ts
+      - Gesture Handlers/submitButton.ts
       - Gesture Handlers/toggleMode.ts
       - Imported Packages
       - Imported Packages/ChatGPT
@@ -241,6 +286,7 @@ CollapsedEntities:
       - Prefabs/sessionSync.prefab
       - Prefabs/staffManager.prefab
       - Sound Manager.lsc
+      - Spawners
       - Spawners/spawnChord.js
       - Spawners/spawnLabels.js
       - Spawners/spawnStaff.js

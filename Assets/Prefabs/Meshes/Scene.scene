@@ -11,6 +11,8 @@
     - !<own> 7960fe74-a3fb-422e-8ad8-9e8225ac0997
     - !<own> 4f006422-d146-4eb2-82fc-ff8321f2efda
     - !<own> 388b12f3-9d8e-49de-b9fa-120a72d994a0
+    - !<own> 9d1b2b03-2b8a-4c6c-a95b-813f91d7fcd1
+    - !<own> 2f50f69b-927b-4149-839a-548207e093c6
   layers: !<Layers/267ee9a7-aff2-4f9d-9a49-f71214747d03>
     userLayers:
       - |
@@ -1695,6 +1697,21 @@
   Components:
     - !<own> 4e6d37b3-22d3-454d-bde1-643abd786189
     - !<own> 4f853446-30e3-489b-8e71-aad718d75884
+- !<SceneObject/2f50f69b-927b-4149-839a-548207e093c6>
+  PrefabRemaps:
+    []
+  Name: Button
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    []
+  Components:
+    - !<own> e23e4366-0521-4799-af88-416b3db101ae
 - !<ScriptComponent/30383cc7-2c98-4c4a-be16-6f7916272ff6>
   PrefabRemaps:
     []
@@ -1964,7 +1981,7 @@
     - f606ab99-7c1b-4076-8dea-51189d160d9a: 2edef4d0-2056-425a-58cd-a2cebedb6fbd
     - fc76eb8f-1c5e-474c-bab4-d3fd98ece70f: a241d955-f614-45fc-775e-f66f0c3188b7
   Name: SpectaclesSyncKit
-  Enabled: true
+  Enabled: false
   Layers: 1
   LocalTransform: !<TransformEntity>
     Position: {x: 0.000000, y: 0.000000, z: 0.000000}
@@ -2893,7 +2910,7 @@
   PrefabRemaps:
     []
   Name: Test Sync Modularity
-  Enabled: true
+  Enabled: false
   Layers: 1
   LocalTransform: !<TransformEntity>
     Position: {x: 0.000000, y: 0.000000, z: 0.000000}
@@ -4996,6 +5013,21 @@
   Components:
     - !<own> 5b14b5dc-7e6f-4a0d-8986-bab2bed7ee5b
     - !<own> badf8330-9f58-4161-917f-5d4d537dc725
+- !<SceneObject/9d1b2b03-2b8a-4c6c-a95b-813f91d7fcd1>
+  PrefabRemaps:
+    []
+  Name: displayManager
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    []
+  Components:
+    []
 - !<Canvas/9d2afc8f-cc44-4c96-8305-c49739755591>
   PrefabRemaps:
     []
@@ -7056,6 +7088,96 @@
     CapitalizationOverride: None
   DepthTest: false
   TwoSided: false
+- !<ScriptComponent/e23e4366-0521-4799-af88-416b3db101ae>
+  PrefabRemaps:
+    []
+  Name: Button
+  Enabled: true
+  ScriptAsset: !<reference> d1e61f97-6cb3-4de5-81ca-6f4a47d28933
+  ScriptInputsDefault:
+    editDebugSettings: true
+    printDebugStatements: true
+    printWarningStatements: true
+    setupTransform: true
+    fitBackground: true
+    center: true
+    scale: true
+    customScale: true
+    content: true
+    iconInOnlyIcon: true
+    labelInLabelWithIcon: true
+    iconInLabelWithIcon: true
+    iconAlignment: true
+    labelColorInLabelOnly: true
+    labelColorInLabelWithIcon: true
+    backgroundColor: true
+    _renderOrder: true
+    eventCallbacks: true
+    callbackType: true
+    onPressDownBehaviors: true
+    onPressUpBehaviors: true
+    onPressBehaviors: true
+    onPressDownCustomTriggers: true
+    onPressUpCustomTriggers: true
+    onPressCustomTriggers: true
+    customFunctionScript: true
+    onPressDownFunctions: true
+    onPressUpFunctions: true
+    onPressFunctions: true
+    textPrefab: true
+    iconPrefab: true
+    backgroundPrefab: true
+  ScriptTypesDefault:
+    {}
+  ScriptInputs:
+    "":
+      editDebugSettings: false
+      printDebugStatements: false
+      printWarningStatements: true
+      interactable: true
+      setupTransform: false
+      fitBackground: false
+      center: !<Vec2> {x: 0.000000, y: 0.000000}
+      scale: !<float> 1.000000
+      customScale: !<float> 1.000000
+      content: 0
+      labelInOnlyLabel: Submit
+      iconInOnlyIcon: !<reference.Texture> 00000000-0000-0000-0000-000000000000
+      labelInLabelWithIcon: ""
+      iconInLabelWithIcon: !<reference.Texture> 00000000-0000-0000-0000-000000000000
+      iconAlignment: 0
+      buttonColor: 3
+      labelColorInLabelOnly: !<Vec4> {x: 0.000000, y: 0.000000, z: 0.000000, w: 0.000000}
+      labelColorInLabelWithIcon: !<Vec4> {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
+      backgroundColor: !<Vec4> {x: 0.000000, y: 0.000000, z: 0.000000, w: 1.000000}
+      _renderOrder: 0
+      eventCallbacks: false
+      callbackType: 0
+      onPressDownBehaviors: !<reference.ScriptComponent[]>
+        []
+      onPressUpBehaviors: !<reference.ScriptComponent[]>
+        []
+      onPressBehaviors: !<reference.ScriptComponent[]>
+        []
+      onPressDownCustomTriggers: !<string[]>
+        []
+      onPressUpCustomTriggers: !<string[]>
+        []
+      onPressCustomTriggers: !<string[]>
+        []
+      customFunctionScript: !<reference.ScriptComponent> 00000000-0000-0000-0000-000000000000
+      onPressDownFunctions: !<string[]>
+        []
+      onPressUpFunctions: !<string[]>
+        []
+      onPressFunctions: !<string[]>
+        []
+      textPrefab: !<reference.ObjectPrefab> 13250fcc-fdf3-4755-b9b4-67d29dae7c2c
+      iconPrefab: !<reference.ObjectPrefab> c05c6bd8-b8d7-43bf-874e-06d208be1959
+      backgroundPrefab: !<reference.ObjectPrefab> e68810ec-796a-4eee-b1e2-311b1d7cecdd
+  ScriptTypes:
+    "":
+      {}
 - !<ScriptComponent/e56a46b8-3c9a-4927-a27a-b61f502aa16d>
   PrefabRemaps:
     []
@@ -7073,6 +7195,7 @@
     textMat: true
     chords: true
     personalStaffManagerPrefab: true
+    allStaffsDisplayManagerPrefab: true
     containerPrefab: true
   ScriptTypesDefault:
     {}
@@ -7210,6 +7333,7 @@
         - !<reference> f8e9affc-655a-4315-9023-baf7680b3f03
       keyGPT: ""
       personalStaffManagerPrefab: !<reference.ObjectPrefab> ce00e316-7bb7-4d3f-870c-26101bdd2db2
+      allStaffsDisplayManagerPrefab: !<reference.ObjectPrefab> 00000000-0000-0000-0000-000000000000
       containerPrefab: !<reference.ObjectPrefab> 1bc5ce35-b5ac-4db4-bd56-8a04177d0421
   ScriptTypes:
     "":

@@ -12,12 +12,14 @@
   ScriptAsset: !<reference> 1fca9b47-adee-4de8-9151-5be69f911d84
   ScriptInputsDefault:
     playButtonPrefab: true
+    submitButtonPrefab: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
     "":
       highlightMaterial: !<reference.Material> 1f6acc79-0db1-4a69-9b6e-d45073e707ad
       playButtonPrefab: !<reference.ObjectPrefab> 2e0c1bed-b495-4589-93e8-ee9870eb8ee8
+      submitButtonPrefab: !<reference.ObjectPrefab> 00000000-0000-0000-0000-000000000000
   ScriptTypes:
     "":
       {}

@@ -1,0 +1,107 @@
+- !<NativePackageDescriptor/2d4aa6fa-135f-48bb-b74b-77eebee9c8e3>
+  PackagePath: ""
+  StudioVersion:
+    major: 5
+    minor: 15
+    patch: 1
+    build: 25102815
+    type: Unset
+    buildFlavor: ""
+    timestamp: 0
+    commit: ""
+  Description: |-
+    Button
+    
+    Description:
+    The Button Custom Component is a UI element for interactive buttons. Button CC allows you to fill it with label and icon.
+    You can also customize animations, colors and scale.
+    
+    Usage:
+    
+    Add CC to a SceneObject under the Orthographic Camera.
+    
+    API:
+    
+    defaultBackgroundColor: vec4 - Background's color in the default state.
+    
+    pressedBackgroundColor: vec4 - Background's color in the pressed state.
+    
+    disabledBackgroundColor: vec4 - Background's color in the disabled state.
+    
+    defaultLabelColor: vec4 - Label's color in the default state.
+    
+    pressedLabelColor: vec4 - Label's color in the pressed state.
+    
+    disabledLabelColor: vec4 - Label's color in the disabled state.
+    
+    animtionType: number - Type of the animation on pressing. 0 - None, 1 - Bounce, 2 - Squish, 3 - Transform.
+    
+    renderOrder: number - Initial button's render order.
+    
+    textSize: number - Size of the TextComponent.
+    
+    buttonCenter: vec2 - Button's center position.
+    
+    buttonScale: number - Button's scale ratio.
+    
+    backgroundEnabled: boolean - Whether the background is enabled.
+    
+    (readonly) textComponent - TextComponent of the label.
+    
+    (readonly) screenTransform - Parent ScreenTransform.
+    
+    (readonly) backgroundScreenTransform - ScreenTransform of the background.
+    
+    isPressed(): boolean - Returns whether the button is pressed at the moment.
+    
+    isActive(): boolean - Returns whether the button is active at the moment.
+    
+    enableInteractable(): void - Enables button's InteractionComponent.
+    
+    disableInteractable(): void - Disables button's InteractionComponent.
+    
+    setTransformType(type: number, defaultValue, pressedValue, disabledValue) - Sets transform animation type. Types: 0 - Offset Position, 1 - Anchor Position, 2 - Rotation, 3 - Scale.
+    
+    Events:
+    
+    onEnabledInteractable
+    onDisabledInteractable
+    onPressUp
+    onPressDown
+    onPress
+    
+    Events Usage:
+    
+    script.onEnabledInteractable.add(callback);
+    
+    script.onPress.add(callback);
+  SvgIcon: |
+    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M11 8H16H21C25.4183 8 29 11.5817 29 16C29 20.4183 25.4183 24 21 24H11C6.58172 24 3 20.4183 3 16C3 11.5817 6.58172 8 11 8Z" stroke="#D0DAE6" stroke-width="2"/>
+    <rect x="6" y="11" width="20" height="10" rx="5" fill="#D0DAE6"/>
+    </svg>
+
+  SetupScript:
+    code: ""
+  VersionMajor: 1
+  VersionMinor: 0
+  VersionPatch: 1
+  UpdateCheckpoint: 76
+  ExportUid: 5f9970f6-2b57-4f7a-94aa-f45632f86d65
+  ComponentUid: 17d29788-82f4-4659-a98a-b20ba007a971
+  PackagePolicy: CanBeUnpacked
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  Instantiable: !<reference> d1e61f97-6cb3-4de5-81ca-6f4a47d28933
+  AssetLibraryDependencyStructure: !<AssetLibraryDependencyStructure>
+    Name: Button
+    AssetId: 1z8VxKoTRVE67yMH8ImWxi
+    Hash: 60186bc0d6db604f42e2a47facd49fd7
+    Version:
+      major: -1
+      minor: -1
+      patch: -1
+      build: 0

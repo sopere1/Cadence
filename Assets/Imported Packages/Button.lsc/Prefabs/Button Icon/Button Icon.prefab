@@ -1,0 +1,76 @@
+- !<ObjectPrefab/c05c6bd8-b8d7-43bf-874e-06d208be1959>
+  PackagePath: ""
+  objects:
+    - !<own> b2a8860d-6103-47c3-8d9b-04397f014405
+  LazyLoading: false
+  RetainAssets: true
+- !<ScreenTransform/84eefd66-12a8-4f29-a1bb-e84e81862be5>
+  PrefabRemaps:
+    []
+  Name: Screen Transform
+  Enabled: true
+  IsAdvanced: false
+  Constraints:
+    pinToLeft: false
+    pinToTop: false
+    pinToRight: false
+    pinToBottom: false
+    fixedWidth: false
+    fixedHeight: false
+    deactivatedFixedSprite: false
+    deactivatedFixedPivot: false
+  Pivot: {x: 0.000000, y: 0.000000}
+  Transform:
+    position: {x: 0.000000, y: 0.000000, z: -1.000000}
+    rotation: {x: 0.000000, y: -0.000000, z: 0.000000}
+    scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    hasSegmentScaleCompensation: false
+  RawMode: true
+  ForceBasic: true
+  Anchor:
+    left: -1.000000
+    bottom: -1.000000
+    right: 1.000000
+    top: 1.000000
+  Offset:
+    left: 0.000000
+    bottom: 0.000000
+    right: 0.000000
+    top: 0.000000
+- !<SceneObject/b2a8860d-6103-47c3-8d9b-04397f014405>
+  PrefabRemaps:
+    - 84eefd66-12a8-4f29-a1bb-e84e81862be5: 84eefd66-12a8-4f29-5e44-17b17e79d41a
+    - b2a8860d-6103-47c3-8d9b-04397f014405: b2a8860d-6103-47c3-7264-fbc680febbfa
+    - ec4d2cb5-c08f-4ca8-bd9c-1793d2b434ef: ec4d2cb5-c08f-4ca8-4263-e86c2d4bcb10
+  Name: Button Foreground
+  Enabled: true
+  Layers: 1048576
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: -1.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    []
+  Components:
+    - !<own> ec4d2cb5-c08f-4ca8-bd9c-1793d2b434ef
+    - !<own> 84eefd66-12a8-4f29-a1bb-e84e81862be5
+- !<Image/ec4d2cb5-c08f-4ca8-bd9c-1793d2b434ef>
+  PrefabRemaps:
+    []
+  Name: Image
+  Enabled: true
+  RenderOrder: 4
+  StretchMode: FitHeight
+  VerticalAlignment: Center
+  HorizontalAlignment: Center
+  MeshShadowMode: None
+  ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
+  ShadowDensity: 1.000000
+  Materials:
+    - !<reference> c11d20f4-eab3-4fce-b5cc-1b2073563734
+  FlipX: false
+  FlipY: false
+  RotationAngle: 0
+  Pivot: {x: 0.000000, y: 0.000000}
+  ExtentsTarget: !<reference> 00000000-0000-0000-0000-000000000000

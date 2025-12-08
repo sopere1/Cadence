@@ -1,0 +1,112 @@
+- !<ObjectPrefab/f6d583ea-8388-40c2-8306-6c30e94dd822>
+  PackagePath: ""
+  objects:
+    - !<own> 105cb5d8-18da-40a3-9ec2-4043fec360d6
+  LazyLoading: false
+  RetainAssets: true
+- !<SceneObject/105cb5d8-18da-40a3-9ec2-4043fec360d6>
+  PrefabRemaps:
+    - 105cb5d8-18da-40a3-9ec2-4043fec360d6: 105cb5d8-18da-40a3-613d-bfbc013c9f29
+    - bb9304d7-a580-45da-a218-19f5fc5b97d7: bb9304d7-a580-45da-5de7-e60a03a46828
+  Name: Button
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    []
+  Components:
+    - !<own> bb9304d7-a580-45da-a218-19f5fc5b97d7
+- !<ScriptComponent/bb9304d7-a580-45da-a218-19f5fc5b97d7>
+  PrefabRemaps:
+    []
+  Name: Button
+  Enabled: true
+  ScriptAsset: !<reference> d1e61f97-6cb3-4de5-81ca-6f4a47d28933
+  ScriptInputsDefault:
+    editDebugSettings: true
+    printDebugStatements: true
+    printWarningStatements: true
+    setupTransform: true
+    fitBackground: true
+    center: true
+    scale: true
+    customScale: true
+    content: true
+    iconInOnlyIcon: true
+    labelInLabelWithIcon: true
+    iconInLabelWithIcon: true
+    iconAlignment: true
+    labelColorInLabelOnly: true
+    labelColorInLabelWithIcon: true
+    backgroundColor: true
+    _renderOrder: true
+    eventCallbacks: true
+    callbackType: true
+    onPressDownBehaviors: true
+    onPressUpBehaviors: true
+    onPressBehaviors: true
+    onPressDownCustomTriggers: true
+    onPressUpCustomTriggers: true
+    onPressCustomTriggers: true
+    customFunctionScript: true
+    onPressDownFunctions: true
+    onPressUpFunctions: true
+    onPressFunctions: true
+    textPrefab: true
+    iconPrefab: true
+    backgroundPrefab: true
+  ScriptTypesDefault:
+    {}
+  ScriptInputs:
+    "":
+      editDebugSettings: false
+      printDebugStatements: false
+      printWarningStatements: true
+      interactable: true
+      setupTransform: false
+      fitBackground: false
+      center: !<Vec2> {x: 0.000000, y: 0.000000}
+      scale: !<float> 1.000000
+      customScale: !<float> 1.000000
+      content: 0
+      labelInOnlyLabel: Submit
+      iconInOnlyIcon: !<reference.Texture> 00000000-0000-0000-0000-000000000000
+      labelInLabelWithIcon: ""
+      iconInLabelWithIcon: !<reference.Texture> 00000000-0000-0000-0000-000000000000
+      iconAlignment: 0
+      buttonColor: 3
+      labelColorInLabelOnly: !<Vec4> {x: 0.000000, y: 0.000000, z: 0.000000, w: 0.000000}
+      labelColorInLabelWithIcon: !<Vec4> {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
+      backgroundColor: !<Vec4> {x: 0.000000, y: 0.000000, z: 0.000000, w: 1.000000}
+      _renderOrder: 0
+      eventCallbacks: false
+      callbackType: 0
+      onPressDownBehaviors: !<reference.ScriptComponent[]>
+        []
+      onPressUpBehaviors: !<reference.ScriptComponent[]>
+        []
+      onPressBehaviors: !<reference.ScriptComponent[]>
+        []
+      onPressDownCustomTriggers: !<string[]>
+        []
+      onPressUpCustomTriggers: !<string[]>
+        []
+      onPressCustomTriggers: !<string[]>
+        []
+      customFunctionScript: !<reference.ScriptComponent> 00000000-0000-0000-0000-000000000000
+      onPressDownFunctions: !<string[]>
+        []
+      onPressUpFunctions: !<string[]>
+        []
+      onPressFunctions: !<string[]>
+        []
+      textPrefab: !<reference.ObjectPrefab> 13250fcc-fdf3-4755-b9b4-67d29dae7c2c
+      iconPrefab: !<reference.ObjectPrefab> c05c6bd8-b8d7-43bf-874e-06d208be1959
+      backgroundPrefab: !<reference.ObjectPrefab> e68810ec-796a-4eee-b1e2-311b1d7cecdd
+  ScriptTypes:
+    "":
+      {}

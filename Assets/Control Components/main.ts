@@ -8,6 +8,7 @@ import { SessionController } from 'SpectaclesSyncKit.lspkg/Core/SessionControlle
 import { StorageProperty } from 'SpectaclesSyncKit.lspkg/Core/StorageProperty';
 import { StoragePropertySet } from 'SpectaclesSyncKit.lspkg/Core/StoragePropertySet';
 import { EntityEventWrapper } from 'SpectaclesSyncKit.lspkg/Core/SyncEntity';
+import { AllStaffsDisplayManager } from './displayManager';
 
 @component
 export class SessionStateSync extends BaseScriptComponent {
@@ -52,6 +53,9 @@ export class SessionStateSync extends BaseScriptComponent {
     // Other prefabs for control flow, session synchronization
     @input('Asset.ObjectPrefab')
     personalStaffManagerPrefab: ObjectPrefab;
+
+    @input('Asset.ObjectPrefab')
+    allStaffsDisplayManagerPrefab: ObjectPrefab;
     
     @input('Asset.ObjectPrefab')
     containerPrefab: ObjectPrefab;
@@ -110,7 +114,6 @@ export class SessionStateSync extends BaseScriptComponent {
     }
 
     private onReady() {
-        print("Users in session: " + SessionController.getInstance().getUsers().length);
         this.onProgressionSubmittedEvent = this.syncEntity.getEntityEventWrapper<{connectionId: string, progression: string[]}>("onProgressionSubmitted");
         this.onAllSubmittedEvent = this.syncEntity.getEntityEventWrapper<void>("onAllSubmitted");
         this.onStaffsMixedEvent = this.syncEntity.getEntityEventWrapper<{staff1Id: string, staff2Id: string, mixedProgression: string[]}>("onStaffsMixed");
@@ -202,11 +205,7 @@ export class SessionStateSync extends BaseScriptComponent {
 
     // Submit a progression
     public submitProgression(connectionId: string, progression: string[]): void {
-        if (!this.syncEntity) return;
         const submittedUsers = this.submittedUsers.currentOrPendingValue || [];
-        if (submittedUsers.indexOf(connectionId) !== -1) {
-            return; // already submitted
-        }
 
         // Add to submitted list
         const newSubmittedUsers = [...submittedUsers, connectionId];
@@ -233,7 +232,8 @@ export class SessionStateSync extends BaseScriptComponent {
         // Check if everyone has submitted
         if (submittedUsers.length >= allUsers.length) {
             this.sessionPhase.setPendingValue(1); // Move to display phase
-            this.syncEntity.sendEvent("onAllSubmitted", undefined);
+            // this.syncEntity.sendEvent("onAllSubmitted", undefined);
+            this.handleAllSubmitted();
         }
     }
 
@@ -242,7 +242,9 @@ export class SessionStateSync extends BaseScriptComponent {
     }
 
     private handleAllSubmitted(): void {
-        print("All users have submitted!");
+        const obj = this.allStaffsDisplayManagerPrefab.instantiate(null);
+        const comp = obj.getComponent("Component.ScriptComponent") as any;
+        comp.displayAllStaffs();
     }
 
     private handleRemoteStaffsMixed(staff1Id: string, staff2Id: string, mixedProgression: string[]): void {

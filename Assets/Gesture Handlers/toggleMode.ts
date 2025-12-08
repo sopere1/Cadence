@@ -18,13 +18,17 @@ export class toggleMode extends BaseScriptComponent {
     @input('Asset.ObjectPrefab')
     playButtonPrefab: ObjectPrefab;
 
+    @input('Asset.ObjectPrefab')
+    submitButtonPrefab: ObjectPrefab;
+
     // containers for chord labels and staff
     private ringContainer: SceneObject = (global as any).ringContainer as SceneObject;
     private labels: SceneObject[] = this.ringContainer.children;
 
-    // tracks progression state for playback
+    // tracks progression state for playback and submission
     private playButton: PlayButton | null = null;
     private progressionPlayer: ChordProgressionPlayer | null = null;
+    private hasSubmitted: boolean = false;
 
     // tracks active chord state for highlight, explanation labels, etc.
     private prevSelected: SceneObject | null = null;
@@ -112,7 +116,10 @@ export class toggleMode extends BaseScriptComponent {
             const handler = (event: InteractorEvent) => {
                 const inputType = (event.interactor as any)?.inputType;
 
-                if (inputType === InteractorInputType.LeftHand) {
+                // Mouse input = left hand pinch (for preview testing)
+                if (inputType === InteractorInputType.Mouse) {
+                    this.handleLeftHandLabelPinch(label);
+                } else if (inputType === InteractorInputType.LeftHand) {
                     this.handleLeftHandLabelPinch(label);
                 } else if (inputType === InteractorInputType.RightHand) {
                     handleRightLabelPinch(
@@ -137,7 +144,6 @@ export class toggleMode extends BaseScriptComponent {
         if (this.isInDisplayPhase) return;
 
         const chordName = (label as any).chord as string;
-
         // Switch to staff mode (show personal staff)
         this.ringContainer.enabled = false;
         this.personalStaff.show();
@@ -157,9 +163,14 @@ export class toggleMode extends BaseScriptComponent {
                 return;
             }
 
-            // Check if staff is full - show submit button
-            if (this.personalStaff.isFull()) {
-                this.showSubmitButton();
+            // Check if staff is full, auto-submit once
+            if (this.personalStaff.isFull() && !this.hasSubmitted) {
+                this.submitProgression();
+
+                // Hide everything until display phase
+                this.ringContainer.enabled = false;
+                this.personalStaff.hide();
+                this.playButton.hide();
             }
         }
 
@@ -229,34 +240,18 @@ export class toggleMode extends BaseScriptComponent {
         }
     }
 
-    // Submission and display phase methods
-    private showSubmitButton(): void {
-        // TODO: Show submit button in UI
-        print("Staff is full! Ready to submit.");
-    }
-
     public submitProgression(): void {
-        if (!this.personalStaff || !this.sessionSync) return;
-
         const progression = this.personalStaff.getProgression();
         const sessionController = SessionController.getInstance();
         const myConnectionId = sessionController.getLocalConnectionId();
-
         if (myConnectionId) {
             this.sessionSync.submitProgression(myConnectionId, progression);
-            print("Progression submitted!");
+            this.hasSubmitted = true;
         }
     }
 
     // When all progressions have been submitted, set up group display
     private handleAllSubmitted(): void {
         this.isInDisplayPhase = true;
-        this.ringContainer.enabled = false;
-
-        // TODO: Display all staffs
-        // TODO: Get GPT explanations
-        // TODO: Setup mixing detection
-
-        print("All users have submitted! Display phase active.");
     }
 }
